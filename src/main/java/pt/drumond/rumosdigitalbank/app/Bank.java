@@ -37,9 +37,7 @@ public class Bank {
                                     
                     Option:\040""");
 
-            int option = Integer.parseInt(scanner.nextLine());
-
-            switch (option) {
+            switch (Integer.parseInt(scanner.nextLine())) {
                 case 1 -> createCustomer(scanner);
                 case 2 -> findCustomerByNif(scanner);
                 case 3 -> updateCustomer(scanner);
@@ -82,6 +80,7 @@ public class Bank {
         insertBirthDate(scanner, customer);
 
         customers.add(customer);
+
         System.out.println("Client successfully created");
         displayMargin(customer);
         customers.forEach(customerElement -> {
