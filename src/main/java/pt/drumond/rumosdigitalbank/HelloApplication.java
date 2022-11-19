@@ -40,7 +40,7 @@ public class HelloApplication extends Application {
 
         switch (Integer.parseInt(scanner.nextLine())){
             case 1 -> launch();
-            case 2 -> bank.run(scanner, bank, customerService);
+            case 2 -> bank.run(scanner, customerService);
             default -> {
                 scanner.close();
                 System.exit(0);

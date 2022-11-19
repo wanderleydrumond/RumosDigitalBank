@@ -25,15 +25,15 @@ public class Bank {
      *
      * @param scanner field to be filled on menu
      */
-    public void run(Scanner scanner, Bank bank, CustomerService customerService) {
+    public void run(Scanner scanner, CustomerService customerService) {
         boolean flag = false;
         do {
             System.out.print("""
-                    ╭══════════════════════$═══╮
-                         RUMOS DIGITAL BANK
-                    ╰═══€══════════════════════╯
+                    ╭═════════════════════════════════$═══╮
+                         RUMOS DIGITAL BANK MANAGEMENT
+                    ╰═══€═════════════════════════════════╯
                     Choose your option:
-                    0. Quit
+                    0. Quit application
                     1. Insert new client
                     2. Search client by NIF
                     3. Update client by NIF

@@ -146,7 +146,7 @@ public class CustomerService {
         bank.displayMargin(customer);
         System.out.println(customer);
         bank.displayMargin(customer);
-        System.out.print("\n\nDo you confirm operation for this customer? it is irrevesible.\n(Y)es/(N)o: ");
+        System.out.print("\nDo you confirm operation for this customer? it is irrevesible.\n(Y)es/(N)o: ");
 
         if (scanner.nextLine().equalsIgnoreCase("Y")) {
             if (customers.removeIf(customerElement -> customerElement.getNif().equals(customer.getNif()))) {
@@ -176,7 +176,7 @@ public class CustomerService {
             System.out.print("Insert nif (0 to cancel): ");
             String nif = scanner.nextLine();
             if (nif.equals("0")) {
-                bank.run(scanner, bank, customerService);
+                bank.run(scanner, customerService);
             } else {
                 isValidated = customer.setNif(nif);
             }
@@ -193,7 +193,7 @@ public class CustomerService {
         System.out.print("Insert name (0 to cancel): ");
         String name = scanner.nextLine();
         if (name.equals("0")) {
-            bank.run(scanner, bank, customerService);
+            bank.run(scanner, customerService);
         } else {
             customer.setName(name);
         }
@@ -209,7 +209,7 @@ public class CustomerService {
         System.out.print("Insert password (0 to cancel): ");
         String password = scanner.nextLine();
         if (password.equals("0")) {
-            bank.run(scanner, bank, customerService);
+            bank.run(scanner, customerService);
         } else {
             customer.setPassword(password);
         }
@@ -227,7 +227,7 @@ public class CustomerService {
             System.out.print("Insert phone number (0 to cancel): ");
             String phone = scanner.nextLine();
             if (phone.equals("0")) {
-                bank.run(scanner, bank, customerService);
+                bank.run(scanner, customerService);
             } else {
                 isValidated = customer.setPhone(phone);
             }
@@ -246,7 +246,7 @@ public class CustomerService {
             System.out.print("Insert mobile number (0 to cancel): ");
             String mobile = scanner.nextLine();
             if (mobile.equals("0")) {
-                bank.run(scanner, bank, customerService);
+                bank.run(scanner, customerService);
             } else {
                 isValidated = customer.setMobile(mobile);
             }
@@ -265,7 +265,7 @@ public class CustomerService {
             System.out.print("Insert email (0 to cancel): ");
             String email = scanner.nextLine();
             if (email.equals("0")) {
-                bank.run(scanner, bank, customerService);
+                bank.run(scanner, customerService);
             } else {
                 isValidated = customer.setEmail(email);
             }
@@ -282,7 +282,7 @@ public class CustomerService {
         System.out.print("Insert profession (0 to cancel): ");
         String profession = scanner.nextLine();
         if (profession.equals("0")) {
-            bank.run(scanner, bank, customerService);
+            bank.run(scanner, customerService);
         } else {
             customer.setProfession(profession);
         }
@@ -295,12 +295,12 @@ public class CustomerService {
      * @param customer object that contains the attribute mobile to be inserted
      */
     private void insertBirthDate(Scanner scanner, Customer customer, CustomerService customerService) {
-        System.out.print("Insert date of birth (yyyy/MM/dd) (0 to cancel): ");
+        System.out.print("Insert date of birth (dd/MM/yyyy) (0 to cancel): ");
         String birthDate = scanner.nextLine();
         if (birthDate.equals("0")) {
-            bank.run(scanner, bank, customerService);
+            bank.run(scanner, customerService);
         } else {
-            customer.setBirthDate(LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+            customer.setBirthDate(LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         }
     }
 

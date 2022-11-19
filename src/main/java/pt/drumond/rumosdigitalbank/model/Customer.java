@@ -1,6 +1,7 @@
 package pt.drumond.rumosdigitalbank.model;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Entity class Customer.
@@ -162,7 +163,7 @@ public class Customer {
                 " | MOBILE: " + mobile +
                 " | E-MAIL: " + email +
                 " | PROFESSION: " + profession +
-                " | BIRTHDATE: " + birthDate +
+                " | BIRTHDATE: " + birthDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
                 " |";
     }
 }
