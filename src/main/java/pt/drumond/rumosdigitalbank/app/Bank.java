@@ -23,7 +23,8 @@ public class Bank {
     /**
      * Contains the application core.
      *
-     * @param scanner field to be filled on menu
+     * @param scanner         field to be filled on menu
+     * @param customerService object that contains the methods from the layout service
      */
     public void run(Scanner scanner, CustomerService customerService) {
         boolean flag = false;
@@ -63,7 +64,9 @@ public class Bank {
      * Creates a new customer.<br>
      * <em>Calls the method <code>create()</code> from <code>CustomerSerice</code></em>
      *
-     * @param scanner field to be filled inside each inner method.
+     * @param scanner         field to be filled inside each inner method
+     * @param customer        object that contains the methods from the entity
+     * @param customerService object that contains the methods from the layout service
      */
     private void createCustomer(Scanner scanner, Customer customer, CustomerService customerService) {
         customerService.create(customer, scanner, customerService);
@@ -73,7 +76,8 @@ public class Bank {
      * Finds a customer with a given NIF number. <br>
      * <em>Calls the method <code>findCustomerByNif()</code> from <code>CustomerSerice</code></em>
      *
-     * @param scanner field to be filled with the NIF number
+     * @param scanner         field to be filled with the NIF number
+     * @param customerService object that contains the methods from the layout service
      */
     private void findCustomerByNif(Scanner scanner, CustomerService customerService) {
         customerService.findCustomerByNif(scanner);
@@ -89,11 +93,13 @@ public class Bank {
         customerService.update(scanner, customerService);
     }
 
+
     /**
      * Deletes a customer with a given NIF number.<br>
      * <em>Calls the method <code>delete()</code> from <code>CustomerSerice</code></em>
      *
-     * @param scanner field to be filled with the NIF number
+     * @param scanner         field to be filled with the NIF number
+     * @param customerService object that contains the methods from the layout service
      */
     private void deleteCustomer(Scanner scanner, CustomerService customerService) {
         customerService.delete(scanner);
@@ -110,10 +116,10 @@ public class Bank {
      * Displays a sequence of hyphens in the <code>Object.toString()</code> length.
      * Implies calling in the begining and in the end.
      *
-     * @param customerElement object that will be made <code>toString().length()</code>
+     * @param customer object that will be made <code>toString().length()</code>
      */
-    public void displayMargin(Customer customerElement) {
-        for (int index = 0; index < customerElement.toString().length(); index++) {
+    public void displayMargin(Customer customer) {
+        for (int index = 0; index < customer.toString().length(); index++) {
             System.out.print("-");
         }
         System.out.println();
