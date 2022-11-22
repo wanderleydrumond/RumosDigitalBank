@@ -14,19 +14,22 @@ public class Bank {
      * Object used to give acces to methods from <code>Customer</code><br>
      * <em>Used on insert methods.</em>
      */
-    private Customer customer;
+
+    private CustomerService customerService;
 
     public Bank() {
-        customer = new Customer();
+
+        customerService = new CustomerService();
+        customerService.loadDatabase();
     }
 
     /**
      * Contains the application core.
      *
-     * @param scanner         field to be filled on menu
-     * @param customerService object that contains the methods from the layout service
+     * @param scanner field to be filled on menu
+     * @param bank    management class object instance
      */
-    public void run(Scanner scanner, CustomerService customerService) {
+    public void run(Scanner scanner, Bank bank) {
         boolean flag = false;
         do {
             System.out.print("""
@@ -44,11 +47,29 @@ public class Bank {
                     Option:\040""");
 
             switch (Integer.parseInt(scanner.nextLine())) {
-                case 1 -> createCustomer(scanner, customer, customerService);
-                case 2 -> findCustomerByNif(scanner, customerService);
-                case 3 -> updateCustomer(scanner, customerService);
-                case 4 -> deleteCustomer(scanner, customerService);
-                case 5 -> findAllCustomers(customerService);
+                case 1 -> {
+                    Customer customer = customerService.createCustomer(scanner, bank);
+                    System.out.println("Client successfully created");
+                    displayMargin(customer);
+                    System.out.println(customer);
+                    displayMargin(customer);
+                }
+                case 2 -> {
+                    Customer customer = customerService.getCustomerByNif(scanner);
+                    displayMargin(customer);
+                    System.out.println(customer);
+                    displayMargin(customer);
+                }
+                case 3 -> {
+                    Customer customer = customerService.updateCustomer(scanner, bank);
+                    System.out.println("Client successfully updated");
+                    displayMargin(customer);
+                    System.out.println(customer);
+                    displayMargin(customer);
+                }
+                case 4 ->
+                        System.out.println(customerService.deleteCustomerByNif(scanner, bank) ? "Customer deleted successffully" : "Operation canceled");
+                case 5 -> customerService.getAllCustomers();
                 default -> HelloApplication.main(null);
             }
             System.out.print("Do you want to perform another operation? (Y)es/(N)o: ");
@@ -58,58 +79,6 @@ public class Bank {
                 HelloApplication.main(null);
             }
         } while (flag);
-    }
-
-    /**
-     * Creates a new customer.<br>
-     * <em>Calls the method <code>create()</code> from <code>CustomerSerice</code></em>
-     *
-     * @param scanner         field to be filled inside each inner method
-     * @param customer        object that contains the methods from the entity
-     * @param customerService object that contains the methods from the layout service
-     */
-    private void createCustomer(Scanner scanner, Customer customer, CustomerService customerService) {
-        customerService.create(customer, scanner, customerService);
-    }
-
-    /**
-     * Finds a customer with a given NIF number. <br>
-     * <em>Calls the method <code>findCustomerByNif()</code> from <code>CustomerSerice</code></em>
-     *
-     * @param scanner         field to be filled with the NIF number
-     * @param customerService object that contains the methods from the layout service
-     */
-    private void findCustomerByNif(Scanner scanner, CustomerService customerService) {
-        customerService.findCustomerByNif(scanner);
-    }
-
-    /**
-     * Updates a customer with a given NIF number.<br>
-     * <em>Calls the method <code>update()</code> from <code>CustomerSerice</code></em>
-     *
-     * @param scanner field to be filled with the NIF number
-     */
-    private void updateCustomer(Scanner scanner, CustomerService customerService) {
-        customerService.update(scanner, customerService);
-    }
-
-
-    /**
-     * Deletes a customer with a given NIF number.<br>
-     * <em>Calls the method <code>delete()</code> from <code>CustomerSerice</code></em>
-     *
-     * @param scanner         field to be filled with the NIF number
-     * @param customerService object that contains the methods from the layout service
-     */
-    private void deleteCustomer(Scanner scanner, CustomerService customerService) {
-        customerService.delete(scanner);
-    }
-
-    /**
-     * Displays all customers.
-     */
-    private void findAllCustomers(CustomerService customerService) {
-        customerService.findAll();
     }
 
     /**

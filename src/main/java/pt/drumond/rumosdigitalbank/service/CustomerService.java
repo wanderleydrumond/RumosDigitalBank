@@ -2,72 +2,57 @@ package pt.drumond.rumosdigitalbank.service;
 
 import pt.drumond.rumosdigitalbank.app.Bank;
 import pt.drumond.rumosdigitalbank.model.Customer;
+import pt.drumond.rumosdigitalbank.repository.CustomerListRepository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class CustomerService {
     /**
-     * Object that contains all methods from the controller class.
+     * Contains all methods from the persistence layer.
      */
-    private Bank bank;
-    /**
-     * Database that contains all app customers.
-     */
-    private ArrayList<Customer> customers;
+    private CustomerListRepository customerListRepository;
 
     public CustomerService() {
-        bank = new Bank();
-        customers = new ArrayList<>();
+        customerListRepository = new CustomerListRepository();
     }
 
-    public ArrayList<Customer> getCustomers() {
-        return customers;
+    /**
+     * Creates a new customer instance given the requirements to be done.
+     *
+     * @param scanner field to be filled with the customer's data
+     * @param bank    management class object instance
+     * @return the new <code>Customer</code>
+     */
+    public Customer createCustomer(Scanner scanner, Bank bank) {
+        Customer customer = new Customer();
+
+        insertNif(scanner, customer, false, bank);
+        insertName(scanner, customer, bank);
+        insertPassword(scanner, customer, bank);
+        insertPhone(scanner, customer, false, bank);
+        insertMobile(scanner, customer, false, bank);
+        insertEmail(scanner, customer, false, bank);
+        insertProfession(scanner, customer, bank);
+        insertBirthDate(scanner, customer, bank);
+
+        return customerListRepository.save(customer);
     }
 
-    public void addCustomer(Customer customer) {
-        customers.add(customer);
-    }
-
-    public void create(Customer customer, Scanner scanner, CustomerService customerService) {
-        insertNif(scanner, customer, false, customerService);
-        insertName(scanner, customer, customerService);
-        insertPassword(scanner, customer, customerService);
-        insertPhone(scanner, customer, false, customerService);
-        insertMobile(scanner, customer, false, customerService);
-        insertEmail(scanner, customer, false, customerService);
-        insertProfession(scanner, customer, customerService);
-        insertBirthDate(scanner, customer, customerService);
-
-        addCustomer(customer);
-        System.out.println("Client successfully created");
-        bank.displayMargin(customer);
-        getCustomers().forEach(customerElement -> {
-            if (customerElement.getNif().equals(customer.getNif())) {
-                System.out.println(customer);
-            }
-        });
-        bank.displayMargin(customer);
-    }
-
-    public Customer findCustomerByNif(Scanner scanner) {
+    /**
+     * Gets an specific customer that owns the given NIF number.
+     *
+     * @param scanner field to be filled with the customer's data
+     * @return the <code>Customer</code> object
+     */
+    public Customer getCustomerByNif(Scanner scanner) {
         System.out.print("Enter client NIF number (0 to cancel): ");
         String typedNif = scanner.nextLine();
-        Customer customer;
         if (typedNif.equals("0")) {
             return null;
-        } else {
-            customer = findByNif(typedNif, scanner);
-            if (customer != null) {
-                bank.displayMargin(customer);
-                System.out.println(customer);
-                bank.displayMargin(customer);
-            }
         }
-        return customer;
+        return customerListRepository.findByNif(typedNif, scanner);
     }
 
     /**
@@ -75,14 +60,19 @@ public class CustomerService {
      * <em>Allows returning to main menu typing 0</em>
      *
      * @param scanner field to be filled with the NIF number
+     * @param bank    management class object instance
+     * @return the updated <code>Customer</code>
      */
-    public void update(Scanner scanner, CustomerService customerService) {
+    public Customer updateCustomer(Scanner scanner, Bank bank) {
         int option;
         System.out.print("Insert the client NIF to be updated (0 to cancel): ");
-        Customer customer = findByNif(scanner.nextLine(), scanner);
+        Customer customer = customerListRepository.findByNif(scanner.nextLine(), scanner);
         boolean flagUpdate = false;
         do {
+            bank.displayMargin(customer);
             System.out.println(customer);
+            bank.displayMargin(customer);
+
             System.out.print("""
                     What do you want to update?
                                             
@@ -99,28 +89,28 @@ public class CustomerService {
             option = Integer.parseInt(scanner.nextLine());
             switch (option) {
                 case 1 -> {
-                    insertName(scanner, customer, customerService);
-                    setAndShowCustomer(customer);
+                    insertName(scanner, customer, bank);
+                    setAndShowCustomer(customer, bank);
                 }
                 case 2 -> {
-                    insertPassword(scanner, customer, customerService);
-                    setAndShowCustomer(customer);
+                    insertPassword(scanner, customer, bank);
+                    setAndShowCustomer(customer, bank);
                 }
                 case 3 -> {
-                    insertPhone(scanner, customer, false, customerService);
-                    setAndShowCustomer(customer);
+                    insertPhone(scanner, customer, false, bank);
+                    setAndShowCustomer(customer, bank);
                 }
                 case 4 -> {
-                    insertMobile(scanner, customer, false, customerService);
-                    setAndShowCustomer(customer);
+                    insertMobile(scanner, customer, false, bank);
+                    setAndShowCustomer(customer, bank);
                 }
                 case 5 -> {
-                    insertEmail(scanner, customer, false, customerService);
-                    setAndShowCustomer(customer);
+                    insertEmail(scanner, customer, false, bank);
+                    setAndShowCustomer(customer, bank);
                 }
                 case 6 -> {
-                    insertProfession(scanner, customer, customerService);
-                    setAndShowCustomer(customer);
+                    insertProfession(scanner, customer, bank);
+                    setAndShowCustomer(customer, bank);
                 }
             }
             if (option != 0) {
@@ -130,38 +120,42 @@ public class CustomerService {
                 }
             }
         } while (flagUpdate && option != 0);
+        return customer;
     }
-
-
 
     /**
      * Deletes a customer with a given NIF number.<br>
      * <em>Allows returning to main menu typing 0</em>
      *
      * @param scanner field to be filled with the NIF number
+     * @param bank    management class object instance
+     * @return <ul>
+     * <li>true if deleted successfully</li>
+     * <li>false if negative confirmation. Operation canceled</li>
+     * </ul>
      */
-    public void delete(Scanner scanner) {
+    public boolean deleteCustomerByNif(Scanner scanner, Bank bank) {
         System.out.print("Insert the client NIF to be deleted (0 to cancel): ");
-        Customer customer = findByNif(scanner.nextLine(), scanner);
+        Customer customer = customerListRepository.findByNif(scanner.nextLine(), scanner);
         bank.displayMargin(customer);
         System.out.println(customer);
         bank.displayMargin(customer);
         System.out.print("\nDo you confirm operation for this customer? it is irrevesible.\n(Y)es/(N)o: ");
 
         if (scanner.nextLine().equalsIgnoreCase("Y")) {
-            if (customers.removeIf(customerElement -> customerElement.getNif().equals(customer.getNif()))) {
-                System.out.println("Client successfully deleted");
-            }
-        } else {
-            return;
+            customerListRepository.delete(customer);
+
+            return true;
         }
+
+        return false;
     }
 
     /**
      * Displays all customers.
      */
-    public void findAll() {
-        customers.forEach(System.out::println);
+    public void getAllCustomers() {
+        customerListRepository.findAll().forEach(System.out::println);
     }
 
     /**
@@ -170,13 +164,14 @@ public class CustomerService {
      * @param scanner     field to be filled
      * @param customer    object that contains the attribute NIF to be inserted
      * @param isValidated flag that controns if the NIF is set or not
+     * @param bank        management class object instance
      */
-    private void insertNif(Scanner scanner, Customer customer, boolean isValidated, CustomerService customerService) {
+    private void insertNif(Scanner scanner, Customer customer, boolean isValidated, Bank bank) {
         while (!isValidated) {
             System.out.print("Insert nif (0 to cancel): ");
             String nif = scanner.nextLine();
             if (nif.equals("0")) {
-                bank.run(scanner, customerService);
+                bank.run(scanner, bank);
             } else {
                 isValidated = customer.setNif(nif);
             }
@@ -188,12 +183,13 @@ public class CustomerService {
      *
      * @param scanner  field to be filled
      * @param customer object that contains the attribute name to be inserted
+     * @param bank     management class object instance
      */
-    private void insertName(Scanner scanner, Customer customer, CustomerService customerService) {
+    private void insertName(Scanner scanner, Customer customer, Bank bank) {
         System.out.print("Insert name (0 to cancel): ");
         String name = scanner.nextLine();
         if (name.equals("0")) {
-            bank.run(scanner, customerService);
+            bank.run(scanner, bank);
         } else {
             customer.setName(name);
         }
@@ -204,12 +200,13 @@ public class CustomerService {
      *
      * @param scanner  field to be filled
      * @param customer object that contains the attribute password to be inserted
+     * @param bank     management class object instance
      */
-    private void insertPassword(Scanner scanner, Customer customer, CustomerService customerService) {
+    private void insertPassword(Scanner scanner, Customer customer, Bank bank) {
         System.out.print("Insert password (0 to cancel): ");
         String password = scanner.nextLine();
         if (password.equals("0")) {
-            bank.run(scanner, customerService);
+            bank.run(scanner, bank);
         } else {
             customer.setPassword(password);
         }
@@ -221,13 +218,14 @@ public class CustomerService {
      * @param scanner     field to be filled
      * @param customer    object that contains the attribute phone to be inserted
      * @param isValidated flag that controns if the phone is set or not
+     * @param bank        management class object instance
      */
-    private void insertPhone(Scanner scanner, Customer customer, boolean isValidated, CustomerService customerService) {
+    private void insertPhone(Scanner scanner, Customer customer, boolean isValidated, Bank bank) {
         while (!isValidated) {
             System.out.print("Insert phone number (0 to cancel): ");
             String phone = scanner.nextLine();
             if (phone.equals("0")) {
-                bank.run(scanner, customerService);
+                bank.run(scanner, bank);
             } else {
                 isValidated = customer.setPhone(phone);
             }
@@ -240,13 +238,14 @@ public class CustomerService {
      * @param scanner     field to be filled
      * @param customer    object that contains the attribute mobile to be inserted
      * @param isValidated flag that controns if the mobile is set or not
+     * @param bank        management class object instance
      */
-    private void insertMobile(Scanner scanner, Customer customer, boolean isValidated, CustomerService customerService) {
+    private void insertMobile(Scanner scanner, Customer customer, boolean isValidated, Bank bank) {
         while (!isValidated) {
             System.out.print("Insert mobile number (0 to cancel): ");
             String mobile = scanner.nextLine();
             if (mobile.equals("0")) {
-                bank.run(scanner, customerService);
+                bank.run(scanner, bank);
             } else {
                 isValidated = customer.setMobile(mobile);
             }
@@ -259,13 +258,14 @@ public class CustomerService {
      * @param scanner     field to be filled
      * @param customer    object that contains the attribute email to be inserted
      * @param isValidated flag that controns if the email is set or not
+     * @param bank        management class object instance
      */
-    private void insertEmail(Scanner scanner, Customer customer, boolean isValidated, CustomerService customerService) {
+    private void insertEmail(Scanner scanner, Customer customer, boolean isValidated, Bank bank) {
         while (!isValidated) {
             System.out.print("Insert email (0 to cancel): ");
             String email = scanner.nextLine();
             if (email.equals("0")) {
-                bank.run(scanner, customerService);
+                bank.run(scanner, bank);
             } else {
                 isValidated = customer.setEmail(email);
             }
@@ -277,12 +277,13 @@ public class CustomerService {
      *
      * @param scanner  field to be filled
      * @param customer object that contains the attribute profession to be inserted
+     * @param bank     management class object instance
      */
-    private void insertProfession(Scanner scanner, Customer customer, CustomerService customerService) {
+    private void insertProfession(Scanner scanner, Customer customer, Bank bank) {
         System.out.print("Insert profession (0 to cancel): ");
         String profession = scanner.nextLine();
         if (profession.equals("0")) {
-            bank.run(scanner, customerService);
+            bank.run(scanner, bank);
         } else {
             customer.setProfession(profession);
         }
@@ -293,43 +294,16 @@ public class CustomerService {
      *
      * @param scanner  field to be filled
      * @param customer object that contains the attribute mobile to be inserted
+     * @param bank     management class object instance
      */
-    private void insertBirthDate(Scanner scanner, Customer customer, CustomerService customerService) {
+    private void insertBirthDate(Scanner scanner, Customer customer, Bank bank) {
         System.out.print("Insert date of birth (dd/MM/yyyy) (0 to cancel): ");
         String birthDate = scanner.nextLine();
         if (birthDate.equals("0")) {
-            bank.run(scanner, customerService);
+            bank.run(scanner, bank);
         } else {
             customer.setBirthDate(LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         }
-    }
-
-    /**
-     * Finds a customer given a NIF number.
-     *
-     * @param nif     customer key search
-     * @param scanner field to be filled
-     * @return the customer who owns that NIF number
-     */
-    public Customer findByNif(String nif, Scanner scanner) {
-        boolean wasNifFound = false;
-        String typedNif = nif;
-        while (!wasNifFound) {
-            for (Customer customerElement : customers) {
-                if (customerElement.getNif().equalsIgnoreCase(typedNif)) {
-                    wasNifFound = true;
-                    return customerElement;
-                }
-            }
-            if (!wasNifFound) {
-                System.out.print("Does not exist a client with the given NIF number\nEnter a valid NIF or type 0 to quit: ");
-                typedNif = scanner.nextLine();
-                if (typedNif.equals("0")) {
-                    break;
-                }
-            }
-        }
-        return null;
     }
 
     /**
@@ -339,10 +313,11 @@ public class CustomerService {
      * </ol>
      *
      * @param customer object that contains all parameters that will be updated
+     * @param bank     management class object instance
      */
-    private void setAndShowCustomer(Customer customer) {
-        customers.set(customers.indexOf(customer), customer);
-        customers.forEach(customerElement -> {
+    private void setAndShowCustomer(Customer customer, Bank bank) {
+        customerListRepository.findAll().set(customerListRepository.findAll().indexOf(customer), customer);
+        customerListRepository.findAll().forEach(customerElement -> {
             if (customerElement.getNif().equals(customer.getNif())) {
                 bank.displayMargin(customerElement);
                 System.out.println(customerElement);
@@ -355,13 +330,6 @@ public class CustomerService {
      * Generates initial data to fill the Arraylist that's serves as database.
      */
     public void loadDatabase() {
-        Customer customer1 = new Customer("987456321", "Jane Doe", "123456", "321654987", "99885544", "someone@email.com", "Lawyer", LocalDate.of(1983, 2, 24));
-        Customer customer2 = new Customer("123456789", "John Doe", "654321", "321644481", "99221166", "anything@email.com", "Pilot", LocalDate.of(1973, 12, 12));
-        Customer customer3 = new Customer("132456789", "Rosalvo Doe", "123654", "325554937", "99887766", "something@email.com", "Firefighter", LocalDate.of(1985, 8, 2));
-        Customer customer4 = new Customer("369258147", "João das Couves", "526341", "222111333", "951951951", "cabbages@email.pt", "seller", LocalDate.of(1972, 1, 22));
-        Customer customer5 = new Customer("144774144", "Aang", "540022", "250140320", "981258457", "air@avatar.com", "avatar", LocalDate.of(2005, 1, 22));
-        Customer customer6 = new Customer("144774144", "Korra", "541166", "335478852", "999258741", "water@avatar.com", "avatar", LocalDate.of(2011, 1, 22));
-
-        customers.addAll(Arrays.asList(customer1, customer2, customer3, customer4, customer5, customer6));
+        customerListRepository.loadDatabase();
     }
 }
