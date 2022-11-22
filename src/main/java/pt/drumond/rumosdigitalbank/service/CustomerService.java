@@ -137,15 +137,16 @@ public class CustomerService {
     public boolean deleteCustomerByNif(Scanner scanner, Bank bank) {
         System.out.print("Insert the client NIF to be deleted (0 to cancel): ");
         Customer customer = customerListRepository.findByNif(scanner.nextLine(), scanner);
-        bank.displayMargin(customer);
-        System.out.println(customer);
-        bank.displayMargin(customer);
-        System.out.print("\nDo you confirm operation for this customer? it is irrevesible.\n(Y)es/(N)o: ");
+        if (customer != null) {
+            bank.displayMargin(customer);
+            System.out.println(customer);
+            bank.displayMargin(customer);
+            System.out.print("\nDo you confirm operation for this customer? it is irrevesible.\n(Y)es/(N)o: ");
+            if (scanner.nextLine().equalsIgnoreCase("Y")) {
+                customerListRepository.delete(customer);
 
-        if (scanner.nextLine().equalsIgnoreCase("Y")) {
-            customerListRepository.delete(customer);
-
-            return true;
+                return true;
+            }
         }
 
         return false;

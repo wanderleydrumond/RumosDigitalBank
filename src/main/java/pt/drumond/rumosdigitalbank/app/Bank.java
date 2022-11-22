@@ -67,8 +67,7 @@ public class Bank {
                     System.out.println(customer);
                     displayMargin(customer);
                 }
-                case 4 ->
-                        System.out.println(customerService.deleteCustomerByNif(scanner, bank) ? "Customer deleted successffully" : "Operation canceled");
+                case 4 -> System.out.println(customerService.deleteCustomerByNif(scanner, bank) ? "Customer deleted successffully" : "Operation canceled");
                 case 5 -> customerService.getAllCustomers();
                 default -> HelloApplication.main(null);
             }
