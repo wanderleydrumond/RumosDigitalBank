@@ -1,13 +1,18 @@
 package pt.drumond.rumosdigitalbank.service;
 
-import pt.drumond.rumosdigitalbank.app.Bank;
+import pt.drumond.rumosdigitalbank.controller.Bank;
 import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.repository.CustomerListRepository;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.Scanner;
 
+/**
+ * Contains all methods responsible for the businees rules related to customers.
+ */
 public class CustomerService {
     /**
      * Contains all methods from the persistence layer.
@@ -21,13 +26,15 @@ public class CustomerService {
     /**
      * Creates a new customer instance given the requirements to be done.
      *
-     * @param scanner field to be filled with the customer's data
-     * @param bank    management class object instance
+     * @param scanner      field to be filled with the customer's data
+     * @param bank         management class object instance
+     * @param isMainHolder determines if the <code>Customer</code> is the account main holder
      * @return the new <code>Customer</code>
      */
-    public Customer createCustomer(Scanner scanner, Bank bank) {
+    public Customer createCustomer(Scanner scanner, Bank bank, boolean isMainHolder) {
         Customer customer = new Customer();
 
+        insertBirthDate(scanner, customer, bank, isMainHolder);
         insertNif(scanner, customer, false, bank);
         insertName(scanner, customer, bank);
         insertPassword(scanner, customer, bank);
@@ -35,38 +42,39 @@ public class CustomerService {
         insertMobile(scanner, customer, false, bank);
         insertEmail(scanner, customer, false, bank);
         insertProfession(scanner, customer, bank);
-        insertBirthDate(scanner, customer, bank);
 
-        return customerListRepository.save(customer);
+        return customerListRepository.save(customer, bank.getCustomerGeneralList());
     }
 
     /**
-     * Gets an specific customer that owns the given NIF number.
+     * Gets a specific customer that owns the given NIF number.
      *
-     * @param scanner field to be filled with the customer's data
+     * @param scanner             field to be filled with the customer's data
+     * @param customerGeneralList collection with all bank customers
      * @return the <code>Customer</code> object
      */
-    public Customer getCustomerByNif(Scanner scanner) {
+    public Customer getCustomerByNif(Scanner scanner, HashSet<Customer> customerGeneralList) {
         System.out.print("Enter client NIF number (0 to cancel): ");
         String typedNif = scanner.nextLine();
         if (typedNif.equals("0")) {
             return null;
         }
-        return customerListRepository.findByNif(typedNif, scanner);
+        return customerListRepository.findByNif(typedNif, scanner, customerGeneralList);
     }
 
     /**
      * Updates a customer with a given NIF number.<br>
      * <em>Allows returning to main menu typing 0</em>
      *
-     * @param scanner field to be filled with the NIF number
-     * @param bank    management class object instance
+     * @param scanner             field to be filled with the NIF number
+     * @param bank                management class object instance
+     * @param customerGeneralList collection with all bank customers
      * @return the updated <code>Customer</code>
      */
-    public Customer updateCustomer(Scanner scanner, Bank bank) {
+    public Customer updateCustomer(Scanner scanner, Bank bank, HashSet<Customer> customerGeneralList) {
         int option;
         System.out.print("Insert the client NIF to be updated (0 to cancel): ");
-        Customer customer = customerListRepository.findByNif(scanner.nextLine(), scanner);
+        Customer customer = customerListRepository.findByNif(scanner.nextLine(), scanner, customerGeneralList);
         boolean flagUpdate = false;
         do {
             bank.displayMargin(customer);
@@ -90,27 +98,27 @@ public class CustomerService {
             switch (option) {
                 case 1 -> {
                     insertName(scanner, customer, bank);
-                    setAndShowCustomer(customer, bank);
+                    setAndShowCustomer(customer, bank, customerGeneralList);
                 }
                 case 2 -> {
                     insertPassword(scanner, customer, bank);
-                    setAndShowCustomer(customer, bank);
+                    setAndShowCustomer(customer, bank, customerGeneralList);
                 }
                 case 3 -> {
                     insertPhone(scanner, customer, false, bank);
-                    setAndShowCustomer(customer, bank);
+                    setAndShowCustomer(customer, bank, customerGeneralList);
                 }
                 case 4 -> {
                     insertMobile(scanner, customer, false, bank);
-                    setAndShowCustomer(customer, bank);
+                    setAndShowCustomer(customer, bank, customerGeneralList);
                 }
                 case 5 -> {
                     insertEmail(scanner, customer, false, bank);
-                    setAndShowCustomer(customer, bank);
+                    setAndShowCustomer(customer, bank, customerGeneralList);
                 }
                 case 6 -> {
                     insertProfession(scanner, customer, bank);
-                    setAndShowCustomer(customer, bank);
+                    setAndShowCustomer(customer, bank, customerGeneralList);
                 }
             }
             if (option != 0) {
@@ -127,23 +135,24 @@ public class CustomerService {
      * Deletes a customer with a given NIF number.<br>
      * <em>Allows returning to main menu typing 0</em>
      *
-     * @param scanner field to be filled with the NIF number
-     * @param bank    management class object instance
+     * @param scanner             field to be filled with the NIF number
+     * @param bank                management class object instance
+     * @param customerGeneralList collection with all bank customers
      * @return <ul>
      * <li>true if deleted successfully</li>
      * <li>false if negative confirmation. Operation canceled</li>
      * </ul>
      */
-    public boolean deleteCustomerByNif(Scanner scanner, Bank bank) {
+    public boolean deleteCustomerByNif(Scanner scanner, Bank bank, HashSet<Customer> customerGeneralList) {
         System.out.print("Insert the client NIF to be deleted (0 to cancel): ");
-        Customer customer = customerListRepository.findByNif(scanner.nextLine(), scanner);
+        Customer customer = customerListRepository.findByNif(scanner.nextLine(), scanner, customerGeneralList);
         if (customer != null) {
             bank.displayMargin(customer);
             System.out.println(customer);
             bank.displayMargin(customer);
             System.out.print("\nDo you confirm operation for this customer? it is irrevesible.\n(Y)es/(N)o: ");
             if (scanner.nextLine().equalsIgnoreCase("Y")) {
-                customerListRepository.delete(customer);
+                customerListRepository.delete(customer, customerGeneralList);
 
                 return true;
             }
@@ -154,9 +163,11 @@ public class CustomerService {
 
     /**
      * Displays all customers.
+     *
+     * @param customerGeneralList collection with all bank customers
      */
-    public void getAllCustomers() {
-        customerListRepository.findAll().forEach(System.out::println);
+    public void getAllCustomers(HashSet<Customer> customerGeneralList) {
+        customerListRepository.findAll(customerGeneralList).forEach(System.out::println);
     }
 
     /**
@@ -164,7 +175,7 @@ public class CustomerService {
      *
      * @param scanner     field to be filled
      * @param customer    object that contains the attribute NIF to be inserted
-     * @param isValidated flag that controns if the NIF is set or not
+     * @param isValidated flag that controls if the NIF is set or not
      * @param bank        management class object instance
      */
     private void insertNif(Scanner scanner, Customer customer, boolean isValidated, Bank bank) {
@@ -218,7 +229,7 @@ public class CustomerService {
      *
      * @param scanner     field to be filled
      * @param customer    object that contains the attribute phone to be inserted
-     * @param isValidated flag that controns if the phone is set or not
+     * @param isValidated flag that controls if the phone is set or not
      * @param bank        management class object instance
      */
     private void insertPhone(Scanner scanner, Customer customer, boolean isValidated, Bank bank) {
@@ -238,7 +249,7 @@ public class CustomerService {
      *
      * @param scanner     field to be filled
      * @param customer    object that contains the attribute mobile to be inserted
-     * @param isValidated flag that controns if the mobile is set or not
+     * @param isValidated flag that controls if the mobile is set or not
      * @param bank        management class object instance
      */
     private void insertMobile(Scanner scanner, Customer customer, boolean isValidated, Bank bank) {
@@ -258,7 +269,7 @@ public class CustomerService {
      *
      * @param scanner     field to be filled
      * @param customer    object that contains the attribute email to be inserted
-     * @param isValidated flag that controns if the email is set or not
+     * @param isValidated flag that controls if the email is set or not
      * @param bank        management class object instance
      */
     private void insertEmail(Scanner scanner, Customer customer, boolean isValidated, Bank bank) {
@@ -293,17 +304,31 @@ public class CustomerService {
     /**
      * Fills the birthDate field.
      *
-     * @param scanner  field to be filled
-     * @param customer object that contains the attribute mobile to be inserted
-     * @param bank     management class object instance
+     * @param scanner      field to be filled
+     * @param customer     object that contains the attribute mobile to be inserted
+     * @param bank         management class object instance
+     * @param isMainHolder determines if the <code>Customer</code> is the account main holder
      */
-    private void insertBirthDate(Scanner scanner, Customer customer, Bank bank) {
+    private void insertBirthDate(Scanner scanner, Customer customer, Bank bank, boolean isMainHolder) {
         System.out.print("Insert date of birth (dd/MM/yyyy) (0 to cancel): ");
-        String birthDate = scanner.nextLine();
-        if (birthDate.equals("0")) {
+        String answer = scanner.nextLine();
+        boolean doSetBirthDate = true;
+        if (answer.equals("0")) {
             bank.run(scanner, bank);
         } else {
-            customer.setBirthDate(LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            LocalDate birthDate = LocalDate.parse(answer, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            if (isMainHolder) {
+                LocalDate today = LocalDate.now();
+                int age = Period.between(birthDate, today).getYears();
+                if (age < 18) {
+                    System.out.println("Main holder must be 18 years old at least. Current age: " + age);
+                    doSetBirthDate = false;
+                    bank.run(scanner, bank);
+                }
+            }
+            if (doSetBirthDate) {
+                customer.setBirthDate(birthDate);
+            }
         }
     }
 
@@ -313,12 +338,13 @@ public class CustomerService {
      *     <li>Displays all customers for the list.</li>
      * </ol>
      *
-     * @param customer object that contains all parameters that will be updated
-     * @param bank     management class object instance
+     * @param customer            object that contains all parameters that will be updated
+     * @param bank                management class object instance
+     * @param customerGeneralList collection with all bank customers
      */
-    private void setAndShowCustomer(Customer customer, Bank bank) {
-        customerListRepository.findAll().set(customerListRepository.findAll().indexOf(customer), customer);
-        customerListRepository.findAll().forEach(customerElement -> {
+    private void setAndShowCustomer(Customer customer, Bank bank, HashSet<Customer> customerGeneralList) {
+//        customerListRepository.findAll(customerGeneralList).set(customerListRepository.findAll(customerGeneralList).indexOf(customer), customer);
+        customerListRepository.findAll(customerGeneralList).forEach(customerElement -> {
             if (customerElement.getNif().equals(customer.getNif())) {
                 bank.displayMargin(customerElement);
                 System.out.println(customerElement);
@@ -329,8 +355,10 @@ public class CustomerService {
 
     /**
      * Generates initial data to fill the Arraylist that's serves as database.
+     *
+     * @param customerGeneralList collection with all bank customers
      */
-    public void loadDatabase() {
-        customerListRepository.loadDatabase();
+    public void loadDatabase(HashSet<Customer> customerGeneralList) {
+        customerListRepository.loadDatabase(customerGeneralList);
     }
 }
