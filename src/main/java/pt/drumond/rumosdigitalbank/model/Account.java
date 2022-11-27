@@ -47,32 +47,32 @@ public class Account {
         return secondaryHolders;
     }
 
-    public void addSecondaryHolder(Customer secondaryHolder) {
-        secondaryHolders.add(secondaryHolder);
+    public void setSecondaryHolders(ArrayList<Customer> secondaryHolders) {
+        this.secondaryHolders = secondaryHolders;
     }
 
-    public ArrayList<Movement> getTransactions() {
+    public ArrayList<Movement> getMovements() {
         return movements;
     }
 
-    public void addTransaction(Movement movement) { // TODO move to TransactionListRepository and change the method name to save?
-        movements.add(movement);
+    public void setMovements(ArrayList<Movement> movements) {
+        this.movements = movements;
     }
 
     public ArrayList<DebitCard> getDebitCards() {
         return debitCards;
     }
 
-    public void addtDebitCard(DebitCard debitCard) { // TODO move to DebitCardListRepository and change the method name to save?
-        debitCards.add(debitCard);
+    public void setDebitCards(ArrayList<DebitCard> debitCards) {
+        this.debitCards = debitCards;
     }
 
     public ArrayList<CreditCard> getCreditCards() {
         return creditCards;
     }
 
-    public void addCreditCard(CreditCard creditCard) { // TODO move to CreditCardListRepository and change the method name to save?
-        creditCards.add(creditCard);
+    public void setCreditCards(ArrayList<CreditCard> creditCards) {
+        this.creditCards = creditCards;
     }
 
     @Override

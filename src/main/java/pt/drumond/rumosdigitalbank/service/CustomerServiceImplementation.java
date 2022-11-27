@@ -40,11 +40,7 @@ public class CustomerServiceImplementation implements CustomerService {
      * @return the <code>Customer</code> object
      */
     public Customer findByNif(String nif) {
-        /*System.out.print("Enter client NIF number (0 to cancel): ");
-        String typedNif = scanner.nextLine();
-        if (typedNif.equals("0")) {
-            return null;
-        }*/
+
         return customerListRepositoryImplementation.findByNif(nif);
     }
 

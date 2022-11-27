@@ -10,4 +10,5 @@ public interface AccountRepository {
     Account update(Account account);
     void delete(Account account);
     ArrayList<Account> findAll();
+    void loadDatabase();
 }

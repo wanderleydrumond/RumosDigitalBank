@@ -23,10 +23,8 @@ public class CustomerListRepositoryImplementation implements CustomerRepository{
      * @param customer instance to be added
      */
     @Override
-    public Customer save(Customer customer) { // OK
+    public Customer save(Customer customer) {
         customersBankList.add(customer);
-        System.out.println("Lista de clientes do banco"); //TODO to be deleted
-        customersBankList.forEach(System.out::println);//TODO to be deleted
 
         return customer;
     }
@@ -42,25 +40,9 @@ public class CustomerListRepositoryImplementation implements CustomerRepository{
      * </ul>
      */
     @Override
-    public Customer findByNif(String nif) { //OK
-        /*AtomicBoolean wasNifFound = new AtomicBoolean(false);
-        String typedNif = nif;
-        while (!wasNifFound.get()) {
-            for (Customer customerElement : customersGeneralList) {
-                if (customerElement.getNif().equalsIgnoreCase(typedNif)) {
-                    wasNifFound.set(true);
-                    return customerElement;
-                }
-            }
-            if (!wasNifFound.get()) {
-                System.out.print("Does not exist a client with the given NIF number\nEnter a valid NIF or type 0 to quit: ");
-                typedNif = scanner.nextLine();
-                if (typedNif.equals("0")) {
-                    break;
-                }
-            }
-        }*/
-        return null;
+    public Customer findByNif(String nif) {
+
+        return customersBankList.stream().filter(customerElement -> customerElement.getNif().equals(nif)).findFirst().orElse(null);
     }
 
     /**
@@ -80,6 +62,7 @@ public class CustomerListRepositoryImplementation implements CustomerRepository{
      */
     @Override
     public ArrayList<Customer> findAll() {
+
         return customersBankList;
     } //OK
 

@@ -20,10 +20,7 @@ public class HelloApplication extends Application {
         switch (option) {
             case 1 -> launch();
             case 2 -> bank.startAppManagement();
-            default -> {
-//                scanner.close();
-                System.exit(0);
-            }
+            default -> System.exit(0);
         }
     }
 

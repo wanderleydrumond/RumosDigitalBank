@@ -4,6 +4,5 @@ public class DebitCard {
     private String serialNumber, pin;
     private double valueWithdrawToday;
     private boolean isVirgin;
-    private Customer client;
-    private Account account;
+    private Customer cardHolder;
 }
