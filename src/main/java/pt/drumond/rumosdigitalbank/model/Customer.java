@@ -10,8 +10,6 @@ public class Customer {
     private String nif, name, password, phone, mobile, email, profession;
     private LocalDate birthDate;
 
-    public Customer() {
-    }
 
     public Customer(String nif, String name, String password, String phone, String mobile, String email, String profession, LocalDate birthDate) {
         this.nif = nif;
@@ -39,14 +37,8 @@ public class Customer {
      *     <li>false if NIF is not set</li>
      * </ul>
      */
-    public boolean setNif(String nif) {
-        if (nif.matches("^[1-9][0-9]{8}$")) {
-            this.nif = nif;
-        } else {
-            System.out.println("Invalid nif number");
-            return false;
-        }
-        return true;
+    public void setNif(String nif) {
+        this.nif = nif;
     }
 
     public String getName() {
@@ -79,14 +71,8 @@ public class Customer {
      *     <li>false if NIF is not set</li>
      * </ul>
      */
-    public boolean setPhone(String phone) {
-        if (phone.matches("^[2-3][0-9]{8}$")) {
-            this.phone = phone;
-        } else {
-            System.out.println("Invalid mobile number");
-            return false;
-        }
-        return true;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getMobile() {
@@ -103,15 +89,8 @@ public class Customer {
      *     <li>false if NIF is not set</li>
      * </ul>
      */
-    public boolean setMobile(String mobile) {
-        if (mobile.matches("^(9)[0-9]{8}$")) {
-            this.mobile = mobile;
-        } else {
-            System.out.println("Invalid mobile number");
-            return false;
-
-        }
-        return true;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getEmail() {
@@ -128,14 +107,8 @@ public class Customer {
      *     <li>false if NIF is not set</li>
      * </ul>
      */
-    public boolean setEmail(String email) {
-        if (email.matches("^(.+)@(.+)$")) {
+    public void setEmail(String email) {
             this.email = email;
-        } else {
-            System.out.println("Invalid e-mail");
-            return false;
-        }
-        return true;
     }
 
     public String getProfession() {

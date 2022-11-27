@@ -2,16 +2,16 @@ package pt.drumond.rumosdigitalbank.model;
 
 import java.time.LocalDate;
 
-public class Transaction {
-    private TransactionType type;
+public class Movement {
+    private MovementType type;
     private LocalDate date;
     private double value;
 
-    public TransactionType getType() {
+    public MovementType getType() {
         return type;
     }
 
-    public void setType(TransactionType type) {
+    public void setType(MovementType type) {
         this.type = type;
     }
 

@@ -9,16 +9,14 @@ public class Account {
     private String code;
     private double balance;
     private Customer mainHolder;
-    private ArrayList<Customer> secondaryHolders;
-    private ArrayList<Transaction> transactions;
-    private ArrayList<DebitCard> debitCards;
-    private ArrayList<CreditCard> creditCards;
+    private ArrayList<Customer> secondaryHolders = new ArrayList<>();
+    private ArrayList<Movement> movements = new ArrayList<>();
+    private ArrayList<DebitCard> debitCards = new ArrayList<>();
+    private ArrayList<CreditCard> creditCards = new ArrayList<>();
 
-    public Account() {
-        secondaryHolders = new ArrayList<>();
-        transactions = new ArrayList<>();
-        debitCards = new ArrayList<>();
-        creditCards = new ArrayList<>();
+    public Account(double balance, Customer mainHolder) {
+        this.balance = balance;
+        this.mainHolder = mainHolder;
     }
 
     public String getCode() {
@@ -53,12 +51,12 @@ public class Account {
         secondaryHolders.add(secondaryHolder);
     }
 
-    public ArrayList<Transaction> getTransactions() {
-        return transactions;
+    public ArrayList<Movement> getTransactions() {
+        return movements;
     }
 
-    public void addTransaction(Transaction transaction) { // TODO move to TransactionListRepository and change the method name to save?
-        transactions.add(transaction);
+    public void addTransaction(Movement movement) { // TODO move to TransactionListRepository and change the method name to save?
+        movements.add(movement);
     }
 
     public ArrayList<DebitCard> getDebitCards() {

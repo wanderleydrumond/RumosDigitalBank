@@ -10,26 +10,18 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class HelloApplication extends Application {
+    static Bank bank;
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Bank bank = new Bank();
+        bank = new Bank();
+        bank.initialMenu();
+    }
 
-        System.out.print("""
-                ╭══════════════════════$═══╮
-                     RUMOS DIGITAL BANK
-                ╰═══€══════════════════════╯
-                Choose your option:
-                0. Quit
-                1. ATM
-                2. Management
-                                
-                Option:\040""");
-
-        switch (Integer.parseInt(scanner.nextLine())) {
+    public void startSelectedApp(int option) {
+        switch (option) {
             case 1 -> launch();
-            case 2 -> bank.run(scanner, bank);
+            case 2 -> bank.startAppManagement();
             default -> {
-                scanner.close();
+//                scanner.close();
                 System.exit(0);
             }
         }

@@ -10,9 +10,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Database layer.<br>
  * <em>Implementation by <code>ArrayList</code></em>
  */
-public class CustomerListRepository {
+public class CustomerListRepositoryImplementation implements CustomerRepository{
+    private ArrayList<Customer> customersBankList = new ArrayList<>();
 
-    public CustomerListRepository() {
+    public CustomerListRepositoryImplementation() {
 
     }
 
@@ -21,10 +22,11 @@ public class CustomerListRepository {
      *
      * @param customer instance to be added
      */
-    public Customer save(Customer customer, HashSet<Customer> customersGeneralList) {
-        customersGeneralList.add(customer);
-        System.out.println("Lista de clientes da conta"); //TODO to be deleted
-        customersGeneralList.forEach(System.out::println);//TODO to be deleted
+    @Override
+    public Customer save(Customer customer) { // OK
+        customersBankList.add(customer);
+        System.out.println("Lista de clientes do banco"); //TODO to be deleted
+        customersBankList.forEach(System.out::println);//TODO to be deleted
 
         return customer;
     }
@@ -33,15 +35,15 @@ public class CustomerListRepository {
      * Finds and specific customer in database.
      *
      * @param nif     the customer's identifier
-     * @param scanner field to be filled with the customer's NIF number in case of mistyping
      * @return
      * <ul>
      *     <li>the <code>Customer</code> that owns the NIF number</li>
      *     <li>null if the NIF is filled with 0 and the operation is cancelled</li>
      * </ul>
      */
-    public Customer findByNif(String nif, Scanner scanner, HashSet<Customer> customersGeneralList) {
-        AtomicBoolean wasNifFound = new AtomicBoolean(false);
+    @Override
+    public Customer findByNif(String nif) { //OK
+        /*AtomicBoolean wasNifFound = new AtomicBoolean(false);
         String typedNif = nif;
         while (!wasNifFound.get()) {
             for (Customer customerElement : customersGeneralList) {
@@ -57,7 +59,7 @@ public class CustomerListRepository {
                     break;
                 }
             }
-        }
+        }*/
         return null;
     }
 
@@ -66,8 +68,9 @@ public class CustomerListRepository {
      *
      * @param customer the customer object instance to be deleted
      */
-    public void delete(Customer customer, HashSet<Customer> customersGeneralList) {
-        customersGeneralList.removeIf(customerElement -> customerElement.getNif().equals(customer.getNif()));
+    @Override
+    public void delete(Customer customer) { //OK
+        customersBankList.removeIf(customerElement -> customerElement.getNif().equals(customer.getNif()));
     }
 
     /**
@@ -75,14 +78,15 @@ public class CustomerListRepository {
      *
      * @return the whole customer's list
      */
-    public HashSet<Customer> findAll(HashSet<Customer> customersGeneralList) {
-        return customersGeneralList;
-    }
+    @Override
+    public ArrayList<Customer> findAll() {
+        return customersBankList;
+    } //OK
 
     /**
      * Generates initial data to fill the customer HashSet that's serves as database.
      */
-    public void loadDatabase(HashSet<Customer> customersGeneralList) {
+    public void loadDatabase() {
         Customer customer1 = new Customer("987456321", "Jane Doe", "123456", "321654987", "99885544", "someone@email.com", "Lawyer", LocalDate.of(1983, 2, 24));
         Customer customer2 = new Customer("123456789", "John Doe", "654321", "321644481", "99221166", "anything@email.com", "Pilot", LocalDate.of(1973, 12, 12));
         Customer customer3 = new Customer("132456789", "Rosalvo Doe", "123654", "325554937", "99887766", "something@email.com", "Firefighter", LocalDate.of(1985, 8, 2));
@@ -90,6 +94,6 @@ public class CustomerListRepository {
         Customer customer5 = new Customer("144774144", "Aang", "540022", "250140320", "981258457", "air@avatar.com", "avatar", LocalDate.of(2005, 1, 22));
         Customer customer6 = new Customer("144774144", "Korra", "541166", "335478852", "999258741", "water@avatar.com", "avatar", LocalDate.of(2011, 1, 22));
 
-        customersGeneralList.addAll(Arrays.asList(customer1, customer2, customer3, customer4, customer5, customer6));
+        customersBankList.addAll(Arrays.asList(customer1, customer2, customer3, customer4, customer5, customer6));
     }
 }
