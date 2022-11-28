@@ -7,10 +7,10 @@ import javafx.stage.Stage;
 import pt.drumond.rumosdigitalbank.controller.Bank;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 public class HelloApplication extends Application {
     static Bank bank;
+
     public static void main(String[] args) {
         bank = new Bank();
         bank.initialMenu();

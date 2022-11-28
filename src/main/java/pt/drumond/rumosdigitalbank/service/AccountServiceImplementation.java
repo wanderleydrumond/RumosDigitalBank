@@ -27,7 +27,7 @@ public class AccountServiceImplementation implements AccountService {
      */
     @Override
     public Account create(Account account) {
-        account.getMovements().add(movementService.createTransaction(account.getBalance(), MovementType.DEPOSIT));
+        account.getMovements().add(movementService.create(account.getBalance(), MovementType.DEPOSIT));
 
         return accountListRepositoryImplementation.save(account);
     }
@@ -67,13 +67,30 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public void deposit(Account loggedAccount, double value) {
-        //TODO implement method
+    public void deposit(Account destinationAccount, double depositValue, MovementType movementType) {
+        destinationAccount.setBalance(destinationAccount.getBalance() + depositValue);
+        destinationAccount.getMovements().add(movementService.create(depositValue, movementType));
+        accountListRepositoryImplementation.update(destinationAccount);
     }
 
     @Override
-    public void transfer(Account loggedAccount, double value, String destinyAccountCode) {
-        //TODO implement method
+    public boolean transfer(Account originAccount, double value, String destinationAccountCode) {
+        if (withdraw(value, originAccount, MovementType.TRANSFER_OUT)) {
+            deposit(findByCode(destinationAccountCode), value, MovementType.TRANSFER_IN);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean withdraw(double value, Account destinationAccount, MovementType movementType) {
+        if (destinationAccount.getBalance() < value) {
+            return false;
+        }
+        destinationAccount.setBalance(destinationAccount.getBalance() - value);
+        destinationAccount.getMovements().add(movementService.create(value, movementType));
+        return true;
     }
 
     @Override
@@ -99,5 +116,23 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public void loadDatabase() {
         accountListRepositoryImplementation.loadDatabase();
+    }
+
+    @Override
+    public int getAmountOfSecondaryHolders(Account loggedAccount) {
+
+        return loggedAccount.getSecondaryHolders().size();
+    }
+
+    @Override
+    public int getAmountOfCreditCards(Account loggedAccount) {
+
+        return loggedAccount.getCreditCards().size();
+    }
+
+    @Override
+    public int getAmountOfDebitCards(Account loggedAccount) {
+
+        return loggedAccount.getDebitCards().size();
     }
 }

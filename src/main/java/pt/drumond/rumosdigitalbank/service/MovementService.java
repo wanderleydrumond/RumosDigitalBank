@@ -10,13 +10,13 @@ import java.time.LocalDate;
  */
 public class MovementService {
     /**
-     * Creates a new transaction.
+     * Creates a new account movement.
      *
-     * @param value           to be used on the created transaction
-     * @param movementType the type of the created transaction
-     * @return a new transaction
+     * @param value        to be used on the created account movement
+     * @param movementType the type of the created account movement
+     * @return a new account movement
      */
-    public Movement createTransaction(double value, MovementType movementType) {
+    public Movement create(double value, MovementType movementType) {
         Movement movement = new Movement();
         movement.setDate(LocalDate.now());
         movement.setValue(value);

@@ -3,6 +3,7 @@ package pt.drumond.rumosdigitalbank.controller;
 import pt.drumond.rumosdigitalbank.HelloApplication;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Customer;
+import pt.drumond.rumosdigitalbank.model.MovementType;
 import pt.drumond.rumosdigitalbank.service.AccountService;
 import pt.drumond.rumosdigitalbank.service.AccountServiceImplementation;
 import pt.drumond.rumosdigitalbank.service.CustomerService;
@@ -28,11 +29,11 @@ public class Bank {
     /**
      * Object used to give access to methods from service layer from customer.
      */
-    private CustomerService customerServiceImplementation;
+    private CustomerService customerServiceImplementation = new CustomerServiceImplementation();
     /**
      * Object used to give access to methods from service layer from account.
      */
-    private AccountService accountServiceImplementation;
+    private AccountService accountServiceImplementation = new AccountServiceImplementation();
     /**
      * Object that will be made all current operations.
      */
@@ -43,13 +44,15 @@ public class Bank {
         customerGeneralList = new HashSet<>();
         accountGeneralList = new HashSet<>();
 
-        customerServiceImplementation = new CustomerServiceImplementation();
         customerServiceImplementation.loadDatabase();
-
-        accountServiceImplementation = new AccountServiceImplementation();
         accountServiceImplementation.loadDatabase();
+
         scanner = new Scanner(System.in);
     }
+
+                                                          /*
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - MENUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                                         */
 
     public void initialMenu() {
         System.out.print("""
@@ -64,6 +67,67 @@ public class Bank {
                 Option:\040""");
 
         new HelloApplication().startSelectedApp(Integer.parseInt(scanner.nextLine()));
+    }
+
+    private int mainMenu() {
+        System.out.print("""
+                ╭═════════════════════════════════$═══╮
+                     RUMOS DIGITAL BANK MANAGEMENT
+                ╰═══€═════════════════════════════════╯
+                Choose your option:
+                0. Back to previous menu
+                1. Create new account
+                2. Manage account by code
+                3. Search client by NIF
+                4. Update client by NIF
+                                
+                Option:\040""");
+
+        return Integer.parseInt(scanner.nextLine());
+    }
+
+    private int updateAccountMenu() {
+        System.out.println("""
+                ╭═════════════════════════════════════════$═══╮
+                     RUMOS DIGITAL BANK MANAGEMENT ACCOUNT
+                ╰═══€═════════════════════════════════════════╯
+                Choose your option:
+                 0. Back to previous menu (logout account)
+                 1. View account details
+                 2. Deposit
+                 3. Transfer
+                 4. Pay loan
+                 5. Update client
+                 6. List all clients
+                 7. Delete account
+                 8. List all movements""");
+
+        if (accountServiceImplementation.getAmountOfDebitCards(loggedAccount) < 5) {
+            System.out.println(" 9. Add new debit card");
+        }
+        if (accountServiceImplementation.getAmountOfCreditCards(loggedAccount) < 2) {
+            System.out.println("10. Add new credit card");
+        }
+        if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) < 4) {
+            System.out.println("11. Insert new secondary holder");
+        }
+        if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 0) {
+            System.out.println("12. Delete secondary holder");
+        }
+        System.out.print("\nOption:\040");
+
+        return Integer.parseInt(scanner.nextLine());
+    }
+
+    private int menuAddSecondaryHolder() {
+        System.out.print("""
+                0. Cancel operation
+                1. Add a new client
+                2. Add an existent client
+                                            
+                Option:\040""");
+
+        return Integer.parseInt(scanner.nextLine());
     }
 
     /**
@@ -117,7 +181,48 @@ public class Bank {
             doAnotherOperation = false;
 
             switch (updateAccountMenu()) {
-                case 1 -> { // ADD SECONDARY HOLDER
+                case 1 -> {
+                    //TODO View account details
+                }
+                case 2 -> {
+                    System.out.print("Insert the deposit value: ");
+                    double depositValue = Double.parseDouble(scanner.nextLine());
+                    accountServiceImplementation.deposit(loggedAccount, depositValue, MovementType.DEPOSIT);
+                }
+                case 3 -> {
+                    System.out.print("Insert the transfer value: ");
+                    double transferValue = Double.parseDouble(scanner.nextLine());
+                    System.out.print("Insert the destination account code: ");
+                    String destinationAccount = scanner.nextLine();
+                    if (accountServiceImplementation.transfer(loggedAccount, transferValue, destinationAccount)) {
+                        System.out.println("Transfer successfully done");
+                    } else {
+                        System.out.printf("Insuficient balance: %.2f€%n", loggedAccount.getBalance());
+                    }
+                    updateAccount(true);
+                }
+                case 4 -> {
+                    //TODO pay loan
+                }
+                case 5 -> {
+                    //TODO update client
+                }
+                case 6 -> {
+                    //TODO list all account clients
+                }
+                case 7 -> {
+                    //TODO delete account
+                }
+                case 8 -> {
+                    //TODO list all movements
+                }
+                case 9 -> {
+                    //TODO add new debit card
+                }
+                case 10 -> {
+                    //TODO add new credit card
+                }
+                case 11 -> { // ADD NEW SECONDARY HOLDER
                     Customer secondaryHolder = null;
 
                     switch (menuAddSecondaryHolder()) {
@@ -130,55 +235,7 @@ public class Bank {
                         accountServiceImplementation.addSecondaryHolder(loggedAccount, secondaryHolder);
                     }
                 }
-
-                case 2 -> {
-                    /*
-                    * 1. pedir valor do depósito
-                    * 2. enviar para o service (deposit(loggedAccount, value, MovementType.DEPOSIT))
-                    * 3. dentro do deposit():
-                    * 3.1. Pegar o saldo da conta e somar com o value e atualizar o saldo da conta
-                    * 3.2. criar um movimento de depósito
-                    * 3.3. colocar esse movimento dentro da loggedAccount
-                    * 4. chamar o metodo accountListRespositoryImplementation.update*/
-                    //TODO deposit
-                    System.out.print("Insert the deposit value: ");
-                    double depositValue = Double.parseDouble(scanner.nextLine());
-                    //TODO use saved account
-                }
-                case 3 -> {
-                    //TODO tranfer
-                    /*
-                    * 1. Pedir valor da transferencia
-                    * 2. Pedir conta de destino
-                    * 2.1. findByCode da conta de destino (só prossegue se a conta encontrada for diferente de null) (prende dentro de um do_while)
-                    * 3. Método que verifica se a loggedAccount tem saldo maior ou igual ao valor da transferência (só prossegue se for true) (prende dentro de um do_while)
-                    * 4. Metodo de fazer levantamento
-                    * 4.1. Pegar o saldo da conta e subtrair com o value e atualizar o saldo da conta
-                    * 5. criar um movimento de transfer_out para o loggedAccount
-                    * 6. colocar esse movimento dentro da loggedAccount
-                    * 7. chamar o metodo accountListRespositoryImplementation.update(loggedAccount)
-                    * 8. chamar o método deposit(destinyAccount, value, MovementType.TRANSFER_IN)
-                    * */
-                }
-                case 4 -> {
-                    //TODO pay loan
-                }
-                case 5 -> {
-                    //TODO update client
-                }
-                case 6 -> {
-                    //TODO list all clients
-                }
-                case 7 -> {
-                    //TODO delete account
-                }
-                case 8 -> {
-                    //TODO add new debit card
-                }
-                case 9 -> {
-                    //TODO add new credit card
-                }
-                case 10 -> {
+                case 12 -> {
                     //TODO delete secondary holder
                 }
                 default -> mainMenu();
@@ -191,17 +248,6 @@ public class Bank {
             }
         } while (doAnotherOperation);
         return quit;
-    }
-
-    private int menuAddSecondaryHolder() {
-        System.out.print("""
-                0. Cancel operation
-                1. Add a new client
-                2. Add an existent client
-                                            
-                Option:\040""");
-
-        return Integer.parseInt(scanner.nextLine());
     }
 
     private Customer getCustomer() {
@@ -234,30 +280,6 @@ public class Bank {
         } while (!accountExists);
 
         return loggedAccount;
-    }
-
-    private int updateAccountMenu() {
-        System.out.print("""
-                ╭═════════════════════════════════════════$═══╮
-                     RUMOS DIGITAL BANK MANAGEMENT ACCOUNT
-                ╰═══€═════════════════════════════════════════╯
-                Choose your option:
-                 0. Back to previous menu (logout account)
-                 1. Insert new secondary client
-                 2. Deposit
-                 3. Transfer
-                 4. Pay loan
-                 5. Update client
-                 6. List all clients
-                 7. Delete account
-                 8. Add new debit card
-                 9. Add new credit card
-                10. Delete secondary holder
-                11. View account details
-                                
-                Option:\040""");
-
-        return Integer.parseInt(scanner.nextLine());
     }
 
     private Customer createCustomer(boolean isMainHolder) {
@@ -388,23 +410,6 @@ public class Bank {
             }
         } while (!isOlderThan18);
         return birthDate;
-    }
-
-    private int mainMenu() {
-        System.out.print("""
-                ╭═════════════════════════════════$═══╮
-                     RUMOS DIGITAL BANK MANAGEMENT
-                ╰═══€═════════════════════════════════╯
-                Choose your option:
-                0. Back to previous menu
-                1. Create new account
-                2. Manage account by code
-                3. Search client by NIF
-                4. Update client by NIF
-                                
-                Option:\040""");
-
-        return Integer.parseInt(scanner.nextLine());
     }
 
     /**
