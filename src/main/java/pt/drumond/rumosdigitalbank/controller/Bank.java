@@ -3,15 +3,17 @@ package pt.drumond.rumosdigitalbank.controller;
 import pt.drumond.rumosdigitalbank.HelloApplication;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Customer;
+import pt.drumond.rumosdigitalbank.model.DebitCard;
 import pt.drumond.rumosdigitalbank.model.MovementType;
-import pt.drumond.rumosdigitalbank.service.AccountService;
-import pt.drumond.rumosdigitalbank.service.AccountServiceImplementation;
-import pt.drumond.rumosdigitalbank.service.CustomerService;
-import pt.drumond.rumosdigitalbank.service.CustomerServiceImplementation;
+import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
+import pt.drumond.rumosdigitalbank.service.implementations.AccountServiceImplementation;
+import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
+import pt.drumond.rumosdigitalbank.service.implementations.CustomerServiceImplementation;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -196,6 +198,13 @@ public class Bank {
             switch (updateAccountMenu()) {
                 case 1 -> {
                     //TODO View account details
+                    System.out.println("ACCOUNT DETAILS: \n\nCODE: " + loggedAccount.getCode());
+                    System.out.printf("BALANCE: %.2f€%n", loggedAccount.getBalance());
+                    System.out.println("MAIN HOLDER:");
+                    displayMargin(loggedAccount.getMainHolder());
+                    System.out.println(loggedAccount.getMainHolder());
+                    displayMargin(loggedAccount.getMainHolder());
+                    loggedAccount.getSecondaryHolders().forEach(System.out::println);
                 }
                 case 2 -> deposit();
                 case 3 -> transfer();
@@ -209,6 +218,16 @@ public class Bank {
                 }
                 case 8 -> {
                     //TODO add new debit card
+                    Customer holderCardOwner = getCustomerByNif();
+                    if (accountServiceImplementation.addDebitCard(loggedAccount, holderCardOwner)) {
+                        System.out.println("Debit card successfully added to account");
+                        Optional<DebitCard> debitCard = loggedAccount.getDebitCards().stream().filter(debitCardElement -> debitCardElement.getCardHolder().getNif().equals(holderCardOwner.getNif())).findFirst(); // pego o cartão que acabou de ser criado para o cliente em questão
+
+                        displayMargin(debitCard);
+//                        https://www.callicoder.com/java-8-optional-tutorial/
+                        debitCard.ifPresent(System.out::println);
+                        displayMargin(debitCard);
+                    }
                 }
                 case 9 -> {
                     //TODO add new credit card
@@ -340,19 +359,19 @@ public class Bank {
      * @return the <code>Customer</code> that owns that NIF
      */
     private Customer getCustomerByNif() {
-        Customer secondaryHolder;
+        Customer customer;
         boolean customerExists;
         do {
             System.out.print("Enter client NIF number: ");
             customerExists = false;
-            secondaryHolder = customerServiceImplementation.findByNif(scanner.nextLine());
-            if (secondaryHolder != null) {
+            customer = customerServiceImplementation.findByNif(scanner.nextLine());
+            if (customer != null) {
                 customerExists = true;
             } else {
                 System.out.println("There is no client for the given NIF number.");
             }
         } while (!customerExists);
-        return secondaryHolder;
+        return customer;
     }
 
     /**

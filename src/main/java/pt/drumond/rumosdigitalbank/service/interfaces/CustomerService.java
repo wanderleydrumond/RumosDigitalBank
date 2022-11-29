@@ -1,4 +1,4 @@
-package pt.drumond.rumosdigitalbank.service;
+package pt.drumond.rumosdigitalbank.service.interfaces;
 
 import pt.drumond.rumosdigitalbank.model.Customer;
 

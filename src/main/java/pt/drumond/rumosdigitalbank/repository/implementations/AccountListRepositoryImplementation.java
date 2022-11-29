@@ -1,14 +1,15 @@
-package pt.drumond.rumosdigitalbank.repository;
+package pt.drumond.rumosdigitalbank.repository.implementations;
 
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Customer;
+import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class AccountListRepositoryImplementation implements AccountRepository {
 
-    private ArrayList<Account> accountsBankList = new ArrayList<>();
+    private ArrayList<Account> tableAccounts = new ArrayList<>();
 
     public AccountListRepositoryImplementation() {
     }
@@ -20,17 +21,17 @@ public class AccountListRepositoryImplementation implements AccountRepository {
      */
     @Override
     public Account save(Account account) {
-        account.setCode(String.valueOf(100 + accountsBankList.size()));
-        accountsBankList.add(account);
+        account.setCode(String.valueOf(100 + tableAccounts.size()));
+        tableAccounts.add(account);
         System.out.println("Lista de contas do banco"); //TODO to be deleted
-        accountsBankList.forEach(System.out::println);
+        tableAccounts.forEach(System.out::println);
 
         return account;
     }
 
     @Override
     public ArrayList<Account> findAll() {
-        return accountsBankList;
+        return tableAccounts;
     }
 
     /**
@@ -42,14 +43,14 @@ public class AccountListRepositoryImplementation implements AccountRepository {
     @Override
     public Account findByCode(String code) {
 
-        return accountsBankList.stream().filter(accountElement -> accountElement.getCode().equals(code)).findFirst().orElse(null);
+        return tableAccounts.stream().filter(accountElement -> accountElement.getCode().equals(code)).findFirst().orElse(null);
     }
 
     @Override
     public Account update(Account account) {
-        accountsBankList.set(accountsBankList.indexOf(account), account);
+        tableAccounts.set(tableAccounts.indexOf(account), account);
         System.out.println("Lista do banco após update da conta"); //TODO to be deleted
-        accountsBankList.forEach(System.out::println); //TODO to be deleted
+        tableAccounts.forEach(System.out::println); //TODO to be deleted
 
         return account;
     }
@@ -71,17 +72,17 @@ public class AccountListRepositoryImplementation implements AccountRepository {
         Account account5 = new Account(55., new Customer("148754243", "Aang", "540022", "250140320", "981258457", "air@avatar.com", "avatar", LocalDate.of(2005, 1, 22)));
         Account account6 = new Account(65., new Customer("144774144", "Korra", "541166", "335478852", "999258741", "water@avatar.com", "avatar", LocalDate.of(2011, 1, 22)));
 
-        account1.setCode(String.valueOf(100 + accountsBankList.size()));
-        accountsBankList.add(account1);
-        account2.setCode(String.valueOf(100 + accountsBankList.size()));
-        accountsBankList.add(account2);
-        account3.setCode(String.valueOf(100 + accountsBankList.size()));
-        accountsBankList.add(account3);
-        account4.setCode(String.valueOf(100 + accountsBankList.size()));
-        accountsBankList.add(account4);
-        account5.setCode(String.valueOf(100 + accountsBankList.size()));
-        accountsBankList.add(account5);
-        account6.setCode(String.valueOf(100 + accountsBankList.size()));
-        accountsBankList.add(account6);
+        account1.setCode(String.valueOf(100 + tableAccounts.size()));
+        tableAccounts.add(account1);
+        account2.setCode(String.valueOf(100 + tableAccounts.size()));
+        tableAccounts.add(account2);
+        account3.setCode(String.valueOf(100 + tableAccounts.size()));
+        tableAccounts.add(account3);
+        account4.setCode(String.valueOf(100 + tableAccounts.size()));
+        tableAccounts.add(account4);
+        account5.setCode(String.valueOf(100 + tableAccounts.size()));
+        tableAccounts.add(account5);
+        account6.setCode(String.valueOf(100 + tableAccounts.size()));
+        tableAccounts.add(account6);
     }
 }

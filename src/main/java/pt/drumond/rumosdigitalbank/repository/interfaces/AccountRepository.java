@@ -1,4 +1,4 @@
-package pt.drumond.rumosdigitalbank.repository;
+package pt.drumond.rumosdigitalbank.repository.interfaces;
 
 import pt.drumond.rumosdigitalbank.model.Account;
 

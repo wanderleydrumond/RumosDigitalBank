@@ -1,6 +1,7 @@
-package pt.drumond.rumosdigitalbank.repository;
+package pt.drumond.rumosdigitalbank.repository.implementations;
 
 import pt.drumond.rumosdigitalbank.model.Customer;
+import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.Arrays;
  * <em>Implementation by <code>ArrayList</code></em>
  */
 public class CustomerListRepositoryImplementation implements CustomerRepository {
-    private ArrayList<Customer> customersBankList = new ArrayList<>();
+    private ArrayList<Customer> tableCustomers = new ArrayList<>();
 
     public CustomerListRepositoryImplementation() {
 
@@ -24,7 +25,7 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
      */
     @Override
     public Customer save(Customer customer) {
-        customersBankList.add(customer);
+        tableCustomers.add(customer);
 
         return customer;
     }
@@ -41,7 +42,7 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
     @Override
     public Customer findByNif(String nif) {
 
-        return customersBankList.stream().filter(customerElement -> customerElement.getNif().equals(nif)).findFirst().orElse(null);
+        return tableCustomers.stream().filter(customerElement -> customerElement.getNif().equals(nif)).findFirst().orElse(null);
     }
 
     /**
@@ -51,7 +52,7 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
      */
     @Override
     public void delete(Customer customer) { //OK
-        customersBankList.removeIf(customerElement -> customerElement.getNif().equals(customer.getNif()));
+        tableCustomers.removeIf(customerElement -> customerElement.getNif().equals(customer.getNif()));
     }
 
     /**
@@ -62,7 +63,7 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
     @Override
     public ArrayList<Customer> findAll() {
 
-        return customersBankList;
+        return tableCustomers;
     } //OK
 
     /**
@@ -76,6 +77,6 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
         Customer customer5 = new Customer("145784244", "Aang", "540022", "250140320", "981258457", "air@avatar.com", "avatar", LocalDate.of(2005, 1, 22));
         Customer customer6 = new Customer("144774144", "Korra", "541166", "335478852", "999258741", "water@avatar.com", "avatar", LocalDate.of(2011, 1, 22));
 
-        customersBankList.addAll(Arrays.asList(customer1, customer2, customer3, customer4, customer5, customer6));
+        tableCustomers.addAll(Arrays.asList(customer1, customer2, customer3, customer4, customer5, customer6));
     }
 }

@@ -1,4 +1,4 @@
-package pt.drumond.rumosdigitalbank.service;
+package pt.drumond.rumosdigitalbank.service.interfaces;
 
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Customer;
@@ -14,7 +14,7 @@ public interface AccountService {
     boolean transfer(Account account, double value, String destinyAccountCode);
     void payLoan(Account account, double value, String creditCardSerialNumber);
     void deleteSecondaryHolder(Account account, Customer secondaryHolder);
-    void addDebitCard(Account account, Customer cardHolder);
+    boolean addDebitCard(Account account, Customer cardHolder);
     void addCreditCard(Account account, Customer cardHolder);
 
     void loadDatabase();

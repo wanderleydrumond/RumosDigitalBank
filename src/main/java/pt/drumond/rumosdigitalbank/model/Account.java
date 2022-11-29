@@ -77,7 +77,7 @@ public class Account {
 
     @Override
     public String toString() {
-        return "|CODE:" + code +
+        return "| CODE:" + code +
                 " | BALANCE: " + balance +
                 " | MAIN HOLDER: " + mainHolder +
                 " |";

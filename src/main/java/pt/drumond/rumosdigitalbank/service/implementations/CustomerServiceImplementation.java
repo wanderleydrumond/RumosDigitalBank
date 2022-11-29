@@ -1,9 +1,10 @@
-package pt.drumond.rumosdigitalbank.service;
+package pt.drumond.rumosdigitalbank.service.implementations;
 
 import pt.drumond.rumosdigitalbank.controller.Bank;
 import pt.drumond.rumosdigitalbank.model.Customer;
-import pt.drumond.rumosdigitalbank.repository.CustomerListRepositoryImplementation;
-import pt.drumond.rumosdigitalbank.repository.CustomerRepository;
+import pt.drumond.rumosdigitalbank.repository.implementations.CustomerListRepositoryImplementation;
+import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
+import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
 
 import java.time.LocalDate;
 import java.time.Period;

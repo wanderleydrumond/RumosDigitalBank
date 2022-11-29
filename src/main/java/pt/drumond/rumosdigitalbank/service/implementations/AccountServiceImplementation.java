@@ -1,12 +1,17 @@
-package pt.drumond.rumosdigitalbank.service;
+package pt.drumond.rumosdigitalbank.service.implementations;
 
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Customer;
+import pt.drumond.rumosdigitalbank.model.DebitCard;
 import pt.drumond.rumosdigitalbank.model.MovementType;
-import pt.drumond.rumosdigitalbank.repository.AccountListRepositoryImplementation;
-import pt.drumond.rumosdigitalbank.repository.AccountRepository;
-import pt.drumond.rumosdigitalbank.repository.CustomerListRepositoryImplementation;
-import pt.drumond.rumosdigitalbank.repository.CustomerRepository;
+import pt.drumond.rumosdigitalbank.repository.implementations.AccountListRepositoryImplementation;
+import pt.drumond.rumosdigitalbank.repository.implementations.CustomerListRepositoryImplementation;
+import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
+import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
+import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
+import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
+import pt.drumond.rumosdigitalbank.service.interfaces.DebitCardService;
+import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.util.ArrayList;
 
@@ -17,6 +22,7 @@ public class AccountServiceImplementation implements AccountService {
     private CustomerService customerServiceImplementation = new CustomerServiceImplementation();
     private AccountRepository accountListRepositoryImplementation = new AccountListRepositoryImplementation();
     private CustomerRepository customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
+    private DebitCardService debitCardServiceImplementation = new DebitCardServiceImplementation();
     private MovementService movementService = new MovementService();
 
     public AccountServiceImplementation() {
@@ -123,8 +129,27 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public void addDebitCard(Account loggedAccount, Customer cardHolder) {
-        //TODO implement method
+    public boolean addDebitCard(Account loggedAccount, Customer cardHolder) {
+        boolean existsDebitCardForThisHolder = false;
+        if (loggedAccount.getDebitCards().size() > 0) { // Se a conta já tiver cartões de débito
+            for (DebitCard debitCardElement : loggedAccount.getDebitCards()) { //Ver se quem pediu o cartão de débito já tem um
+                if (debitCardElement.getCardHolder().getNif().equals(cardHolder.getNif())) { // se tiver
+                    existsDebitCardForThisHolder = true;
+                }
+            }
+        }
+
+        if (existsDebitCardForThisHolder || loggedAccount.getDebitCards().size() == loggedAccount.getSecondaryHolders().size() + 1) {
+
+            return false;
+        } else {
+            DebitCard debitCard = debitCardServiceImplementation.create(cardHolder);
+            loggedAccount.getDebitCards().add(debitCard);
+            accountListRepositoryImplementation.update(loggedAccount);
+
+            return true;
+        }
+
     }
 
     @Override
