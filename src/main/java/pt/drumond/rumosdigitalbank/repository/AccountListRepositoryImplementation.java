@@ -68,7 +68,7 @@ public class AccountListRepositoryImplementation implements AccountRepository {
         Account account2 = new Account(50., new Customer("123456789", "John Doe", "654321", "321644481", "99221166", "anything@email.com", "Pilot", LocalDate.of(1973, 12, 12)));
         Account account3 = new Account(75., new Customer("132456789", "Rosalvo Doe", "123654", "325554937", "99887766", "something@email.com", "Firefighter", LocalDate.of(1985, 8, 2)));
         Account account4 = new Account(40., new Customer("369258147", "João das Couves", "526341", "222111333", "951951951", "cabbages@email.pt", "seller", LocalDate.of(1972, 1, 22)));
-        Account account5 = new Account(55., new Customer("144774144", "Aang", "540022", "250140320", "981258457", "air@avatar.com", "avatar", LocalDate.of(2005, 1, 22)));
+        Account account5 = new Account(55., new Customer("148754243", "Aang", "540022", "250140320", "981258457", "air@avatar.com", "avatar", LocalDate.of(2005, 1, 22)));
         Account account6 = new Account(65., new Customer("144774144", "Korra", "541166", "335478852", "999258741", "water@avatar.com", "avatar", LocalDate.of(2011, 1, 22)));
 
         account1.setCode(String.valueOf(100 + accountsBankList.size()));

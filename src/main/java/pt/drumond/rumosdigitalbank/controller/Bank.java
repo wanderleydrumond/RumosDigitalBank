@@ -54,6 +54,9 @@ public class Bank {
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - MENUS - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                                                          */
 
+    /**
+     * Displays the very first app menu.
+     */
     public void initialMenu() {
         System.out.print("""
                 ╭══════════════════════$═══╮
@@ -69,6 +72,11 @@ public class Bank {
         new HelloApplication().startSelectedApp(Integer.parseInt(scanner.nextLine()));
     }
 
+    /**
+     * Displays the main menu.
+     *
+     * @return the choice made by user
+     */
     private int mainMenu() {
         System.out.print("""
                 ╭═════════════════════════════════$═══╮
@@ -86,6 +94,12 @@ public class Bank {
         return Integer.parseInt(scanner.nextLine());
     }
 
+    /**
+     * <p>Displays the update account menu.</p>
+     * <p>Certains options are visible only under conditions.</p>
+     *
+     * @return the choice made by user
+     */
     private int updateAccountMenu() {
         System.out.println("""
                 ╭═════════════════════════════════════════$═══╮
@@ -97,22 +111,21 @@ public class Bank {
                  2. Deposit
                  3. Transfer
                  4. Pay loan
-                 5. Update client
-                 6. List all clients
-                 7. Delete account
-                 8. List all movements""");
+                 5. List all clients
+                 6. Delete account
+                 7. List all movements""");
 
         if (accountServiceImplementation.getAmountOfDebitCards(loggedAccount) < 5) {
-            System.out.println(" 9. Add new debit card");
+            System.out.println(" 8. Add new debit card");
         }
         if (accountServiceImplementation.getAmountOfCreditCards(loggedAccount) < 2) {
-            System.out.println("10. Add new credit card");
+            System.out.println(" 9. Add new credit card");
         }
         if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) < 4) {
-            System.out.println("11. Insert new secondary holder");
+            System.out.println("10. Insert new secondary holder");
         }
         if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 0) {
-            System.out.println("12. Delete secondary holder");
+            System.out.println("11. Delete secondary holder");
         }
         System.out.print("\nOption:\040");
 
@@ -144,7 +157,7 @@ public class Bank {
                     quit = updateAccount(quit);
                 }
                 case 2 -> { // UPDATE ACCOUNT
-                    loggedAccount = getAccountNumber();
+                    loggedAccount = getAccountByCode();
                     quit = updateAccount(quit);
                 }
                 case 3 -> {
@@ -184,60 +197,24 @@ public class Bank {
                 case 1 -> {
                     //TODO View account details
                 }
-                case 2 -> {
-                    System.out.print("Insert the deposit value: ");
-                    double depositValue = Double.parseDouble(scanner.nextLine());
-                    accountServiceImplementation.deposit(loggedAccount, depositValue, MovementType.DEPOSIT);
-                }
-                case 3 -> {
-                    System.out.print("Insert the transfer value: ");
-                    double transferValue = Double.parseDouble(scanner.nextLine());
-                    System.out.print("Insert the destination account code: ");
-                    String destinationAccount = scanner.nextLine();
-                    if (accountServiceImplementation.transfer(loggedAccount, transferValue, destinationAccount)) {
-                        System.out.println("Transfer successfully done");
-                    } else {
-                        System.out.printf("Insuficient balance: %.2f€%n", loggedAccount.getBalance());
-                    }
-                    updateAccount(true);
-                }
+                case 2 -> deposit();
+                case 3 -> transfer();
                 case 4 -> {
                     //TODO pay loan
                 }
-                case 5 -> {
-                    //TODO update client
-                }
-                case 6 -> {
-                    //TODO list all account clients
-                }
+                case 5 -> displayAllHolders();
+                case 6 -> deleteAccount();
                 case 7 -> {
-                    //TODO delete account
+                    //TODO list all movements between two dates
                 }
                 case 8 -> {
-                    //TODO list all movements
-                }
-                case 9 -> {
                     //TODO add new debit card
                 }
-                case 10 -> {
+                case 9 -> {
                     //TODO add new credit card
                 }
-                case 11 -> { // ADD NEW SECONDARY HOLDER
-                    Customer secondaryHolder = null;
-
-                    switch (menuAddSecondaryHolder()) {
-                        case 1 -> secondaryHolder = createCustomer(false);
-                        case 2 -> secondaryHolder = getCustomer();
-                        default -> updateAccountMenu();
-                    }
-
-                    if (secondaryHolder != null) {
-                        accountServiceImplementation.addSecondaryHolder(loggedAccount, secondaryHolder);
-                    }
-                }
-                case 12 -> {
-                    //TODO delete secondary holder
-                }
+                case 10 -> addSecondaryHolder();
+                case 11 -> removeSecondaryHolder();
                 default -> mainMenu();
             }
             System.out.print("Do you want to perform another operation? (Y)es/(N)o account: ");
@@ -250,11 +227,123 @@ public class Bank {
         return quit;
     }
 
-    private Customer getCustomer() {
+    /**
+     * <ol>
+     *     <li>Displays a warning and confoirmation message</li>
+     *     <li>Deletes the logged account from the bank database</li>
+     *     <li>Displays a success message</li>
+     *     <li>Redirects to main menu</li>
+     * </ol>
+     */
+    private void deleteAccount() {
+        System.out.print("ATTENTION!\nThis action is irreversible!\nDon do want to proceed? (Y)es/(N)o: ");
+        if (scanner.nextLine().equalsIgnoreCase("Y")) {
+            accountServiceImplementation.delete(loggedAccount);
+            System.out.println("Account successfully deleted");
+        }
+        mainMenu();
+    }
+
+    /**
+     * <ol>
+     *     <li>Asks the deposit value</li>
+     *     <li>Perfom the deposit</li>
+     * </ol>
+     */
+    private void deposit() {
+        System.out.print("Insert the deposit value: ");
+        double depositValue = Double.parseDouble(scanner.nextLine());
+        accountServiceImplementation.deposit(loggedAccount, depositValue, MovementType.DEPOSIT);
+    }
+
+    /**
+     * <ol>
+     *     <li>Asks the value to be transfered</li>
+     *     <li>Aks the destination account code</li>
+     *     <li>Performs the tranfer</li>
+     *     <li>Displays the feedback message</li>
+     *     <li>Redirect to current menu</li>
+     * </ol>
+     */
+    private void transfer() {
+        System.out.print("Insert the transfer value: ");
+        double transferValue = Double.parseDouble(scanner.nextLine());
+        System.out.print("Insert the destination account code: ");
+        String destinationAccount = scanner.nextLine();
+        if (accountServiceImplementation.transfer(loggedAccount, transferValue, destinationAccount)) {
+            System.out.println("Transfer successfully done");
+        } else {
+            System.out.printf("Insuficient balance: %.2f€%n", loggedAccount.getBalance());
+        }
+        updateAccount(true);
+    }
+
+    /**
+     * Displays all account holders.
+     */
+    private void displayAllHolders() {
+        System.out.println("Main holder:"); // exibe o nome do titular principal
+        displayMargin(loggedAccount.getMainHolder());
+        System.out.println(loggedAccount.getMainHolder());
+        displayMargin(loggedAccount.getMainHolder());
+        if (loggedAccount.getSecondaryHolders().size() > 0) { // Se houverem titulares secundarios
+            System.out.println("Secondary holders: ");
+            long count = loggedAccount.getSecondaryHolders().size();
+            Customer firstCustomerFound = loggedAccount.getSecondaryHolders().stream().findFirst().get(); // pega o primeiro elemento da lista de clientes da conta
+            Customer lastCustomerFound = loggedAccount.getSecondaryHolders().stream().skip(count - 1).findFirst().get(); // pega o último elemento da lista de clientes da conta
+
+            displayMargin(firstCustomerFound);
+            loggedAccount.getSecondaryHolders().forEach(System.out::println); // exibe os nomes dos titulares secundários
+            displayMargin(lastCustomerFound);
+        }
+    }
+
+    /**
+     * Remove a secondary holder from the current account. If they don't exist on any other account (as main or
+     * secondary holder), delete them from the bank database.
+     */
+    private void removeSecondaryHolder() {
+        Customer customerToBeDeleted = getCustomerByNif();
+        displayMargin(customerToBeDeleted);
+        System.out.println(customerToBeDeleted);
+        displayMargin(customerToBeDeleted);
+        System.out.print("Do you confirm this action? (Y)es/(N)o: ");
+        if (scanner.nextLine().equalsIgnoreCase("Y")) {
+            accountServiceImplementation.deleteSecondaryHolder(loggedAccount, customerToBeDeleted);
+            System.out.println("Client deleted successfully");
+        }
+        updateAccount(true);
+    }
+
+    /**
+     * <p>Adds a new secondary holder into the logged account.</p>
+     * <p>They can be a new customer or an existent one.</p>
+     */
+    private void addSecondaryHolder() {
+        Customer secondaryHolder = null;
+
+        switch (menuAddSecondaryHolder()) {
+            case 1 -> secondaryHolder = createCustomer(false);
+            case 2 -> secondaryHolder = getCustomerByNif();
+            default -> updateAccountMenu();
+        }
+
+        if (secondaryHolder != null) {
+            accountServiceImplementation.addSecondaryHolder(loggedAccount, secondaryHolder);
+        }
+    }
+
+    /**
+     * <p>Provides an interface that asks a customer NIF number and search for them in the database.</p>
+     * <p>Keeps the entire logic inside a loop while a non-existent NIF number is provided.</p>
+     *
+     * @return the <code>Customer</code> that owns that NIF
+     */
+    private Customer getCustomerByNif() {
         Customer secondaryHolder;
-        System.out.print("Enter client NIF number: ");
         boolean customerExists;
         do {
+            System.out.print("Enter client NIF number: ");
             customerExists = false;
             secondaryHolder = customerServiceImplementation.findByNif(scanner.nextLine());
             if (secondaryHolder != null) {
@@ -266,7 +355,13 @@ public class Bank {
         return secondaryHolder;
     }
 
-    private Account getAccountNumber() {
+    /**
+     * <p>Provides an interface that asks an account code number and search for it in the database.</p>
+     * <p>Keeps the entire logic inside a loop while a non-existent code number is provided.</p>
+     *
+     * @return the <code>Account</code> that owns that code
+     */
+    private Account getAccountByCode() {
         boolean accountExists;
         do {
             accountExists = false;

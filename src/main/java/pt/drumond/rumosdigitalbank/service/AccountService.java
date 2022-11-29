@@ -22,4 +22,6 @@ public interface AccountService {
     int getAmountOfSecondaryHolders(Account loggedAccount);
     int getAmountOfCreditCards(Account loggedAccount);
     int getAmountOfDebitCards(Account loggedAccount);
+
+    void delete(Account loggedAccount);
 }

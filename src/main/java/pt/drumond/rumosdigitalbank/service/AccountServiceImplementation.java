@@ -8,6 +8,8 @@ import pt.drumond.rumosdigitalbank.repository.AccountRepository;
 import pt.drumond.rumosdigitalbank.repository.CustomerListRepositoryImplementation;
 import pt.drumond.rumosdigitalbank.repository.CustomerRepository;
 
+import java.util.ArrayList;
+
 /**
  * Contains all methods responsible for the businees rules related to accounts.
  */
@@ -100,7 +102,24 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public void deleteSecondaryHolder(Account loggedAccount, Customer secondaryHolder) {
-        //TODO implement method
+        loggedAccount.getSecondaryHolders().removeIf(customerElement -> customerElement.getNif().equals(secondaryHolder.getNif())); // Excluir o cliente secundário antes de verificar se ele existe em alguma outra conta
+        int timesOfCustomerFound = 0;
+        // Verificar se o cliente possui alguma outra conta no banco
+        ArrayList<Account> allAccounts = accountListRepositoryImplementation.findAll();
+        for (Account accountElement : allAccounts) { // Percorrer a lista de contas
+            if (accountElement.getMainHolder().getNif().equals(secondaryHolder.getNif())) { // Se encontrar o referido cliente como cliente principal de outra conta
+                timesOfCustomerFound++; // acrescenta 1 ao contador
+            }
+            for (Customer customerElement : accountElement.getSecondaryHolders()) { // dentro do objeto conta, percorre a lista de clientes secundários
+                if (customerElement.getNif().equals(secondaryHolder.getNif())) { // Se encontrar o referido cliente como cliente secundário de outra conta
+                    timesOfCustomerFound++; // acrescenta 1 ao contador
+                }
+            }
+        }
+        // Só remove da lista principal se não achar em lugar algum
+        if (timesOfCustomerFound == 0) {
+            customerServiceImplementation.delete(secondaryHolder);
+        }
     }
 
     @Override
@@ -134,5 +153,10 @@ public class AccountServiceImplementation implements AccountService {
     public int getAmountOfDebitCards(Account loggedAccount) {
 
         return loggedAccount.getDebitCards().size();
+    }
+
+    @Override
+    public void delete(Account accountToBeDeleted) {
+        accountListRepositoryImplementation.delete(accountToBeDeleted);
     }
 }

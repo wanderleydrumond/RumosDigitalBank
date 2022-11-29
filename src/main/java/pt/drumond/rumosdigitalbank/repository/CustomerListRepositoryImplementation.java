@@ -3,14 +3,14 @@ package pt.drumond.rumosdigitalbank.repository;
 import pt.drumond.rumosdigitalbank.model.Customer;
 
 import java.time.LocalDate;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Database layer.<br>
  * <em>Implementation by <code>ArrayList</code></em>
  */
-public class CustomerListRepositoryImplementation implements CustomerRepository{
+public class CustomerListRepositoryImplementation implements CustomerRepository {
     private ArrayList<Customer> customersBankList = new ArrayList<>();
 
     public CustomerListRepositoryImplementation() {
@@ -32,9 +32,8 @@ public class CustomerListRepositoryImplementation implements CustomerRepository{
     /**
      * Finds and specific customer in database.
      *
-     * @param nif     the customer's identifier
-     * @return
-     * <ul>
+     * @param nif the customer's identifier
+     * @return <ul>
      *     <li>the <code>Customer</code> that owns the NIF number</li>
      *     <li>null if the NIF is filled with 0 and the operation is cancelled</li>
      * </ul>
@@ -74,7 +73,7 @@ public class CustomerListRepositoryImplementation implements CustomerRepository{
         Customer customer2 = new Customer("123456789", "John Doe", "654321", "321644481", "99221166", "anything@email.com", "Pilot", LocalDate.of(1973, 12, 12));
         Customer customer3 = new Customer("132456789", "Rosalvo Doe", "123654", "325554937", "99887766", "something@email.com", "Firefighter", LocalDate.of(1985, 8, 2));
         Customer customer4 = new Customer("369258147", "João das Couves", "526341", "222111333", "951951951", "cabbages@email.pt", "seller", LocalDate.of(1972, 1, 22));
-        Customer customer5 = new Customer("144774144", "Aang", "540022", "250140320", "981258457", "air@avatar.com", "avatar", LocalDate.of(2005, 1, 22));
+        Customer customer5 = new Customer("145784244", "Aang", "540022", "250140320", "981258457", "air@avatar.com", "avatar", LocalDate.of(2005, 1, 22));
         Customer customer6 = new Customer("144774144", "Korra", "541166", "335478852", "999258741", "water@avatar.com", "avatar", LocalDate.of(2011, 1, 22));
 
         customersBankList.addAll(Arrays.asList(customer1, customer2, customer3, customer4, customer5, customer6));

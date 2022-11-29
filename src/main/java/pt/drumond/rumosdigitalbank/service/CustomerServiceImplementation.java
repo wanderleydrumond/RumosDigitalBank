@@ -116,19 +116,9 @@ public class CustomerServiceImplementation implements CustomerService {
      * <em>Allows returning to main menu typing 0</em>
      */
     public void delete(Customer customer) {
-        /*System.out.print("Insert the client NIF to be deleted (0 to cancel): ");
-        Customer customer = customerListRepositoryImplementation.findByNif(scanner.nextLine(), scanner, customerGeneralList);
-        if (customer != null) {
-            bank.displayMargin(customer);
-            System.out.println(customer);
-            bank.displayMargin(customer);
-            System.out.print("\nDo you confirm operation for this customer? it is irrevesible.\n(Y)es/(N)o: ");
-            if (scanner.nextLine().equalsIgnoreCase("Y")) {
-                customerListRepositoryImplementation.delete(customer, customerGeneralList);
 
-                return true;
-            }
-        }*/
+
+        customerListRepositoryImplementation.delete(customer);
     }
 
     /**
