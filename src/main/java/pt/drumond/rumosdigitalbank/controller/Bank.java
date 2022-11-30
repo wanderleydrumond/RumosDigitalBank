@@ -5,10 +5,10 @@ import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.model.DebitCard;
 import pt.drumond.rumosdigitalbank.model.MovementType;
-import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
 import pt.drumond.rumosdigitalbank.service.implementations.AccountServiceImplementation;
-import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
 import pt.drumond.rumosdigitalbank.service.implementations.CustomerServiceImplementation;
+import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
+import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -196,16 +196,7 @@ public class Bank {
             doAnotherOperation = false;
 
             switch (updateAccountMenu()) {
-                case 1 -> {
-                    //TODO View account details
-                    System.out.println("ACCOUNT DETAILS: \n\nCODE: " + loggedAccount.getCode());
-                    System.out.printf("BALANCE: %.2f€%n", loggedAccount.getBalance());
-                    System.out.println("MAIN HOLDER:");
-                    displayMargin(loggedAccount.getMainHolder());
-                    System.out.println(loggedAccount.getMainHolder());
-                    displayMargin(loggedAccount.getMainHolder());
-                    loggedAccount.getSecondaryHolders().forEach(System.out::println);
-                }
+                case 1 -> displayDetails();
                 case 2 -> deposit();
                 case 3 -> transfer();
                 case 4 -> {
@@ -216,19 +207,7 @@ public class Bank {
                 case 7 -> {
                     //TODO list all movements between two dates
                 }
-                case 8 -> {
-                    //TODO add new debit card
-                    Customer holderCardOwner = getCustomerByNif();
-                    if (accountServiceImplementation.addDebitCard(loggedAccount, holderCardOwner)) {
-                        System.out.println("Debit card successfully added to account");
-                        Optional<DebitCard> debitCard = loggedAccount.getDebitCards().stream().filter(debitCardElement -> debitCardElement.getCardHolder().getNif().equals(holderCardOwner.getNif())).findFirst(); // pego o cartão que acabou de ser criado para o cliente em questão
-
-                        displayMargin(debitCard);
-//                        https://www.callicoder.com/java-8-optional-tutorial/
-                        debitCard.ifPresent(System.out::println);
-                        displayMargin(debitCard);
-                    }
-                }
+                case 8 -> addDebitCard();
                 case 9 -> {
                     //TODO add new credit card
                 }
@@ -244,6 +223,47 @@ public class Bank {
             }
         } while (doAnotherOperation);
         return quit;
+    }
+
+    /**
+     * Displays the following account data:
+     * <ol>
+     *     <li>code</li>
+     *     <li>current balance</li>
+     *     <li>main holder data</li>
+     *     <li>secondary holders data list (if exists)</li>
+     * </ol>
+     */
+    private void displayDetails() {
+        System.out.println("ACCOUNT DETAILS: \n\nCODE: " + loggedAccount.getCode());
+        System.out.printf("BALANCE: %.2f€%n", loggedAccount.getBalance());
+        System.out.println("MAIN HOLDER:");
+        displayMargin(loggedAccount.getMainHolder());
+        System.out.println(loggedAccount.getMainHolder());
+        displayMargin(loggedAccount.getMainHolder());
+
+        if (loggedAccount.getSecondaryHolders().size() > 0) { // Se a houver secondary holders
+            System.out.println("SECONDARY HOLDERS:");
+            displayMargin(loggedAccount.getSecondaryHolders().stream().findFirst().get()); // imprime a quantidade de hífens do primeiro elemento da lista de secondaary holders
+            loggedAccount.getSecondaryHolders().forEach(System.out::println);// imprime a lista
+            displayMargin(loggedAccount.getSecondaryHolders().stream().skip(loggedAccount.getSecondaryHolders().size() - 1).findFirst().get()); // imprime a quantidade de hífens do último elemento da lista de secondaary holders
+        }
+    }
+
+    /**
+     * Adds a new debit card into logged account and into database.
+     */
+    private void addDebitCard() {
+        Customer holderCardOwner = getCustomerByNif();
+        if (accountServiceImplementation.addDebitCard(loggedAccount, holderCardOwner)) {
+            System.out.println("Debit card successfully added to account");
+            Optional<DebitCard> debitCard = loggedAccount.getDebitCards().stream().filter(debitCardElement -> debitCardElement.getCardHolder().getNif().equals(holderCardOwner.getNif())).findFirst(); // pego o cartão que acabou de ser criado para o cliente em questão
+
+            displayMargin(debitCard);
+//                        https://www.callicoder.com/java-8-optional-tutorial/
+            debitCard.ifPresent(System.out::println);
+            displayMargin(debitCard);
+        }
     }
 
     /**
