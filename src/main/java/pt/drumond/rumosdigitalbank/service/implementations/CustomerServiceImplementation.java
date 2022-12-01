@@ -31,7 +31,8 @@ public class CustomerServiceImplementation implements CustomerService {
      * @return the new <code>Customer</code>
      */
     @Override
-    public Customer createCustomer(Customer customer) {
+    public Customer create(Customer customer) {
+
         return customerListRepositoryImplementation.create(customer);
     }
 
@@ -130,7 +131,8 @@ public class CustomerServiceImplementation implements CustomerService {
     }
 
     public boolean validateNif(String nif) {
-        return nif.matches("^[1-9][0-9]{8}$");
+
+        return Boolean.FALSE.equals(customerListRepositoryImplementation.verifyIfNifAlreadyExists(nif)) && nif.matches("^[1-9][0-9]{8}$");
     }
 
     public boolean validatePhone(String phone) {

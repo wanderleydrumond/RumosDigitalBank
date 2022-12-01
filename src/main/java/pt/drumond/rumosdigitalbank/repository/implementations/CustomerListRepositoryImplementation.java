@@ -51,7 +51,7 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
      * @param customer the customer object instance to be deleted
      */
     @Override
-    public void delete(Customer customer) { //OK
+    public void delete(Customer customer) {
         tableCustomers.removeIf(customerElement -> customerElement.getNif().equals(customer.getNif()));
     }
 
@@ -64,7 +64,13 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
     public ArrayList<Customer> findAll() {
 
         return tableCustomers;
-    } //OK
+    }
+
+    @Override
+    public boolean verifyIfNifAlreadyExists(String nif) {
+
+        return tableCustomers.stream().anyMatch(customerElement -> customerElement.getNif().equals(nif));
+    }
 
     /**
      * Generates initial data to fill the customer HashSet that's serves as database.

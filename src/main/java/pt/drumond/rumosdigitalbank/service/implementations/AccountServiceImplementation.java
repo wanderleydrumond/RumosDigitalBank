@@ -1,9 +1,8 @@
 package pt.drumond.rumosdigitalbank.service.implementations;
 
-import pt.drumond.rumosdigitalbank.model.Account;
-import pt.drumond.rumosdigitalbank.model.Card;
-import pt.drumond.rumosdigitalbank.model.Customer;
-import pt.drumond.rumosdigitalbank.model.MovementType;
+import pt.drumond.rumosdigitalbank.enums.MovementType;
+import pt.drumond.rumosdigitalbank.enums.ResponseType;
+import pt.drumond.rumosdigitalbank.model.*;
 import pt.drumond.rumosdigitalbank.repository.implementations.AccountListRepositoryImplementation;
 import pt.drumond.rumosdigitalbank.repository.implementations.CustomerListRepositoryImplementation;
 import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
@@ -13,6 +12,7 @@ import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
 import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -68,10 +68,15 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public void addSecondaryHolder(Account loggedAccount, Customer secondaryHolder) {
-        customerListRepositoryImplementation.create(secondaryHolder);
-        loggedAccount.getSecondaryHolders().add(secondaryHolder);
+    public boolean addSecondaryHolder(Account loggedAccount, Customer secondaryHolder) {
+        ArrayList<Customer> secondaryHolders = loggedAccount.getSecondaryHolders();
+        if (secondaryHolders.stream().anyMatch(customerElement -> customerElement.getNif().equals(secondaryHolder.getNif())) || loggedAccount.getMainHolder().getNif().equals(secondaryHolder.getNif())) {
+            return false;
+        }
+        secondaryHolders.add(secondaryHolder);
         accountListRepositoryImplementation.update(loggedAccount);
+
+        return true;
     }
 
     @Override
@@ -83,7 +88,7 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public boolean transfer(Account originAccount, double value, String destinationAccountCode) {
-        if (withdraw(value, originAccount, MovementType.TRANSFER_OUT)) {
+        if (withdraw(value, originAccount, MovementType.TRANSFER_OUT).equals(ResponseType.SUCCESS)) {
             deposit(findByCode(destinationAccountCode), value, MovementType.TRANSFER_IN);
 
             return true;
@@ -92,13 +97,27 @@ public class AccountServiceImplementation implements AccountService {
         return false;
     }
 
-    private boolean withdraw(double value, Account destinationAccount, MovementType movementType) {
-        if (destinationAccount.getBalance() < value) {
-            return false;
+    @Override
+    public ResponseType withdraw(double value, Account accountToBeDebited, MovementType movementType) {
+        if (movementType.equals(MovementType.WITHDRAW)) { // Se o tipo de movimentação for saque (pode ser TRANFER_OUT ou WITHDRAW)
+            ArrayList<Movement> withdraws = accountListRepositoryImplementation.findAllSpecificMovements(MovementType.WITHDRAW, accountToBeDebited); // busca todos os movimentos do tipo sque feitos pelo cliente
+            LocalDate today = LocalDate.now();
+            double amountWithdrawToday = 0;
+            for (Movement withdrawElement : withdraws) { // Percorrer a lista de movimentos, cujo tipo é saque
+                if (withdrawElement.getDate().isEqual(today)) { // Se a data do sque for igual à data de hoje
+                    amountWithdrawToday += withdrawElement.getValue(); // Incrementa do valor de saque diário
+                }
+            }
+            if (amountWithdrawToday >= 500.) { // Se o valor do saque diário for maior ou igual a 500
+                return ResponseType.WITHDRAW_OVERFLOW; // Não é possível realizar a operação
+            }
         }
-        destinationAccount.setBalance(destinationAccount.getBalance() - value);
-        destinationAccount.getMovements().add(movimentServiceImplementation.create(value, movementType));
-        return true;
+        if (accountToBeDebited.getBalance() < value) { // Se o saldo da conta for infasrior ao valor do saquue
+            return ResponseType.INSUFFICIENT_BALANCE; // Não é possível realizar a operação
+        }
+        accountToBeDebited.setBalance(accountToBeDebited.getBalance() - value); // atualiza o saldo da conta
+        accountToBeDebited.getMovements().add(movimentServiceImplementation.create(value, movementType)); // adiciona um movimento à conta do mesmo tipo passado por parâmetro (TRANSFER_OUT ou  WITHDRAW)
+        return ResponseType.SUCCESS; // Operação realizada com sucesso
     }
 
     @Override

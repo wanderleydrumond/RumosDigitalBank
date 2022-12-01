@@ -1,13 +1,12 @@
 package pt.drumond.rumosdigitalbank.service.interfaces;
 
-import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Customer;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 public interface CustomerService {
-    Customer createCustomer(Customer customer);
+    Customer create(Customer customer);
 
     Customer findByNif(String nif);
 //    Customer updateCustomer(Customer customer);

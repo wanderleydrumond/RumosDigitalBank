@@ -4,7 +4,7 @@ import pt.drumond.rumosdigitalbank.HelloApplication;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
-import pt.drumond.rumosdigitalbank.model.MovementType;
+import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.service.implementations.AccountServiceImplementation;
 import pt.drumond.rumosdigitalbank.service.implementations.CustomerServiceImplementation;
 import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
@@ -134,7 +134,7 @@ public class Bank {
         if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 0) {
             System.out.println("11. Delete secondary holder");
         } else {
-            System.out.println(" X. This account has no secondary holders");
+            System.out.println(" X. This account has no secondary holders to delete");
         }
         System.out.print("\nOption:\040");
 
@@ -415,6 +415,9 @@ public class Bank {
      * <p>They can be a new customer or an existent one.</p>
      */
     private void addSecondaryHolder() {
+        if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 3){
+            return;
+        }
         Customer secondaryHolder = null;
 
         switch (menuAddSecondaryHolder()) {
@@ -424,7 +427,11 @@ public class Bank {
         }
 
         if (secondaryHolder != null) {
-            accountServiceImplementation.addSecondaryHolder(loggedAccount, secondaryHolder);
+            if (accountServiceImplementation.addSecondaryHolder(loggedAccount, secondaryHolder)) {
+                System.out.println("Client successfully added to account");
+            } else {
+                System.out.println("Client already existent in this account");
+            }
         }
     }
 
@@ -488,7 +495,7 @@ public class Bank {
         System.out.print("Insert profession: ");
         String profession = scanner.nextLine();
 
-        return customerServiceImplementation.createCustomer(new Customer(nif, name, password, phone, mobile, email, profession, birthDate));
+        return customerServiceImplementation.create(new Customer(nif, name, password, phone, mobile, email, profession, birthDate));
     }
 
     private void firstDepositAndCreateAccount(Customer mainHolder) {

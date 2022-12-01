@@ -1,4 +1,4 @@
-package pt.drumond.rumosdigitalbank.model;
+package pt.drumond.rumosdigitalbank.enums;
 
 /**
  * All possible transaction types.

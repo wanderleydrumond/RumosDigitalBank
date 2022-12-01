@@ -2,7 +2,7 @@ package pt.drumond.rumosdigitalbank.service.interfaces;
 
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Movement;
-import pt.drumond.rumosdigitalbank.model.MovementType;
+import pt.drumond.rumosdigitalbank.enums.MovementType;
 
 import java.util.ArrayList;
 

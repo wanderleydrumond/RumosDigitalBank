@@ -9,6 +9,7 @@ public interface CustomerRepository {
     Customer findByNif(String nif);
     void delete(Customer customer);
     ArrayList<Customer> findAll();
+    boolean verifyIfNifAlreadyExists(String nif);
 
     void loadDatabase();
 }

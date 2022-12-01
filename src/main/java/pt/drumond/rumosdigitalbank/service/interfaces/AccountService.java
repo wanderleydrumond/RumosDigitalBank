@@ -1,9 +1,10 @@
 package pt.drumond.rumosdigitalbank.service.interfaces;
 
+import pt.drumond.rumosdigitalbank.enums.ResponseType;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
-import pt.drumond.rumosdigitalbank.model.MovementType;
+import pt.drumond.rumosdigitalbank.enums.MovementType;
 
 import java.util.ArrayList;
 
@@ -12,9 +13,10 @@ public interface AccountService {
     Account update(Account account);
     boolean validateInitialDeposit(double depositValue);
     Account findByCode(String code);
-    void addSecondaryHolder(Account account, Customer secondaryHolder);
+    boolean addSecondaryHolder(Account account, Customer secondaryHolder);
     void deposit(Account account, double value, MovementType deposit);
     boolean transfer(Account account, double value, String destinyAccountCode);
+    ResponseType withdraw(double value, Account accountToBeDebited, MovementType movementType);
     void payLoan(Account account, double value, String creditCardSerialNumber);
     void deleteSecondaryHolder(Account account, Customer secondaryHolder);
     Card addDebitCard(Account account, Customer cardHolder);

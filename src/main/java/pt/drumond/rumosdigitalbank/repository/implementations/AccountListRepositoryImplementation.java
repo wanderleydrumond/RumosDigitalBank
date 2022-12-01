@@ -1,12 +1,12 @@
 package pt.drumond.rumosdigitalbank.repository.implementations;
 
-import pt.drumond.rumosdigitalbank.model.Account;
-import pt.drumond.rumosdigitalbank.model.Card;
-import pt.drumond.rumosdigitalbank.model.Customer;
+import pt.drumond.rumosdigitalbank.enums.MovementType;
+import pt.drumond.rumosdigitalbank.model.*;
 import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class AccountListRepositoryImplementation implements AccountRepository {
 
@@ -81,6 +81,19 @@ public class AccountListRepositoryImplementation implements AccountRepository {
     @Override
     public void delete(Account account) {
         //TODO implement method
+    }
+
+
+    @Override
+    public ArrayList<Movement> findAllSpecificMovements(MovementType movementType, Account accountToBeDebited) {
+        /*ArrayList<Movement> specificMovements = new ArrayList<>();
+        accountToBeDebited.getMovements().forEach(movementElement -> {
+            if (movementElement.getType().equals(movementType)) {
+                specificMovements.add(movementElement);
+            }
+        });*/
+
+        return accountToBeDebited.getMovements().stream().filter(movementElement -> movementElement.getType().equals(movementType)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**

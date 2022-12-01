@@ -2,7 +2,6 @@ package pt.drumond.rumosdigitalbank.repository.implementations;
 
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Movement;
-import pt.drumond.rumosdigitalbank.model.MovementType;
 import pt.drumond.rumosdigitalbank.repository.interfaces.MovementListRepository;
 
 import java.time.LocalDate;
