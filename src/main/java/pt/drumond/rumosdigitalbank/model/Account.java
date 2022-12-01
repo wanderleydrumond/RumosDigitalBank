@@ -11,8 +11,7 @@ public class Account {
     private Customer mainHolder;
     private ArrayList<Customer> secondaryHolders = new ArrayList<>();
     private ArrayList<Movement> movements = new ArrayList<>();
-    private ArrayList<DebitCard> debitCards = new ArrayList<>();
-    private ArrayList<CreditCard> creditCards = new ArrayList<>();
+    private ArrayList<Card> cards = new ArrayList<>();
 
     public Account(double balance, Customer mainHolder) {
         this.balance = balance;
@@ -59,20 +58,12 @@ public class Account {
         this.movements = movements;
     }
 
-    public ArrayList<DebitCard> getDebitCards() {
-        return debitCards;
+    public ArrayList<Card> getCards() {
+        return cards;
     }
 
-    public void setDebitCards(ArrayList<DebitCard> debitCards) {
-        this.debitCards = debitCards;
-    }
-
-    public ArrayList<CreditCard> getCreditCards() {
-        return creditCards;
-    }
-
-    public void setCreditCards(ArrayList<CreditCard> creditCards) {
-        this.creditCards = creditCards;
+    public void setCards(ArrayList<Card> cards) {
+        this.cards = cards;
     }
 
     @Override

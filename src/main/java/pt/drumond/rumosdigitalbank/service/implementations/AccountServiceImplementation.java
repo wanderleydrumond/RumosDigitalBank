@@ -1,8 +1,8 @@
 package pt.drumond.rumosdigitalbank.service.implementations;
 
 import pt.drumond.rumosdigitalbank.model.Account;
+import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
-import pt.drumond.rumosdigitalbank.model.DebitCard;
 import pt.drumond.rumosdigitalbank.model.MovementType;
 import pt.drumond.rumosdigitalbank.repository.implementations.AccountListRepositoryImplementation;
 import pt.drumond.rumosdigitalbank.repository.implementations.CustomerListRepositoryImplementation;
@@ -10,7 +10,7 @@ import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
 import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
 import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
 import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
-import pt.drumond.rumosdigitalbank.service.interfaces.DebitCardService;
+import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class AccountServiceImplementation implements AccountService {
     private CustomerService customerServiceImplementation = new CustomerServiceImplementation();
     private AccountRepository accountListRepositoryImplementation = new AccountListRepositoryImplementation();
     private CustomerRepository customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
-    private DebitCardService debitCardServiceImplementation = new DebitCardServiceImplementation();
+    private CardService cardServiceImplementation = new CardServiceImplementation();
     private MovementService movimentServiceImplementation = new MovimentServiceImplementation();
 
     public AccountServiceImplementation() {
@@ -129,32 +129,56 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public boolean addDebitCard(Account loggedAccount, Customer cardHolder) {
-        boolean existsDebitCardForThisHolder = false;
-        if (loggedAccount.getDebitCards().size() > 0) { // Se a conta já tiver cartões de débito
-            for (DebitCard debitCardElement : loggedAccount.getDebitCards()) { //Ver se quem pediu o cartão de débito já tem um
-                if (debitCardElement.getCardHolder().getNif().equals(cardHolder.getNif())) { // se tiver
-                    existsDebitCardForThisHolder = true;
+    public Card addDebitCard(Account loggedAccount, Customer cardHolder) {
+        ArrayList<Card> debitCards = getDebitCards(loggedAccount);
+
+        return getCard(cardHolder, debitCards, false, loggedAccount);
+    }
+
+    private Card getCard(Customer cardHolder, ArrayList<Card> cards, boolean isCreditCard, Account loggedAccount) {
+        if (existsThisTypeCardForThisHolder(cardHolder, cards)) {
+
+            return null;
+        } else {
+            Card card = cardServiceImplementation.create(cardHolder, isCreditCard);
+            loggedAccount.getCards().add(card);
+            accountListRepositoryImplementation.update(loggedAccount);
+
+            return card;
+        }
+    }
+
+    @Override
+    public Card addCreditCard(Account loggedAccount, Customer cardHolder) {
+        ArrayList<Card> creditCards = getCreditCards(loggedAccount);
+
+        return getCard(cardHolder, creditCards, true, loggedAccount);
+    }
+
+    @Override
+    public ArrayList<Card> getDebitCards(Account loggedAccount) {
+
+        return accountListRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount);
+    }
+
+    @Override
+    public ArrayList<Card> getCreditCards(Account loggedAccount) {
+
+        return accountListRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount);
+    }
+
+    private boolean existsThisTypeCardForThisHolder(Customer cardHolder, ArrayList<Card> cards) {
+        boolean exists = false;
+        if (cards.size() > 0) { // Se a conta já tiver o tipo de cartão.
+            for (Card cardElement : cards) { // Ver se quem pediu este tipo de cartão já tem um
+                if (cardElement.getCardHolder().getNif().equals(cardHolder.getNif())) { // se tiver
+                    exists = true;
+                    break;
                 }
             }
         }
 
-        if (existsDebitCardForThisHolder || loggedAccount.getDebitCards().size() == loggedAccount.getSecondaryHolders().size() + 1) {
-
-            return false;
-        } else {
-            DebitCard debitCard = debitCardServiceImplementation.create(cardHolder);
-            loggedAccount.getDebitCards().add(debitCard);
-            accountListRepositoryImplementation.update(loggedAccount);
-
-            return true;
-        }
-
-    }
-
-    @Override
-    public void addCreditCard(Account loggedAccount, Customer cardHolder) {
-        //TODO implement method
+        return exists;
     }
 
     @Override
@@ -171,13 +195,13 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public int getAmountOfCreditCards(Account loggedAccount) {
 
-        return loggedAccount.getCreditCards().size();
+        return accountListRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount).size();
     }
 
     @Override
     public int getAmountOfDebitCards(Account loggedAccount) {
 
-        return loggedAccount.getDebitCards().size();
+        return accountListRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount).size();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package pt.drumond.rumosdigitalbank.repository.implementations;
 
 import pt.drumond.rumosdigitalbank.model.Account;
+import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
 
@@ -32,6 +33,28 @@ public class AccountListRepositoryImplementation implements AccountRepository {
     @Override
     public ArrayList<Account> findAll() {
         return tableAccounts;
+    }
+
+    @Override
+    public ArrayList<Card> findAllDebitCardsByAccount(Account account) {
+        ArrayList<Card> debitCards = new ArrayList<>();
+        account.getCards().forEach(cardElement -> {
+            if (cardElement.getMonthyPlafond() == 0.) {
+                debitCards.add(cardElement);
+            }
+        });
+        return debitCards;
+    }
+
+    @Override
+    public ArrayList<Card> findAllCreditCardsByAccount(Account account) {
+        ArrayList<Card> creditCards = new ArrayList<>();
+        account.getCards().forEach(cardElement -> {
+            if (cardElement.getMonthyPlafond() > 0.) {
+                creditCards.add(cardElement);
+            }
+        });
+        return creditCards;
     }
 
     /**

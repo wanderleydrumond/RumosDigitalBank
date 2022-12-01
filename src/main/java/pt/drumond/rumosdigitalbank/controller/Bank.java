@@ -2,8 +2,8 @@ package pt.drumond.rumosdigitalbank.controller;
 
 import pt.drumond.rumosdigitalbank.HelloApplication;
 import pt.drumond.rumosdigitalbank.model.Account;
+import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
-import pt.drumond.rumosdigitalbank.model.DebitCard;
 import pt.drumond.rumosdigitalbank.model.MovementType;
 import pt.drumond.rumosdigitalbank.service.implementations.AccountServiceImplementation;
 import pt.drumond.rumosdigitalbank.service.implementations.CustomerServiceImplementation;
@@ -13,7 +13,6 @@ import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -119,15 +118,23 @@ public class Bank {
 
         if (accountServiceImplementation.getAmountOfDebitCards(loggedAccount) < 5) {
             System.out.println(" 8. Add new debit card");
+        } else {
+            System.out.println(" X. This account already reached the maximum amount of debit cards");
         }
         if (accountServiceImplementation.getAmountOfCreditCards(loggedAccount) < 2) {
             System.out.println(" 9. Add new credit card");
+        } else {
+            System.out.println(" X. This account already reached the maximum amount of credit cards");
         }
         if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) < 4) {
             System.out.println("10. Insert new secondary holder");
+        } else {
+            System.out.println(" X. This account already reached the maximum amount of secondary holders");
         }
         if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 0) {
             System.out.println("11. Delete secondary holder");
+        } else {
+            System.out.println(" X. This account has no secondary holders");
         }
         System.out.print("\nOption:\040");
 
@@ -163,12 +170,14 @@ public class Bank {
                     quit = updateAccount(quit);
                 }
                 case 3 -> {
+                    //TODO find customer by NIF
                     /*Customer customer = customerServiceImplementation.findByNif(scanner, customerGeneralList);
                     displayMargin(customer);
                     System.out.println(customer);
                     displayMargin(customer);*/
                 }
                 case 4 -> {
+                    //TODO Update Customer
                     /*Customer customer = customerServiceImplementation.updateCustomer(scanner);
                     System.out.println("Client successfully updated");
                     displayMargin(customer);
@@ -178,7 +187,7 @@ public class Bank {
                 default -> initialMenu();
             }
             if (!quit) {
-                System.out.print("Do you want to perform another operation? (Y)es/(N)o managent: ");
+                System.out.print("Do you want to perform another operation? (Y)es/(N)o managent: "); //TODO delete the 'management' word
                 if (scanner.nextLine().equalsIgnoreCase("Y")) {
                     proceed = true;
                 } else {
@@ -206,14 +215,12 @@ public class Bank {
                 case 6 -> deleteAccount();
                 case 7 -> displayAllMovements();
                 case 8 -> addDebitCard();
-                case 9 -> {
-                    //TODO add new credit card
-                }
+                case 9 -> addCreditCard();
                 case 10 -> addSecondaryHolder();
                 case 11 -> removeSecondaryHolder();
                 default -> mainMenu();
             }
-            System.out.print("Do you want to perform another operation? (Y)es/(N)o account: ");
+            System.out.print("Do you want to perform another operation? (Y)es/(N)o account: "); //TODO delete the 'account' word
             if (scanner.nextLine().equalsIgnoreCase("Y")) {
                 doAnotherOperation = true;
             } else {
@@ -221,6 +228,20 @@ public class Bank {
             }
         } while (doAnotherOperation);
         return quit;
+    }
+
+    private void addCreditCard() {
+        Customer holderCardOwner = getCustomerByNif();
+        Card creditCard = accountServiceImplementation.addCreditCard(loggedAccount, holderCardOwner);
+        if (creditCard != null) {
+            System.out.println("Credit card successfully added to account");
+
+            displayMargin(creditCard);
+            printCard(creditCard, true);
+            displayMargin(creditCard);
+        } else {
+            System.out.println("Client already has credit card.");
+        }
     }
 
     /**
@@ -251,9 +272,27 @@ public class Bank {
 
         if (loggedAccount.getSecondaryHolders().size() > 0) { // Se a houver secondary holders
             System.out.println("SECONDARY HOLDERS:");
-            displayMargin(loggedAccount.getSecondaryHolders().stream().findFirst().get()); // imprime a quantidade de hífens do primeiro elemento da lista de secondaary holders
+            displayMargin(loggedAccount.getSecondaryHolders().stream().findFirst().get()); // imprime a quantidade de hífens do primeiro elemento da lista de secondary holders
             loggedAccount.getSecondaryHolders().forEach(System.out::println);// imprime a lista
             displayMargin(loggedAccount.getSecondaryHolders().stream().skip(loggedAccount.getSecondaryHolders().size() - 1).findFirst().get()); // imprime a quantidade de hífens do último elemento da lista de secondaary holders
+        }
+
+        if (loggedAccount.getCards().size() > 0) {
+            if (accountServiceImplementation.getAmountOfDebitCards(loggedAccount) > 0) {
+                Card firstCardFound = loggedAccount.getCards().stream().findFirst().get(); // pega o primeiro elemento da lista de clientes da conta
+                Card lastCardFound = loggedAccount.getCards().stream().skip(loggedAccount.getCards().size() - 1).findFirst().get(); // pega o último elemento da lista de clientes da conta
+
+                System.out.println("DEBIT CARDS:");
+
+                displayMargin(firstCardFound);
+                accountServiceImplementation.getDebitCards(loggedAccount).forEach(cardElement -> printCard(cardElement, false));
+                displayMargin(lastCardFound);
+            }
+            if (accountServiceImplementation.getAmountOfCreditCards(loggedAccount) > 0) {
+                System.out.println("CREDIT CARDS:");
+                //TODO imprimir cartões
+                accountServiceImplementation.getCreditCards(loggedAccount).forEach(System.out::println); //TODO extrair para um método
+            }
         }
     }
 
@@ -262,14 +301,24 @@ public class Bank {
      */
     private void addDebitCard() {
         Customer holderCardOwner = getCustomerByNif();
-        if (accountServiceImplementation.addDebitCard(loggedAccount, holderCardOwner)) {
+        Card debitCard = accountServiceImplementation.addDebitCard(loggedAccount, holderCardOwner);
+        if (debitCard != null) {
             System.out.println("Debit card successfully added to account");
-            Optional<DebitCard> debitCard = loggedAccount.getDebitCards().stream().filter(debitCardElement -> debitCardElement.getCardHolder().getNif().equals(holderCardOwner.getNif())).findFirst(); // pego o cartão que acabou de ser criado para o cliente em questão
 
             displayMargin(debitCard);
-//                        https://www.callicoder.com/java-8-optional-tutorial/
-            debitCard.ifPresent(System.out::println);
+            printCard(debitCard, false);
             displayMargin(debitCard);
+        } else {
+            System.out.println("Client already has debit card.");
+        }
+    }
+
+    private void printCard(Card cardToBePrinted, boolean isCreditCard) {
+        System.out.println("Number card: " + cardToBePrinted.getSerialNumber());
+        System.out.println("Main holder: " + cardToBePrinted.getCardHolder().getName());
+        if (isCreditCard) {
+            System.out.println("Monthly plafond: " + cardToBePrinted.getMonthyPlafond());
+            System.out.println("Plafond balance: " + cardToBePrinted.getPlafondBalance());
         }
     }
 

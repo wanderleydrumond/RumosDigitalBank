@@ -1,15 +1,15 @@
 package pt.drumond.rumosdigitalbank.model;
 
-public class DebitCard {
+public class Card {
     private String serialNumber, pin;
     private boolean isVirgin;
     private Customer cardHolder;
     private double monthyPlafond, plafondBalance;
 
-    public DebitCard() {
+    public Card() {
     }
 
-    public DebitCard(String serialNumber, String pin, boolean isVirgin, Customer cardHolder, double monthyPlafond, double plafondBalance) {
+    public Card(String serialNumber, String pin, boolean isVirgin, Customer cardHolder, double monthyPlafond, double plafondBalance) {
         this.serialNumber = serialNumber;
         this.pin = pin;
         this.isVirgin = isVirgin;
