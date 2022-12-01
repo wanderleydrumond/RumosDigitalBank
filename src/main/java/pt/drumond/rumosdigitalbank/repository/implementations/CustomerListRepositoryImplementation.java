@@ -24,7 +24,7 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
      * @param customer instance to be added
      */
     @Override
-    public Customer save(Customer customer) {
+    public Customer create(Customer customer) {
         tableCustomers.add(customer);
 
         return customer;

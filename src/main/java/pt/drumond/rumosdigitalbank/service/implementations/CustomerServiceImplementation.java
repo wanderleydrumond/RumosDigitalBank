@@ -32,7 +32,7 @@ public class CustomerServiceImplementation implements CustomerService {
      */
     @Override
     public Customer createCustomer(Customer customer) {
-        return customerListRepositoryImplementation.save(customer);
+        return customerListRepositoryImplementation.create(customer);
     }
 
     /**
@@ -143,6 +143,11 @@ public class CustomerServiceImplementation implements CustomerService {
 
     public boolean validateEmail(String email) {
         return email.matches("^(.+)@(.+)$");
+    }
+
+    @Override
+    public Customer update(Customer mainHolder) {
+        return null;
     }
 
     public boolean validateAge(LocalDate birthDate) {

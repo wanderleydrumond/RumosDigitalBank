@@ -20,11 +20,11 @@ public class AccountListRepositoryImplementation implements AccountRepository {
      * @param account instance to be added
      */
     @Override
-    public Account save(Account account) {
+    public Account create(Account account) {
         account.setCode(String.valueOf(100 + tableAccounts.size()));
         tableAccounts.add(account);
         System.out.println("Lista de contas do banco"); //TODO to be deleted
-        tableAccounts.forEach(System.out::println);
+        tableAccounts.forEach(System.out::println);//TODO to be deleted
 
         return account;
     }

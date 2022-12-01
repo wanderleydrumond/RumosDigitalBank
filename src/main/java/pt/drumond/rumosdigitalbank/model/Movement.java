@@ -1,6 +1,8 @@
 package pt.drumond.rumosdigitalbank.model;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Movement {
     private MovementType type;
@@ -29,5 +31,13 @@ public class Movement {
 
     public void setValue(double value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "| TYPE: " + type +
+                " | DATE: " + date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
+                " | VALUE: " + new DecimalFormat("0.00").format(value) +
+                "€ |";
     }
 }

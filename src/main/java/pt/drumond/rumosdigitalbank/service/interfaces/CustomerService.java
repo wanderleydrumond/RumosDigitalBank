@@ -1,5 +1,6 @@
 package pt.drumond.rumosdigitalbank.service.interfaces;
 
+import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Customer;
 
 import java.time.LocalDate;
@@ -23,4 +24,6 @@ public interface CustomerService {
     boolean validateMobile(String mobile);
 
     boolean validateEmail(String email);
+
+    Customer update(Customer mainHolder);
 }

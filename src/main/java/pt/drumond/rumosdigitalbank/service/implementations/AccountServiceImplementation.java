@@ -23,7 +23,7 @@ public class AccountServiceImplementation implements AccountService {
     private AccountRepository accountListRepositoryImplementation = new AccountListRepositoryImplementation();
     private CustomerRepository customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
     private DebitCardService debitCardServiceImplementation = new DebitCardServiceImplementation();
-    private MovementService movementService = new MovementService();
+    private MovementService movimentServiceImplementation = new MovimentServiceImplementation();
 
     public AccountServiceImplementation() {
     }
@@ -34,10 +34,10 @@ public class AccountServiceImplementation implements AccountService {
      * @return the new account created
      */
     @Override
-    public Account create(Account account) {
-        account.getMovements().add(movementService.create(account.getBalance(), MovementType.DEPOSIT));
+    public Account create(Account account, Customer mainHolder) {
+        account.getMovements().add(movimentServiceImplementation.create(account.getBalance(), MovementType.DEPOSIT)); // Adiciona movimento à conta
 
-        return accountListRepositoryImplementation.save(account);
+        return accountListRepositoryImplementation.create(account);
     }
 
     /**
@@ -46,7 +46,7 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public Account update(Account account) {
 
-        return accountListRepositoryImplementation.save(account);
+        return accountListRepositoryImplementation.create(account);
     }
 
     /**
@@ -69,7 +69,7 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public void addSecondaryHolder(Account loggedAccount, Customer secondaryHolder) {
-        customerListRepositoryImplementation.save(secondaryHolder);
+        customerListRepositoryImplementation.create(secondaryHolder);
         loggedAccount.getSecondaryHolders().add(secondaryHolder);
         accountListRepositoryImplementation.update(loggedAccount);
     }
@@ -77,7 +77,7 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public void deposit(Account destinationAccount, double depositValue, MovementType movementType) {
         destinationAccount.setBalance(destinationAccount.getBalance() + depositValue);
-        destinationAccount.getMovements().add(movementService.create(depositValue, movementType));
+        destinationAccount.getMovements().add(movimentServiceImplementation.create(depositValue, movementType));
         accountListRepositoryImplementation.update(destinationAccount);
     }
 
@@ -97,7 +97,7 @@ public class AccountServiceImplementation implements AccountService {
             return false;
         }
         destinationAccount.setBalance(destinationAccount.getBalance() - value);
-        destinationAccount.getMovements().add(movementService.create(value, movementType));
+        destinationAccount.getMovements().add(movimentServiceImplementation.create(value, movementType));
         return true;
     }
 

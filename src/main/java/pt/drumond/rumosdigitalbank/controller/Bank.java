@@ -204,9 +204,7 @@ public class Bank {
                 }
                 case 5 -> displayAllHolders();
                 case 6 -> deleteAccount();
-                case 7 -> {
-                    //TODO list all movements between two dates
-                }
+                case 7 -> displayAllMovements();
                 case 8 -> addDebitCard();
                 case 9 -> {
                     //TODO add new credit card
@@ -223,6 +221,15 @@ public class Bank {
             }
         } while (doAnotherOperation);
         return quit;
+    }
+
+    /**
+     * Displays all movements for the current account.
+     */
+    private void displayAllMovements() {
+        displayMargin(loggedAccount.getMovements().stream().findFirst().get()); // imprime a quantidade de hífens do primeiro elemento da lista de movimentos
+        loggedAccount.getMovements().forEach(System.out::println); // imprime a lista
+        displayMargin(loggedAccount.getMovements().stream().skip(loggedAccount.getMovements().size() - 1).findFirst().get()); // imprime a quantidade de hífens do último elemento da lista de movimentos
     }
 
     /**
@@ -442,7 +449,7 @@ public class Bank {
             System.out.print("Insert initial deposit value: ");
             double firstDeposit = Double.parseDouble(scanner.nextLine());
             if (accountServiceImplementation.validateInitialDeposit(firstDeposit)) {
-                loggedAccount = accountServiceImplementation.create(new Account(firstDeposit, mainHolder));
+                loggedAccount = accountServiceImplementation.create(new Account(firstDeposit, mainHolder), mainHolder);
 
                 wasAccountCreated = true;
 

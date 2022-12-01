@@ -5,7 +5,7 @@ import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.model.MovementType;
 
 public interface AccountService {
-    Account create(Account account);
+    Account create(Account account, Customer mainHolder);
     Account update(Account account);
     boolean validateInitialDeposit(double depositValue);
     Account findByCode(String code);
