@@ -126,7 +126,7 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public void deleteSecondaryHolder(Account loggedAccount, Customer secondaryHolder) {
+    public void deleteSecondaryHolder(Account loggedAccount, Customer secondaryHolder) { //TODO ajeitar isso
         loggedAccount.getSecondaryHolders().removeIf(customerElement -> customerElement.getNif().equals(secondaryHolder.getNif())); // Excluir o cliente secundário antes de verificar se ele existe em alguma outra conta
         int timesOfCustomerFound = 0;
         // Verificar se o cliente possui alguma outra conta no banco
@@ -141,7 +141,7 @@ public class AccountServiceImplementation implements AccountService {
                 }
             }
         }
-        // Só remove da lista principal se não achar em lugar algum
+        // Só remove da lista principal se não achar em alguma outra conta
         if (timesOfCustomerFound == 0) {
             customerServiceImplementation.delete(secondaryHolder);
         }
