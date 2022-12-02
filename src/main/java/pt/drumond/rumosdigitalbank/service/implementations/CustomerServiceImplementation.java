@@ -25,15 +25,17 @@ public class CustomerServiceImplementation implements CustomerService {
         customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
     }
 
-    /**
-     * Creates a new customer instance given the requirements to be done.
-     *
-     * @return the new <code>Customer</code>
-     */
+
     @Override
-    public Customer create(Customer customer) {
+    public Customer save(Customer customer) {
 
         return customerListRepositoryImplementation.create(customer);
+    }
+
+    @Override
+    public Customer update(Customer customer) {
+
+        return customerListRepositoryImplementation.update(customer);
     }
 
     /**
@@ -145,11 +147,6 @@ public class CustomerServiceImplementation implements CustomerService {
 
     public boolean validateEmail(String email) {
         return email.matches("^(.+)@(.+)$");
-    }
-
-    @Override
-    public Customer update(Customer mainHolder) {
-        return null;
     }
 
     public boolean validateAge(LocalDate birthDate) {

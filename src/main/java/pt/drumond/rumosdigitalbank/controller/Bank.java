@@ -1,10 +1,10 @@
 package pt.drumond.rumosdigitalbank.controller;
 
 import pt.drumond.rumosdigitalbank.HelloApplication;
+import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
-import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.service.implementations.AccountServiceImplementation;
 import pt.drumond.rumosdigitalbank.service.implementations.CustomerServiceImplementation;
 import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
@@ -169,21 +169,8 @@ public class Bank {
                     loggedAccount = getAccountByCode();
                     quit = updateAccount(quit);
                 }
-                case 3 -> {
-                    //TODO find customer by NIF
-                    /*Customer customer = customerServiceImplementation.findByNif(scanner, customerGeneralList);
-                    displayMargin(customer);
-                    System.out.println(customer);
-                    displayMargin(customer);*/
-                }
-                case 4 -> {
-                    //TODO Update Customer
-                    /*Customer customer = customerServiceImplementation.updateCustomer(scanner);
-                    System.out.println("Client successfully updated");
-                    displayMargin(customer);
-                    System.out.println(customer);
-                    displayMargin(customer);*/
-                }
+                case 3 -> findAndDisplayCustomer();
+                case 4 -> updateCustomer();
                 default -> initialMenu();
             }
             if (!quit) {
@@ -198,6 +185,16 @@ public class Bank {
             }
         } while (proceed);
     } //FIM startAppManagement()
+
+    private Customer findAndDisplayCustomer() {
+        System.out.print("Enter the NIF number of client to be found: ");
+        Customer customer = customerServiceImplementation.findByNif(scanner.nextLine());
+        displayMargin(customer);
+        System.out.println(customer);
+        displayMargin(customer);
+
+        return customer;
+    }
 
     private boolean updateAccount(boolean quit) {
         boolean doAnotherOperation;
@@ -363,8 +360,7 @@ public class Bank {
     private void transfer() {
         System.out.print("Insert the transfer value: ");
         double transferValue = Double.parseDouble(scanner.nextLine());
-        System.out.print("Insert the destination account code: ");
-        String destinationAccount = scanner.nextLine();
+        String destinationAccount = getString("Insert the destination account code: ");
         if (accountServiceImplementation.transfer(loggedAccount, transferValue, destinationAccount)) {
             System.out.println("Transfer successfully done");
         } else {
@@ -415,7 +411,7 @@ public class Bank {
      * <p>They can be a new customer or an existent one.</p>
      */
     private void addSecondaryHolder() {
-        if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 3){
+        if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 3) {
             return;
         }
         Customer secondaryHolder = null;
@@ -479,23 +475,84 @@ public class Bank {
         return loggedAccount;
     }
 
+    /**
+     * Gives the proper interface to create a new customer, inserting their information one by one.
+     *
+     * @param isMainHolder important to validate the holder's age
+     * @return the new holder
+     */
     private Customer createCustomer(boolean isMainHolder) {
         LocalDate birthDate = getBirthDateAndValidateAge(isMainHolder);
         String nif = getAndValidateNif();
         String phone = getAndValidatePhone();
         String mobile = getAndValidateMobile();
         String email = getAndValidateEmail();
+        String name = getString("Insert name: ");
+        String password = getString("Insert password: ");
+        String profession = getString("Insert profession: ");
 
-        System.out.print("Insert name: ");
-        String name = scanner.nextLine();
+        return customerServiceImplementation.save(new Customer(nif, name, password, phone, mobile, email, profession, birthDate));
+    }
 
-        System.out.print("Insert password: ");
-        String password = scanner.nextLine();
+    /**
+     * Gives the proper interface to update the customer's information.
+     */
+    private void updateCustomer() {
+        Customer customer = findAndDisplayCustomer(); // Procura alguém na base de dados com o mesmo NIF
+        if (customer == null) { // Se não encontrar
+            System.out.println("Client not found");
+        } else { // Se encontrar
+            boolean exitUpdateCustomerMenu = false;
+            do {
+                switch (updateCustomerMenu()) { // Exibe um menu de opções para as informações que podem ser atualizadas
+                    case 1 -> customer.setName(getString("Insert new name: ")); // atualiza o nome do cliente no objeto
+                    case 2 -> customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
+                    case 3 -> customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
+                    case 4 -> customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
+                    case 5 -> customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
+                    case 6 -> customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
+                    default -> {/*retorna ao menu principal*/}
+                }
+                customerServiceImplementation.update(customer); // atualiza as informações do cliente na base de dados
+                System.out.println("Client current informations:");
+                displayMargin(customer);
+                System.out.println(customer);
+                displayMargin(customer);
 
-        System.out.print("Insert profession: ");
-        String profession = scanner.nextLine();
+                if (getString("Do you want to update another client information? (Y)es/(N)o: ").equalsIgnoreCase("N")) {
+                    exitUpdateCustomerMenu = true;
+                }
+            } while (!exitUpdateCustomerMenu);
+        }
+    }
 
-        return customerServiceImplementation.create(new Customer(nif, name, password, phone, mobile, email, profession, birthDate));
+    private int updateCustomerMenu() {
+        System.out.print("""
+                What do you want to update?
+                                        
+                0. Nothing, I changed my mind
+                1. Name
+                2. Password
+                3. Phone number
+                4. Mobile number
+                5. e-mail
+                6. Profession
+                                        
+                Option:\040""");
+
+        return Integer.parseInt(scanner.nextLine());
+    }
+
+    /**
+     * Gets simple data to be inserted furthermore.
+     *
+     * @param sentenceToDisplay text that distiguish the kind of data wil be inserted
+     * @return the data to be inserted
+     */
+    private String getString(String sentenceToDisplay) {
+        System.out.print(sentenceToDisplay);
+
+        return scanner.nextLine();
     }
 
     private void firstDepositAndCreateAccount(Customer mainHolder) {

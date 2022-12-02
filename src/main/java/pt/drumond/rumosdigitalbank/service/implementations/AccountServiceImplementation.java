@@ -2,14 +2,15 @@ package pt.drumond.rumosdigitalbank.service.implementations;
 
 import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.enums.ResponseType;
-import pt.drumond.rumosdigitalbank.model.*;
+import pt.drumond.rumosdigitalbank.model.Account;
+import pt.drumond.rumosdigitalbank.model.Card;
+import pt.drumond.rumosdigitalbank.model.Customer;
+import pt.drumond.rumosdigitalbank.model.Movement;
 import pt.drumond.rumosdigitalbank.repository.implementations.AccountListRepositoryImplementation;
-import pt.drumond.rumosdigitalbank.repository.implementations.CustomerListRepositoryImplementation;
 import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
-import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
 import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
-import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
 import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
+import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
 import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.time.LocalDate;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 public class AccountServiceImplementation implements AccountService {
     private CustomerService customerServiceImplementation = new CustomerServiceImplementation();
     private AccountRepository accountListRepositoryImplementation = new AccountListRepositoryImplementation();
-    private CustomerRepository customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
     private CardService cardServiceImplementation = new CardServiceImplementation();
     private MovementService movimentServiceImplementation = new MovimentServiceImplementation();
 

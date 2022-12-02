@@ -6,10 +6,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public interface CustomerService {
-    Customer create(Customer customer);
+    Customer save(Customer customer);
 
     Customer findByNif(String nif);
-//    Customer updateCustomer(Customer customer);
+    Customer update(Customer customer);
     void delete(Customer customer);
     ArrayList<Customer> findAll();
     void loadDatabase();
@@ -24,5 +24,4 @@ public interface CustomerService {
 
     boolean validateEmail(String email);
 
-    Customer update(Customer mainHolder);
 }

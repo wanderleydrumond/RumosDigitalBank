@@ -45,6 +45,13 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
         return tableCustomers.stream().filter(customerElement -> customerElement.getNif().equals(nif)).findFirst().orElse(null);
     }
 
+    @Override
+    public Customer update(Customer customer) {
+        tableCustomers.set(tableCustomers.indexOf(customer), customer);
+
+        return customer;
+    }
+
     /**
      * Deletes a customer in database.
      *
