@@ -201,8 +201,8 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public void loadDatabase() {
-        accountListRepositoryImplementation.loadDatabase();
+    public void loadDatabase(ArrayList<Customer> customers, ArrayList<Card> cards, ArrayList<Movement> movements) {
+        accountListRepositoryImplementation.loadDatabase(customers, cards, movements);
     }
 
     @Override

@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
  * Entity class Customer.
  */
 public class Customer {
+    private int id;
     private String nif, name, password, phone, mobile, email, profession;
     private LocalDate birthDate;
 
@@ -20,6 +21,14 @@ public class Customer {
         this.email = email;
         this.profession = profession;
         this.birthDate = birthDate;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNif() {

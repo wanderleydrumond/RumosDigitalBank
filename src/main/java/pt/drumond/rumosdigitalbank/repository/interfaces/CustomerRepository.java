@@ -12,6 +12,6 @@ public interface CustomerRepository {
     ArrayList<Customer> findAll();
     boolean verifyIfNifAlreadyExists(String nif);
 
-    void loadDatabase();
+    ArrayList<Customer> loadDatabase();
 
 }

@@ -115,7 +115,8 @@ public class CustomerServiceImplementation implements CustomerService {
      * Generates initial data to fill the Arraylist that's serves as database.
      */
     @Override
-    public void loadDatabase() {
-        customerListRepositoryImplementation.loadDatabase();
+    public ArrayList<Customer> loadDatabase() {
+
+        return customerListRepositoryImplementation.loadDatabase();
     }
 }

@@ -1,15 +1,19 @@
 package pt.drumond.rumosdigitalbank.repository.implementations;
 
 import pt.drumond.rumosdigitalbank.enums.MovementType;
-import pt.drumond.rumosdigitalbank.model.*;
+import pt.drumond.rumosdigitalbank.model.Account;
+import pt.drumond.rumosdigitalbank.model.Card;
+import pt.drumond.rumosdigitalbank.model.Customer;
+import pt.drumond.rumosdigitalbank.model.Movement;
 import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class AccountListRepositoryImplementation implements AccountRepository {
 
+    private static int id = 1;
     private ArrayList<Account> tableAccounts = new ArrayList<>();
 
     public AccountListRepositoryImplementation() {
@@ -22,6 +26,7 @@ public class AccountListRepositoryImplementation implements AccountRepository {
      */
     @Override
     public Account create(Account account) {
+        account.setId(++id);
         account.setCode(String.valueOf(100 + tableAccounts.size()));
         tableAccounts.add(account);
         System.out.println("Lista de contas do banco"); //TODO to be deleted
@@ -100,25 +105,54 @@ public class AccountListRepositoryImplementation implements AccountRepository {
      * Generates initial data to fill the account HashSet that's serves as database.
      */
     @Override
-    public void loadDatabase() {
-        Account account1 = new Account(60., new Customer("987456321", "Jane Doe", "123456", "321654987", "99885544", "someone@email.com", "Lawyer", LocalDate.of(1983, 2, 24)));
-        Account account2 = new Account(50., new Customer("123456789", "John Doe", "654321", "321644481", "99221166", "anything@email.com", "Pilot", LocalDate.of(1973, 12, 12)));
-        Account account3 = new Account(75., new Customer("132456789", "Rosalvo Doe", "123654", "325554937", "99887766", "something@email.com", "Firefighter", LocalDate.of(1985, 8, 2)));
-        Account account4 = new Account(40., new Customer("369258147", "João das Couves", "526341", "222111333", "951951951", "cabbages@email.pt", "seller", LocalDate.of(1972, 1, 22)));
-        Account account5 = new Account(55., new Customer("148754243", "Aang", "540022", "250140320", "981258457", "air@avatar.com", "avatar", LocalDate.of(2005, 1, 22)));
-        Account account6 = new Account(65., new Customer("144774144", "Korra", "541166", "335478852", "999258741", "water@avatar.com", "avatar", LocalDate.of(2011, 1, 22)));
+    public void loadDatabase(ArrayList<Customer> tableCustomers, ArrayList<Card> tableCards, ArrayList<Movement> tableMovements) {
+        /*Conta 100
+         * Main holder: Gandalf -  cartão de débito: SIM | Cartão de crédito: SIM (Plafond: 100 | Saldo plafond: 100)
+         *                         isVirgin: true        | isVirgin: true
+         *                         S/N: 89               | S/N: 90
+         * Pode fazer saques: SIM */
+        Account account100 = new Account(50., tableCustomers.get(7)); //Adiciona o titular principal
+        account100.getCards().addAll(Arrays.asList(tableCards.get(9), tableCards.get(10))); // Adiciona cartões de débito e crédito
+        account100.getMovements().addAll(Arrays.asList(tableMovements.get(6), tableMovements.get(7), tableMovements.get(8), tableMovements.get(9))); // Adiciona todos os movimentos da respetiva conta
+        create(account100);
 
-        account1.setCode(String.valueOf(100 + tableAccounts.size()));
-        tableAccounts.add(account1);
-        account2.setCode(String.valueOf(100 + tableAccounts.size()));
-        tableAccounts.add(account2);
-        account3.setCode(String.valueOf(100 + tableAccounts.size()));
-        tableAccounts.add(account3);
-        account4.setCode(String.valueOf(100 + tableAccounts.size()));
-        tableAccounts.add(account4);
-        account5.setCode(String.valueOf(100 + tableAccounts.size()));
-        tableAccounts.add(account5);
-        account6.setCode(String.valueOf(100 + tableAccounts.size()));
-        tableAccounts.add(account6);
+        /*Conta 101
+         * Main Holder: Momo - cartão de débito: SIM | Cartão de crédito: NÃO
+         *                         isVirgin: true    | isVirgin: --
+         *                         S/N: 87           | S/N: --
+         * Pode fazer saques: NÃO
+         * Titulares secundários:
+         * João das Couves - cartão de débito: NÃO | Cartão de crédito: SIM (Plafond: 100 | Saldo plafond: 60)
+         *                         isVirgin: --       | isVirgin: true
+         *                         S/N: --               | S/N: 88*/
+        Account account101 = new Account(800., tableCustomers.get(8));
+        account101.getSecondaryHolders().add(tableCustomers.get(3)); // Adiciona titulares secundários
+        account101.getCards().addAll(Arrays.asList(tableCards.get(7), tableCards.get(8)));// Adiciona cartões de débito e crédito
+        account101.getMovements().addAll(Arrays.asList(tableMovements.get(3), tableMovements.get(4), tableMovements.get(5))); // Adiciona movimentos
+        create(account101);
+
+        /*Conta 102
+         * Main Holder: John Doe - cartão de débito: SIM | Cartão de crédito: SIM (Plafond: 100 | Saldo plafond: 100)
+         *                         isVirgin: falso       | isVirgin: falso
+         *                         S/N: 82               | S/N: 83
+         * Pode fazer saques: SIM
+         * Titulares secundários:
+         * João das Couves - cartão de débito: sim | Cartão de crédito: NÃO
+         *                   isVirgin: true       | --
+ *                           S/N: 85              | --
+         * jane Doe - cartão de débito: SIM | Cartão de crédito: SIM (Plafond: 100 | Saldo plafond: 90)
+         *                   isVirgin: true       | isVirgin: true
+ *                           S/N: 80              | S/N: 81
+         * Rosalvo Doe - cartão de débito: SIM | Cartão de crédito: NÃO
+         *                   isVirgin: true       | --
+*                            S/N: 84              | --
+         * Aang - cartão de débito: SIM | Cartão de crédito: NÃO
+         *                   isVirgin: true       | --
+ *                           S/N: 86              | -- */
+        Account account102 = new Account(115., tableCustomers.get(1));
+        account102.getSecondaryHolders().addAll(Arrays.asList(tableCustomers.get(0), tableCustomers.get(2), tableCustomers.get(3), tableCustomers.get(4)));
+        account102.getCards().addAll(Arrays.asList(tableCards.get(0), tableCards.get(1), tableCards.get(2), tableCards.get(3), tableCards.get(4), tableCards.get(5), tableCards.get(6)));
+        account102.getMovements().addAll(Arrays.asList(tableMovements.get(0), tableMovements.get(1), tableMovements.get(2)));
+        create(account102);
     }
 }

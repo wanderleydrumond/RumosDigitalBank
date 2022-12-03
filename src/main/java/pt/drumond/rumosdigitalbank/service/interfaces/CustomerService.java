@@ -12,7 +12,7 @@ public interface CustomerService {
     Customer update(Customer customer);
     void delete(Customer customer);
     ArrayList<Customer> findAll();
-    void loadDatabase();
+    ArrayList<Customer> loadDatabase();
 
     boolean validateAge(LocalDate birthDate);
 

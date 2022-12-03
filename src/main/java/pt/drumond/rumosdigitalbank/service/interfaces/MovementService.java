@@ -10,4 +10,6 @@ public interface MovementService {
     Movement create(double value, MovementType movementType);
     Movement deleteAll(Account account);
     ArrayList<Movement> findAll();
+
+    ArrayList<Movement> loadDatabase();
 }

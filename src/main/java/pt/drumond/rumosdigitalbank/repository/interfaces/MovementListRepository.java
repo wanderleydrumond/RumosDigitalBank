@@ -10,4 +10,5 @@ public interface MovementListRepository {
     Movement create(Movement movement);
     Movement delete(Account account);
     ArrayList<Movement> findAllBetweenTwoDates(LocalDate begin, LocalDate end);
+    ArrayList<Movement> loadDatabase();
 }

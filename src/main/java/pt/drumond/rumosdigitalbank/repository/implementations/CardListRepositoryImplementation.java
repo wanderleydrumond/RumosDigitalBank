@@ -2,16 +2,21 @@ package pt.drumond.rumosdigitalbank.repository.implementations;
 
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
+import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.repository.interfaces.CardRepository;
+import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
 
 import java.util.ArrayList;
 
 public class CardListRepositoryImplementation implements CardRepository {
 
-    ArrayList<Card> tableCards = new ArrayList<>();
+    private ArrayList<Card> tableCards = new ArrayList<>();
+    private CustomerRepository customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
+    private static int id = 1;
 
     @Override
     public Card create(Card card) {
+        card.setId(++id);
         card.setSerialNumber(String.valueOf(80 + tableCards.size()));
 //        debitCard.setPin(String.valueOf((int)(Math.random() * 4)));
         card.setPin("1234");
@@ -37,5 +42,38 @@ public class CardListRepositoryImplementation implements CardRepository {
     public ArrayList<Card> findAllByAccount(Account account) {
         //TODO implement method?
         return null;
+    }
+
+    @Override
+    public ArrayList<Card> loadDatabase(ArrayList<Customer> tableCustomers) {
+        // Conta 102
+        Card debitCard1 = new Card(true, tableCustomers.get(0),0., 0.);
+        create(debitCard1); //Jane Doe
+        Card creditCard1 = new Card(true, tableCustomers.get(0),100., 90.);
+        create(creditCard1); //Jane Doe
+        Card debitCard2 = new Card(false, tableCustomers.get(1),0., 0.);
+        create(debitCard2);// John Doe
+        Card creditCard2 = new Card(false, tableCustomers.get(1),100., 100.);
+        create(creditCard2);// John Doe
+        Card debitCard3 = new Card(false, tableCustomers.get(2),0., 0.);
+        create(debitCard3);// Rosalvo Doe
+        Card debitCard4 = new Card(false, tableCustomers.get(3),0., 0.);
+        create(debitCard4);// João Das Couves
+        Card debitCard5 = new Card(false, tableCustomers.get(4),0., 0.);
+        create(debitCard5);// Aang
+
+        // Conta 101
+        Card debitCard6 = new Card(true, tableCustomers.get(8),0., 0.);
+        create(debitCard6); // Momo
+        Card creditCard7 = new Card(true, tableCustomers.get(3),100., 60.);
+        create(creditCard7);// João das Couves
+
+        //Conta 100
+        Card debitCard8 = new Card(true, tableCustomers.get(7),0., 0.);
+        create(debitCard8); // Gandalf
+        Card creditCard9 = new Card(true, tableCustomers.get(7),100., 100.);
+        create(creditCard9); // Gandalf
+
+        return tableCards;
     }
 }

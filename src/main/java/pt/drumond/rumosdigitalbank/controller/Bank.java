@@ -5,14 +5,19 @@ import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
+import pt.drumond.rumosdigitalbank.model.Movement;
 import pt.drumond.rumosdigitalbank.service.implementations.AccountServiceImplementation;
+import pt.drumond.rumosdigitalbank.service.implementations.CardServiceImplementation;
 import pt.drumond.rumosdigitalbank.service.implementations.CustomerServiceImplementation;
+import pt.drumond.rumosdigitalbank.service.implementations.MovimentServiceImplementation;
 import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
+import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
+import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -20,17 +25,12 @@ import java.util.Scanner;
  */
 public class Bank {
     /**
-     * Database that contains all app customers.
-     */
-    private HashSet<Customer> customerGeneralList; //TODO  to be deleted
-    /**
-     * Database that contains all app accounts.
-     */
-    private HashSet<Account> accountGeneralList;//TODO  to be deleted
-    /**
      * Object used to give access to methods from service layer from customer.
      */
     private CustomerService customerServiceImplementation = new CustomerServiceImplementation();
+    private CardService cardServiceImplementation = new CardServiceImplementation();
+    private MovementService movementServiceImplementation = new MovimentServiceImplementation();
+
     /**
      * Object used to give access to methods from service layer from account.
      */
@@ -42,11 +42,10 @@ public class Bank {
     private Scanner scanner;
 
     public Bank() {
-        customerGeneralList = new HashSet<>();
-        accountGeneralList = new HashSet<>();
-
-        customerServiceImplementation.loadDatabase();
-        accountServiceImplementation.loadDatabase();
+        ArrayList<Customer> customers = customerServiceImplementation.loadDatabase();
+        ArrayList<Card> cards = cardServiceImplementation.loadDatabase(customers);
+        ArrayList<Movement> movements = movementServiceImplementation.loadDatabase();
+        accountServiceImplementation.loadDatabase(customers, cards, movements);
 
         scanner = new Scanner(System.in);
     }
@@ -506,11 +505,16 @@ public class Bank {
             do {
                 switch (updateCustomerMenu()) { // Exibe um menu de opções para as informações que podem ser atualizadas
                     case 1 -> customer.setName(getString("Insert new name: ")); // atualiza o nome do cliente no objeto
-                    case 2 -> customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
-                    case 3 -> customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
-                    case 4 -> customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
-                    case 5 -> customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
-                    case 6 -> customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
+                    case 2 ->
+                            customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
+                    case 3 ->
+                            customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
+                    case 4 ->
+                            customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
+                    case 5 ->
+                            customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
+                    case 6 ->
+                            customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
                     default -> {/*retorna ao menu principal*/}
                 }
                 customerServiceImplementation.update(customer); // atualiza as informações do cliente na base de dados
@@ -677,29 +681,5 @@ public class Bank {
             System.out.print("-");
         }
         System.out.println();
-    }
-
-    public HashSet<Customer> getCustomerGeneralList() {
-        return customerGeneralList;
-    }
-
-    public void setCustomerGeneralList(HashSet<Customer> customerGeneralList) {
-        this.customerGeneralList = customerGeneralList;
-    }
-
-    public HashSet<Account> getAccountGeneralList() {
-        return accountGeneralList;
-    }
-
-    public void setAccountGeneralList(HashSet<Account> accountGeneralList) {
-        this.accountGeneralList = accountGeneralList;
-    }
-
-    public Account getLoggedAccount() {
-        return loggedAccount;
-    }
-
-    public void setLoggedAccount(Account loggedAccount) {
-        this.loggedAccount = loggedAccount;
     }
 }

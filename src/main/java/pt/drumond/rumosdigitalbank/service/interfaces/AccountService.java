@@ -5,6 +5,7 @@ import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.enums.MovementType;
+import pt.drumond.rumosdigitalbank.model.Movement;
 
 import java.util.ArrayList;
 
@@ -30,5 +31,5 @@ public interface AccountService {
     ArrayList<Card> getDebitCards(Account loggedAccount);
     ArrayList<Card> getCreditCards(Account loggedAccount);
 
-    void loadDatabase();
+    void loadDatabase(ArrayList<Customer> customers, ArrayList<Card> cards, ArrayList<Movement> movements);
 }

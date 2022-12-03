@@ -6,6 +6,7 @@ import java.util.ArrayList;
  * Entity class Account.
  */
 public class Account {
+    private static int id = 1;
     private String code;
     private double balance;
     private Customer mainHolder;
@@ -16,6 +17,14 @@ public class Account {
     public Account(double balance, Customer mainHolder) {
         this.balance = balance;
         this.mainHolder = mainHolder;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        Account.id = id;
     }
 
     public String getCode() {

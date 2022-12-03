@@ -39,4 +39,10 @@ public class MovimentServiceImplementation implements MovementService {
     public ArrayList<Movement> findAll() {
         return null;
     }
+
+    @Override
+    public ArrayList<Movement> loadDatabase() {
+
+        return movementListRepositoryImplementation.loadDatabase();
+    }
 }

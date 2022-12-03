@@ -48,4 +48,10 @@ public class CardServiceImplementation implements CardService {
     public ArrayList<Card> findAllByAccount(Account account) {
         return null;
     }
+
+    @Override
+    public ArrayList<Card> loadDatabase(ArrayList<Customer> customers) {
+
+        return cardRepositoryImplementation.loadDatabase(customers);
+    }
 }

@@ -12,4 +12,6 @@ public interface CardService {
     Card update(String pin);
     Card findBySerialNumber(String serialNumber);
     ArrayList<Card> findAllByAccount(Account account);
+
+    ArrayList<Card> loadDatabase(ArrayList<Customer> customers);
 }

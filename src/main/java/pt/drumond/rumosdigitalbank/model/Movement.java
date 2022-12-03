@@ -7,9 +7,27 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Movement {
+    private static int id = 1;
     private MovementType type;
     private LocalDate date;
     private double value;
+
+    public Movement() {
+    }
+
+    public Movement(MovementType type, LocalDate date, double value) {
+        this.type = type;
+        this.date = date;
+        this.value = value;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        Movement.id = id;
+    }
 
     public MovementType getType() {
         return type;
