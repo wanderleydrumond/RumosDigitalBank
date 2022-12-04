@@ -30,7 +30,7 @@ public class CardServiceImplementation implements CardService {
     }
 
     @Override
-    public Card update(boolean isVirgin) {
+    public Card update(Card card) {
         return null;
     }
 
@@ -47,6 +47,11 @@ public class CardServiceImplementation implements CardService {
     @Override
     public ArrayList<Card> findAllByAccount(Account account) {
         return null;
+    }
+
+    @Override
+    public void delete(Card cardOwnedByCustomerToBeDeleted) {
+        cardRepositoryImplementation.delete(cardOwnedByCustomerToBeDeleted);
     }
 
     @Override

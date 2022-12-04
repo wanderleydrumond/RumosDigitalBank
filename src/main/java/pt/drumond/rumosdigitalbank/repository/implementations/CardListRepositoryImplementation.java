@@ -45,6 +45,11 @@ public class CardListRepositoryImplementation implements CardRepository {
     }
 
     @Override
+    public void delete(Card cardOwnedByCustomerToBeDeleted) {
+        tableCards.removeIf(cardElement -> cardElement.getSerialNumber().equals(cardOwnedByCustomerToBeDeleted.getSerialNumber()));
+    }
+
+    @Override
     public ArrayList<Card> loadDatabase(ArrayList<Customer> tableCustomers) {
         // Conta 102
         Card debitCard1 = new Card(true, tableCustomers.get(0),0., 0.);

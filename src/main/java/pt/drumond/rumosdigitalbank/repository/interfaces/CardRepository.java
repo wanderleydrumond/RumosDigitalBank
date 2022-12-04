@@ -11,5 +11,6 @@ public interface CardRepository {
     Card update(Card card);
     Card findBySerialNumber(String serialNumber);
     ArrayList<Card> findAllByAccount(Account account);
+    void delete(Card cardOwnedByCustomerToBeDeleted);
     ArrayList<Card> loadDatabase(ArrayList<Customer> customers);
 }

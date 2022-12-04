@@ -227,7 +227,7 @@ public class Bank {
     }
 
     private void addCreditCard() {
-        Customer holderCardOwner = getCustomerByNif();
+        Customer holderCardOwner = getCustomerByNif(true);
         Card creditCard = accountServiceImplementation.addCreditCard(loggedAccount, holderCardOwner);
         if (creditCard != null) {
             System.out.println("Credit card successfully added to account");
@@ -296,7 +296,7 @@ public class Bank {
      * Adds a new debit card into logged account and into database.
      */
     private void addDebitCard() {
-        Customer holderCardOwner = getCustomerByNif();
+        Customer holderCardOwner = getCustomerByNif(true);
         Card debitCard = accountServiceImplementation.addDebitCard(loggedAccount, holderCardOwner);
         if (debitCard != null) {
             System.out.println("Debit card successfully added to account");
@@ -393,14 +393,21 @@ public class Bank {
      * secondary holder), delete them from the bank database.
      */
     private void removeSecondaryHolder() {
-        Customer customerToBeDeleted = getCustomerByNif();
-        displayMargin(customerToBeDeleted);
-        System.out.println(customerToBeDeleted);
-        displayMargin(customerToBeDeleted);
-        System.out.print("Do you confirm this action? (Y)es/(N)o: ");
-        if (scanner.nextLine().equalsIgnoreCase("Y")) {
-            accountServiceImplementation.deleteSecondaryHolder(loggedAccount, customerToBeDeleted);
-            System.out.println("Client deleted successfully");
+        Customer customerToBeDeleted = getCustomerByNif(true);
+        if (Boolean.FALSE.equals(accountServiceImplementation.isMainHolder(customerToBeDeleted, loggedAccount))) { // Se não for um titular principal
+            displayMargin(customerToBeDeleted);
+            System.out.println(customerToBeDeleted);
+            displayMargin(customerToBeDeleted);
+            System.out.print("Do you confirm this action? (Y)es/(N)o: ");
+            if (scanner.nextLine().equalsIgnoreCase("Y")) {
+                if (accountServiceImplementation.deleteSecondaryHolder(loggedAccount, customerToBeDeleted)) {
+                    System.out.println("Client deleted successfully");
+                } else {
+                    System.out.println("Failed to remove: Client has debts on credit card");
+                }
+            }
+        } else {
+            System.out.println("This client is a main holder and cannot be deleted");
         }
         updateAccount(true);
     }
@@ -417,7 +424,7 @@ public class Bank {
 
         switch (menuAddSecondaryHolder()) {
             case 1 -> secondaryHolder = createCustomer(false);
-            case 2 -> secondaryHolder = getCustomerByNif();
+            case 2 -> secondaryHolder = getCustomerByNif(false);
             default -> updateAccountMenu();
         }
 
@@ -436,17 +443,26 @@ public class Bank {
      *
      * @return the <code>Customer</code> that owns that NIF
      */
-    private Customer getCustomerByNif() {
+    private Customer getCustomerByNif(boolean verifyIfExistsInLoggedAccount) {
         Customer customer;
         boolean customerExists;
         do {
             System.out.print("Enter client NIF number: ");
             customerExists = false;
-            customer = customerServiceImplementation.findByNif(scanner.nextLine());
+            String nif = scanner.nextLine();
+            if (verifyIfExistsInLoggedAccount) {
+                customer = accountServiceImplementation.findCustomerByNif(nif, loggedAccount);
+            } else {
+                customer = customerServiceImplementation.findByNif(nif);
+            }
             if (customer != null) {
                 customerExists = true;
             } else {
-                System.out.println("There is no client for the given NIF number.");
+                if (verifyIfExistsInLoggedAccount) {
+                    System.out.println("There is no client for the given NIF number in this account.");
+                } else {
+                    System.out.println("There is no client for the given NIF number.");
+                }
             }
         } while (!customerExists);
         return customer;

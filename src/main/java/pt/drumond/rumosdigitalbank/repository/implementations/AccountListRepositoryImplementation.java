@@ -29,8 +29,6 @@ public class AccountListRepositoryImplementation implements AccountRepository {
         account.setId(++id);
         account.setCode(String.valueOf(100 + tableAccounts.size()));
         tableAccounts.add(account);
-        System.out.println("Lista de contas do banco"); //TODO to be deleted
-        tableAccounts.forEach(System.out::println);//TODO to be deleted
 
         return account;
     }

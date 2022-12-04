@@ -88,8 +88,8 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public boolean transfer(Account originAccount, double value, String destinationAccountCode) {
-        if (withdraw(value, originAccount, MovementType.TRANSFER_OUT).equals(ResponseType.SUCCESS)) {
-            deposit(findByCode(destinationAccountCode), value, MovementType.TRANSFER_IN);
+        if (withdraw(value, originAccount, MovementType.TRANSFER_OUT).equals(ResponseType.SUCCESS)) { // Se o retorno do método de saque (com o valor determinado e o tipo de movimento configurado como transferência de saída, que em tese, é a mesma coisa que o saque) for do tipo enum SUCCESS
+            deposit(findByCode(destinationAccountCode), value, MovementType.TRANSFER_IN);// Então faz o depósito na conta a ser pesquisada
 
             return true;
         }
@@ -126,8 +126,38 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public void deleteSecondaryHolder(Account loggedAccount, Customer secondaryHolder) { //TODO ajeitar isso
+    public boolean deleteSecondaryHolder(Account loggedAccount, Customer secondaryHolder) {
+        Card creditCardOwnedByCustomerToBeDeleted = null, debitCardOwnedByCustomerToBeDeleted = null;
+
+        for (Card cardElement : accountListRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount)) { // busca todos os cartões de crédito da conta logada
+            if (cardElement.getCardHolder().getNif().equals(secondaryHolder.getNif())) { // Se o nif do dono do cartão for igual no NIF do titular que dever ser removido
+                creditCardOwnedByCustomerToBeDeleted = cardElement;
+            }
+        }
+
+        if (creditCardOwnedByCustomerToBeDeleted != null && creditCardOwnedByCustomerToBeDeleted.getPlafondBalance() < creditCardOwnedByCustomerToBeDeleted.getMonthyPlafond()) { //Se esse titular secundário tiver cartão de crédito e não tiver dívida no mesmo
+            return false;
+        }
+
+        for (Card cardElement : accountListRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount)) { // busca todos os cartões de débito da conta logada
+            if (cardElement.getCardHolder().getNif().equals(secondaryHolder.getNif())) { // Se o nif do dono do cartão for igual no NIF do titular que dever ser removido
+                debitCardOwnedByCustomerToBeDeleted = cardElement;
+            }
+        }
+
         loggedAccount.getSecondaryHolders().removeIf(customerElement -> customerElement.getNif().equals(secondaryHolder.getNif())); // Excluir o cliente secundário antes de verificar se ele existe em alguma outra conta
+        loggedAccount.getCards().removeIf(cardElement -> cardElement.getCardHolder().getNif().equals(secondaryHolder.getNif())); // Excluir todos os cartões daquele cliente na conta logada
+
+        accountListRepositoryImplementation.update(loggedAccount); // atualiza a situação dessa conta na base de dados
+
+        if (debitCardOwnedByCustomerToBeDeleted != null) {
+            cardServiceImplementation.delete(debitCardOwnedByCustomerToBeDeleted); // deleta o cartão de débito da base de dados
+        }
+
+        if (creditCardOwnedByCustomerToBeDeleted != null) {
+            cardServiceImplementation.delete(creditCardOwnedByCustomerToBeDeleted); // deleta o cartão de crédito da base de dados
+        }
+
         int timesOfCustomerFound = 0;
         // Verificar se o cliente possui alguma outra conta no banco
         ArrayList<Account> allAccounts = accountListRepositoryImplementation.findAll();
@@ -145,6 +175,8 @@ public class AccountServiceImplementation implements AccountService {
         if (timesOfCustomerFound == 0) {
             customerServiceImplementation.delete(secondaryHolder);
         }
+
+        return true;
     }
 
     @Override
@@ -184,6 +216,24 @@ public class AccountServiceImplementation implements AccountService {
     public ArrayList<Card> getCreditCards(Account loggedAccount) {
 
         return accountListRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount);
+    }
+
+    @Override
+    public Customer findCustomerByNif(String nif, Account loggedAccount) {
+        Customer customer;
+        if (loggedAccount.getMainHolder().getNif().equals(nif)) {
+            customer = loggedAccount.getMainHolder();
+        } else {
+            customer = loggedAccount.getSecondaryHolders().stream().filter(customerElement -> customerElement.getNif().equals(nif)).findFirst().orElse(null);
+        }
+
+        return customer;
+    }
+
+    @Override
+    public Boolean isMainHolder(Customer customerToBeDeleted, Account loggedAccount) {
+
+        return loggedAccount.getMainHolder().getNif().equals(customerToBeDeleted.getNif());
     }
 
     private boolean existsThisTypeCardForThisHolder(Customer cardHolder, ArrayList<Card> cards) {

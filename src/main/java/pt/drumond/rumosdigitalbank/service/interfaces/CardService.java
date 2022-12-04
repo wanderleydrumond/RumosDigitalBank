@@ -8,10 +8,10 @@ import java.util.ArrayList;
 
 public interface CardService {
     Card create(Customer cardHolder, boolean isCreditCard);
-    Card update(boolean isVirgin);
+    Card update(Card card);
     Card update(String pin);
     Card findBySerialNumber(String serialNumber);
     ArrayList<Card> findAllByAccount(Account account);
-
+    void delete(Card cardOwnedByCustomerToBeDeleted);
     ArrayList<Card> loadDatabase(ArrayList<Customer> customers);
 }
