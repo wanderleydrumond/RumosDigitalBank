@@ -15,6 +15,8 @@ import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Contains all methods responsible for the businees rules related to accounts.
@@ -45,7 +47,6 @@ public class AccountServiceImplementation implements AccountService {
      */
     @Override
     public Account update(Account account) {
-
         return accountListRepositoryImplementation.create(account);
     }
 
@@ -93,7 +94,6 @@ public class AccountServiceImplementation implements AccountService {
 
             return true;
         }
-
         return false;
     }
 
@@ -118,11 +118,6 @@ public class AccountServiceImplementation implements AccountService {
         accountToBeDebited.setBalance(accountToBeDebited.getBalance() - value); // atualiza o saldo da conta
         accountToBeDebited.getMovements().add(movimentServiceImplementation.create(value, movementType)); // adiciona um movimento à conta do mesmo tipo passado por parâmetro (TRANSFER_OUT ou  WITHDRAW)
         return ResponseType.SUCCESS; // Operação realizada com sucesso
-    }
-
-    @Override
-    public void payLoan(Account loggedAccount, double value, String creditCardSerialNumber) {
-        //TODO implement method
     }
 
     @Override
@@ -208,13 +203,11 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public ArrayList<Card> getDebitCards(Account loggedAccount) {
-
         return accountListRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount);
     }
 
     @Override
     public ArrayList<Card> getCreditCards(Account loggedAccount) {
-
         return accountListRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount);
     }
 
@@ -232,8 +225,12 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public Boolean isMainHolder(Customer customerToBeDeleted, Account loggedAccount) {
-
         return loggedAccount.getMainHolder().getNif().equals(customerToBeDeleted.getNif());
+    }
+
+    @Override
+    public Card getCardBySerialNumberOnCurrentAccount(Account loggedAccount, String cardSerialNumber) {
+        return loggedAccount.getCards().stream().filter(cardElement -> cardElement.getSerialNumber().equals(cardSerialNumber)).findFirst().orElse(null);
     }
 
     private boolean existsThisTypeCardForThisHolder(Customer cardHolder, ArrayList<Card> cards) {
@@ -257,24 +254,30 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public int getAmountOfSecondaryHolders(Account loggedAccount) {
-
         return loggedAccount.getSecondaryHolders().size();
     }
 
     @Override
     public int getAmountOfCreditCards(Account loggedAccount) {
-
         return accountListRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount).size();
     }
 
     @Override
     public int getAmountOfDebitCards(Account loggedAccount) {
-
         return accountListRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount).size();
     }
 
     @Override
-    public void delete(Account accountToBeDeleted) {
+    public void delete(Account accountToBeDeleted) {//TODO implement method
+        /*
+        1. Verificar se tem cartões de crédito
+        2. Se tiver cartões de crédito, os mesmos não podem estar em dívida
+        3. O saldo da conta tem de estar a 0
+        4. Verificar se os clientes não tem outra conta
+        4.1. Se não estiverem em outra conta, excluí-los da tabela de clientes (ver deleteSecondaryHolders)
+        4.2. Se estiverem em outra conta, excluí-los somente na conta atual
+         */
+
         accountListRepositoryImplementation.delete(accountToBeDeleted);
     }
 }

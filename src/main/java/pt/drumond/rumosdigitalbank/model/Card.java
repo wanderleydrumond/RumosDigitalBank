@@ -79,6 +79,8 @@ public class Card {
                 " | PIN: " + pin +
                 " | IS VIRGIN? " + isVirgin +
                 " | CARD HOLDER: " + cardHolder +
+                " | MONTHLY PLAFOND: " + monthyPlafond +
+                " | PLAFOND BALANCE: " + plafondBalance +
                 " |";
     }
 }

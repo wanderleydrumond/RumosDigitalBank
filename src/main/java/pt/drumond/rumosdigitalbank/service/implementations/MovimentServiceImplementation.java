@@ -42,7 +42,6 @@ public class MovimentServiceImplementation implements MovementService {
 
     @Override
     public ArrayList<Movement> loadDatabase() {
-
         return movementListRepositoryImplementation.loadDatabase();
     }
 }

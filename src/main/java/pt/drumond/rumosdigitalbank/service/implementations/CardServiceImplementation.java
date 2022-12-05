@@ -25,7 +25,6 @@ public class CardServiceImplementation implements CardService {
             card.setMonthyPlafond(0.);
             card.setPlafondBalance(0.);
         }
-
         return cardRepositoryImplementation.create(card);
     }
 
@@ -55,8 +54,18 @@ public class CardServiceImplementation implements CardService {
     }
 
     @Override
-    public ArrayList<Card> loadDatabase(ArrayList<Customer> customers) {
+    public boolean payLoan(Card card, double value) {
+        if (card.getPlafondBalance() + value > card.getMonthyPlafond()) { // Se o valor a ser pago é maior que o valor em dívida
+            return false;
+        }
 
+        card.setPlafondBalance(card.getPlafondBalance() + value); // atualiza o plafond do cartão com o valor pago
+        update(card); // atualiza o cartão na base de dados
+        return true;
+    }
+
+    @Override
+    public ArrayList<Card> loadDatabase(ArrayList<Customer> customers) {
         return cardRepositoryImplementation.loadDatabase(customers);
     }
 }

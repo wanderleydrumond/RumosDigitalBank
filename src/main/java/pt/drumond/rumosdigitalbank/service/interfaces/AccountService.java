@@ -18,7 +18,6 @@ public interface AccountService {
     void deposit(Account account, double value, MovementType deposit);
     boolean transfer(Account account, double value, String destinyAccountCode);
     ResponseType withdraw(double value, Account accountToBeDebited, MovementType movementType);
-    void payLoan(Account account, double value, String creditCardSerialNumber);
     boolean deleteSecondaryHolder(Account account, Customer secondaryHolder);
     Card addDebitCard(Account account, Customer cardHolder);
     Card addCreditCard(Account account, Customer cardHolder);
@@ -32,5 +31,6 @@ public interface AccountService {
     ArrayList<Card> getCreditCards(Account loggedAccount);
     Customer findCustomerByNif(String nif, Account loggedAccount);
     Boolean isMainHolder(Customer customerToBeDeleted, Account loggedAccount);
+    Card getCardBySerialNumberOnCurrentAccount(Account loggedAccount, String cardSerialNumber);
     void loadDatabase(ArrayList<Customer> customers, ArrayList<Card> cards, ArrayList<Movement> movements);
 }

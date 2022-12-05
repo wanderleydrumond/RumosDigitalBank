@@ -68,15 +68,12 @@ public class AccountListRepositoryImplementation implements AccountRepository {
      */
     @Override
     public Account findByCode(String code) {
-
         return tableAccounts.stream().filter(accountElement -> accountElement.getCode().equals(code)).findFirst().orElse(null);
     }
 
     @Override
     public Account update(Account account) {
         tableAccounts.set(tableAccounts.indexOf(account), account);
-        System.out.println("Lista do banco após update da conta"); //TODO to be deleted
-        tableAccounts.forEach(System.out::println); //TODO to be deleted
 
         return account;
     }
@@ -95,7 +92,6 @@ public class AccountListRepositoryImplementation implements AccountRepository {
                 specificMovements.add(movementElement);
             }
         });*/
-
         return accountToBeDebited.getMovements().stream().filter(movementElement -> movementElement.getType().equals(movementType)).collect(Collectors.toCollection(ArrayList::new));
     }
 

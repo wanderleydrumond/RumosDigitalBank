@@ -2,6 +2,7 @@ package pt.drumond.rumosdigitalbank.controller;
 
 import pt.drumond.rumosdigitalbank.HelloApplication;
 import pt.drumond.rumosdigitalbank.enums.MovementType;
+import pt.drumond.rumosdigitalbank.enums.ResponseType;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
@@ -206,6 +207,28 @@ public class Bank {
                 case 3 -> transfer();
                 case 4 -> {
                     //TODO pay loan
+
+                    // Pegando informações do cartão
+                    String cardSerialNumber = getString("Enter card serial number: "); // recebe o número de série do cartão
+                    Card card = accountServiceImplementation.getCardBySerialNumberOnCurrentAccount(loggedAccount, cardSerialNumber); // busca o cartão, na conta logada, através do número de série
+
+                    if (card != null) {
+                        displayMargin(card);
+                        System.out.println(card);
+                        displayMargin(card);
+                    }
+
+                    if (validateCardSituation(card).equals(ResponseType.SUCCESS)) {
+                        double value = Double.parseDouble(getString("Enter value to pay: ")); // recebe o valor a ser pago no cartão de crédito
+                        if (cardServiceImplementation.payLoan(card, value)) { // Tenta pagar o cartão de crédito
+                            System.out.println("Operation concluded succesfully");
+                        } else {
+                            System.out.println("Value to pay exceeds value to pay");
+                        }
+                        displayMargin(card);
+                        System.out.println(card);
+                        displayMargin(card);
+                    }
                 }
                 case 5 -> displayAllHolders();
                 case 6 -> deleteAccount();
@@ -224,6 +247,22 @@ public class Bank {
             }
         } while (doAnotherOperation);
         return quit;
+    }
+
+    private ResponseType validateCardSituation(Card card) {
+        if (card == null) { // Se não encontrar nenhum cartão com o número de série fornecido
+            System.out.println("There are no cards with the given serial number in this account");
+            return ResponseType.INEXISTENT;
+        }
+        if (card.getMonthyPlafond() == 0.) { // Se o cartão encontrado for de débito
+            System.out.println("This is a debit card. Operation available only for credit cards.");
+            return ResponseType.WRONG_CARD_TYPE;
+        }
+        if (card.getPlafondBalance() == card.getMonthyPlafond()) { // Se o cartão de crédito encontrado não tiver dívidas
+            System.out.println("This card has no debts.");
+            return ResponseType.NO_DEBTS;
+        }
+        return ResponseType.SUCCESS; //Se o cartão de crédito tiver dívidas
     }
 
     private void addCreditCard() {
@@ -329,7 +368,7 @@ public class Bank {
     private void deleteAccount() {
         System.out.print("ATTENTION!\nThis action is irreversible!\nDon do want to proceed? (Y)es/(N)o: ");
         if (scanner.nextLine().equalsIgnoreCase("Y")) {
-            accountServiceImplementation.delete(loggedAccount);
+            accountServiceImplementation.delete(loggedAccount); //TODO implement method
             System.out.println("Account successfully deleted");
         }
         mainMenu();

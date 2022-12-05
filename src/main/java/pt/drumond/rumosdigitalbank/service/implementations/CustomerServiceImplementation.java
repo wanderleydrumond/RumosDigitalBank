@@ -28,13 +28,11 @@ public class CustomerServiceImplementation implements CustomerService {
 
     @Override
     public Customer save(Customer customer) {
-
         return customerListRepositoryImplementation.create(customer);
     }
 
     @Override
     public Customer update(Customer customer) {
-
         return customerListRepositoryImplementation.update(customer);
     }
 
@@ -44,7 +42,6 @@ public class CustomerServiceImplementation implements CustomerService {
      * @return the <code>Customer</code> object
      */
     public Customer findByNif(String nif) {
-
         return customerListRepositoryImplementation.findByNif(nif);
     }
 
@@ -65,7 +62,6 @@ public class CustomerServiceImplementation implements CustomerService {
     }
 
     public boolean validateNif(String nif) {
-
         return Boolean.FALSE.equals(customerListRepositoryImplementation.verifyIfNifAlreadyExists(nif)) && nif.matches("^[1-9][0-9]{8}$");
     }
 
@@ -88,27 +84,6 @@ public class CustomerServiceImplementation implements CustomerService {
             return true;
         }
         return false;
-    }
-
-    /**
-     * <ol>
-     *     <li>Sets a costumer attribute inside the customers list.</li>
-     *     <li>Displays all customers for the list.</li>
-     * </ol>
-     *
-     * @param customer            object that contains all parameters that will be updated
-     * @param bank                management class object instance
-     * @param customerGeneralList collection with all bank customers
-     */
-    private void setAndShowCustomer(Customer customer, Bank bank, HashSet<Customer> customerGeneralList) {
-//        customerListRepository.findAll(customerGeneralList).set(customerListRepository.findAll(customerGeneralList).indexOf(customer), customer);
-        /*customerListRepositoryImplementation.findAll(customerGeneralList).forEach(customerElement -> {
-            if (customerElement.getNif().equals(customer.getNif())) {
-                bank.displayMargin(customerElement);
-                System.out.println(customerElement);
-                bank.displayMargin(customerElement);
-            }
-        });*/
     }
 
     /**

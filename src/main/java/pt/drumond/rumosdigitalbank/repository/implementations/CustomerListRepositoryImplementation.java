@@ -42,7 +42,6 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
      */
     @Override
     public Customer findByNif(String nif) {
-
         return tableCustomers.stream().filter(customerElement -> customerElement.getNif().equals(nif)).findFirst().orElse(null);
     }
 
@@ -70,13 +69,11 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
      */
     @Override
     public ArrayList<Customer> findAll() {
-
         return tableCustomers;
     }
 
     @Override
     public boolean verifyIfNifAlreadyExists(String nif) {
-
         return tableCustomers.stream().anyMatch(customerElement -> customerElement.getNif().equals(nif));
     }
 
