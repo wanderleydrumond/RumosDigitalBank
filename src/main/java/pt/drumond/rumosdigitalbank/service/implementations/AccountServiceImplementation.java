@@ -15,7 +15,6 @@ import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -277,7 +276,52 @@ public class AccountServiceImplementation implements AccountService {
         4.1. Se não estiverem em outra conta, excluí-los da tabela de clientes (ver deleteSecondaryHolders)
         4.2. Se estiverem em outra conta, excluí-los somente na conta atual
          */
+        if (accountToBeDeleted.getCards().stream().filter(cardElement -> cardElement.getMonthyPlafond() > 0. && cardElement.getPlafondBalance() < cardElement.getMonthyPlafond()).collect(Collectors.toCollection(ArrayList::new)).size() > 0) { // na conta, percorre a lista de cartões e busca todos os cartões de crédito que tenham dívida, caso exista algum
+//            return ResponseType.THERE_ARE_DEBTS; // Há cartões de crédito em débito
+        }
+        if (accountToBeDeleted.getBalance() > 0.) { // Caso o saldo da conta não esteja zerado
+//            return ResponseType.BALANCE_BIGGER_THAN_ZERO;
+        }
+        /*ArrayList<Customer> customersThatAreInAnotherAccount = accountListRepositoryImplementation.findAll().stream().filter(
+                accountElement -> accountElement.getMainHolder().getNif().equals(accountToBeDeleted.getMainHolder().getNif()) // se o titular principal desta conta também é titular principal em outra
+                        ||
+                accountElement.getSecondaryHolders().stream().filter(customerElement1 -> customerElement1.getNif().equals(accountToBeDeleted.getSecondaryHolders().stream().filter(customerElement3 -> customerElement3.getNif().equals())) // se algum titular secundário da conta logada também é titular secundário em alguma outra conta
+                        ||
+                accountElement.getMainHolder().getNif().equals() // se o titular principal dessa conta for titular secundário em outra conta
+                        ||
+                accountElement.getSecondaryHolders().stream().filter(customerElement2 -> customerElement2.getNif().equals()) ));// se algum titular secundário da conta logada for titular principal de outra conta*/
 
-        accountListRepositoryImplementation.delete(accountToBeDeleted);
+        ArrayList<Customer> customersThatAreInAnotherAccount = new ArrayList<>();
+        ArrayList<Account> allAccounts = accountListRepositoryImplementation.findAll();
+
+        for (Account anotherAccount : allAccounts) {
+            // se o titular principal desta conta também é titular principal em outra
+            if (anotherAccount.getMainHolder().getNif().equals(accountToBeDeleted.getMainHolder().getNif())) {
+                customersThatAreInAnotherAccount.add(accountToBeDeleted.getMainHolder());
+            }
+
+            for (Customer secondaryHolderInAnotherAccount : anotherAccount.getSecondaryHolders()) {
+                // se algum titular secundário da conta logada for titular principal de outra conta
+                if (secondaryHolderInAnotherAccount.getNif().equals(accountToBeDeleted.getMainHolder().getNif())) {
+                    customersThatAreInAnotherAccount.add(accountToBeDeleted.getMainHolder());
+                }
+
+                for (Customer secondaryHolderInAccountToBeDeleted : accountToBeDeleted.getSecondaryHolders()) {
+                    // se algum titular secundário da conta logada também é titular secundário em alguma outra conta
+                    if (secondaryHolderInAnotherAccount.getNif().equals(secondaryHolderInAccountToBeDeleted.getNif())) {
+                        customersThatAreInAnotherAccount.add(secondaryHolderInAccountToBeDeleted);
+                    }
+
+                    // se algum titular secundário da conta logada também é titular principal em alguma outra conta
+                    if (secondaryHolderInAccountToBeDeleted.getNif().equals(anotherAccount.getMainHolder().getNif())) {
+                        customersThatAreInAnotherAccount.add(secondaryHolderInAccountToBeDeleted);
+                    }
+                }
+            }
+        }
+        System.out.println("Clientes da serem removidos:"); //TODO to be deleted
+        customersThatAreInAnotherAccount.forEach(System.out::println); //TODO to be deleted
+
+        accountListRepositoryImplementation.delete(accountToBeDeleted); //TODO uncomment this
     }
 }

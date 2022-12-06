@@ -80,7 +80,7 @@ public class AccountListRepositoryImplementation implements AccountRepository {
 
     @Override
     public void delete(Account account) {
-        //TODO implement method
+        tableAccounts.removeIf(accountElement -> accountElement.getCode().equals(account.getCode()));
     }
 
 
@@ -133,16 +133,16 @@ public class AccountListRepositoryImplementation implements AccountRepository {
          * Titulares secundários:
          * João das Couves - cartão de débito: sim | Cartão de crédito: NÃO
          *                   isVirgin: true       | --
- *                           S/N: 85              | --
+         *                           S/N: 85              | --
          * jane Doe - cartão de débito: SIM | Cartão de crédito: SIM (Plafond: 100 | Saldo plafond: 90)
          *                   isVirgin: true       | isVirgin: true
- *                           S/N: 80              | S/N: 81
+         *                           S/N: 80              | S/N: 81
          * Rosalvo Doe - cartão de débito: SIM | Cartão de crédito: NÃO
          *                   isVirgin: true       | --
-*                            S/N: 84              | --
+         *                            S/N: 84              | --
          * Aang - cartão de débito: SIM | Cartão de crédito: NÃO
          *                   isVirgin: true       | --
- *                           S/N: 86              | -- */
+         *                           S/N: 86              | -- */
         Account account102 = new Account(115., tableCustomers.get(1));
         account102.getSecondaryHolders().addAll(Arrays.asList(tableCustomers.get(0), tableCustomers.get(2), tableCustomers.get(3), tableCustomers.get(4)));
         account102.getCards().addAll(Arrays.asList(tableCards.get(0), tableCards.get(1), tableCards.get(2), tableCards.get(3), tableCards.get(4), tableCards.get(5), tableCards.get(6)));
