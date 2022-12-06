@@ -2,6 +2,7 @@ package pt.drumond.rumosdigitalbank.controller;
 
 import pt.drumond.rumosdigitalbank.HelloApplication;
 import pt.drumond.rumosdigitalbank.enums.MovementType;
+import pt.drumond.rumosdigitalbank.enums.OutputColours;
 import pt.drumond.rumosdigitalbank.enums.ResponseType;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
@@ -19,7 +20,12 @@ import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+
+import static pt.drumond.rumosdigitalbank.enums.OutputColours.*;
 
 /**
  * Application controller class.
@@ -59,16 +65,14 @@ public class Bank {
      * Displays the very first app menu.
      */
     public void initialMenu() {
-        System.out.print("""
-                ╭══════════════════════$═══╮
-                     RUMOS DIGITAL BANK
-                ╰═══€══════════════════════╯
-                Choose your option:
-                0. Quit
-                1. ATM
-                2. Management
-                                
-                Option:\040""");
+        System.out.println(YELLOW_TEXT_BRIGHT.getValue() + "╭══════════════════════" + WHITE_TEXT_BRIGHT_BOLD.getValue() + "$" + YELLOW_TEXT_BRIGHT.getValue() + "═══╮");
+        System.out.println("\040\040\040\040\040" + BLUE_TEXT_BOLD.getValue() + "RUMOS DIGITAL BANK" + "\040\040\040\040\040");
+        System.out.println(YELLOW_TEXT_BRIGHT.getValue() + "╰═══" + WHITE_TEXT_BRIGHT_BOLD.getValue() + "€" + YELLOW_TEXT_BRIGHT.getValue() + "══════════════════════╯");
+        System.out.println(RESET.getValue() + "Choose your option:");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "0. " + RESET.getValue() + "Quit");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "1. " + RESET.getValue() + "ATM");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "2. " + RESET.getValue() + "Management");
+        System.out.print("\nOption:\040");
 
         new HelloApplication().startSelectedApp(Integer.parseInt(scanner.nextLine()));
     }
@@ -79,18 +83,16 @@ public class Bank {
      * @return the choice made by user
      */
     private int mainMenu() {
-        System.out.print("""
-                ╭═════════════════════════════════$═══╮
-                     RUMOS DIGITAL BANK MANAGEMENT
-                ╰═══€═════════════════════════════════╯
-                Choose your option:
-                0. Back to previous menu
-                1. Create new account
-                2. Manage account by code
-                3. Search client by NIF
-                4. Update client by NIF
-                                
-                Option:\040""");
+        System.out.println(YELLOW_TEXT_BRIGHT.getValue() + "╭═════════════════════════════════" + WHITE_TEXT_BRIGHT_BOLD.getValue() + "$" + YELLOW_TEXT_BRIGHT.getValue() + "═══╮");
+        System.out.println("\040\040\040\040\040" + BLUE_TEXT_BOLD.getValue() + "RUMOS DIGITAL BANK MANAGEMENT" + "\040\040\040\040\040");
+        System.out.println(YELLOW_TEXT_BRIGHT.getValue() + "╰═══" + WHITE_TEXT_BRIGHT_BOLD.getValue() + "€" + YELLOW_TEXT_BRIGHT.getValue() + "═════════════════════════════════╯");
+        System.out.println(RESET.getValue() + "Choose your option:");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "0. " + RESET.getValue() + "Back to previous menu");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "1. " + RESET.getValue() + "Create new account");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "2. " + RESET.getValue() + "Manage account by code");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "3. " + RESET.getValue() + "Search client by NIF");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "4. " + RESET.getValue() + "Update client by NIF");
+        System.out.print("\nOption:\040");
 
         return Integer.parseInt(scanner.nextLine());
     }
@@ -102,39 +104,38 @@ public class Bank {
      * @return the choice made by user
      */
     private int updateAccountMenu() {
-        System.out.println("""
-                ╭═════════════════════════════════════════$═══╮
-                     RUMOS DIGITAL BANK MANAGEMENT ACCOUNT
-                ╰═══€═════════════════════════════════════════╯
-                Choose your option:
-                 0. Back to previous menu (logout account)
-                 1. View account details
-                 2. Deposit
-                 3. Transfer
-                 4. Pay loan
-                 5. List all clients
-                 6. Delete account
-                 7. List all movements""");
+        System.out.println(YELLOW_TEXT_BRIGHT.getValue() + "╭═════════════════════════════════════════" + WHITE_TEXT_BRIGHT_BOLD.getValue() + "$" + YELLOW_TEXT_BRIGHT.getValue() + "═══╮");
+        System.out.println("\040\040\040\040\040" + BLUE_TEXT_BOLD.getValue() + "RUMOS DIGITAL BANK MANAGEMENT ACCOUNT" + "\040\040\040\040\040");
+        System.out.println(YELLOW_TEXT_BRIGHT.getValue() + "╰═══" + WHITE_TEXT_BRIGHT_BOLD.getValue() + "€" + YELLOW_TEXT_BRIGHT.getValue() + "═════════════════════════════════════════╯");
+        System.out.println(RESET.getValue() + "Choose your option:");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "0. " + RESET.getValue() + "Back to previous menu (logout account)");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "1. " + RESET.getValue() + "View account details");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "2. " + RESET.getValue() + "Deposit");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "3. " + RESET.getValue() + "Transfer");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "4. " + RESET.getValue() + "Pay loan");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "5. " + RESET.getValue() + "List all clients");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "6. " + RESET.getValue() + "Delete account");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "7. " + RESET.getValue() + "List all movements");
 
         if (accountServiceImplementation.getAmountOfDebitCards(loggedAccount) < 5) {
-            System.out.println(" 8. Add new debit card");
+            System.out.println(CYAN_TEXT_NORMAL.getValue() + "8. " + RESET.getValue() + "Add new debit card");
         } else {
-            System.out.println(" X. This account already reached the maximum amount of debit cards");
+            System.out.println(RED_TEXT_NORMAL.getValue() + "X. " + RESET.getValue() + "This account already reached the maximum amount of debit cards");
         }
         if (accountServiceImplementation.getAmountOfCreditCards(loggedAccount) < 2) {
-            System.out.println(" 9. Add new credit card");
+            System.out.println(CYAN_TEXT_NORMAL.getValue() + "9. " + RESET.getValue() + "Add new credit card");
         } else {
-            System.out.println(" X. This account already reached the maximum amount of credit cards");
+            System.out.println(RED_TEXT_NORMAL.getValue() + "X. " + RESET.getValue() + "This account already reached the maximum amount of credit cards");
         }
         if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) < 4) {
-            System.out.println("10. Insert new secondary holder");
+            System.out.println(CYAN_TEXT_NORMAL.getValue() + "10. " + RESET.getValue() + "Insert new secondary holder");
         } else {
-            System.out.println(" X. This account already reached the maximum amount of secondary holders");
+            System.out.println(RED_TEXT_NORMAL.getValue() + "X. " + RESET.getValue() + "This account already reached the maximum amount of secondary holders");
         }
         if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 0) {
-            System.out.println("11. Delete secondary holder");
+            System.out.println(CYAN_TEXT_NORMAL.getValue() + "11. " + RESET.getValue() + "Delete secondary holder");
         } else {
-            System.out.println(" X. This account has no secondary holders to delete");
+            System.out.println(RED_TEXT_NORMAL.getValue() + "X. " + RESET.getValue() + "This account has no secondary holders to delete");
         }
         System.out.print("\nOption:\040");
 
@@ -142,15 +143,30 @@ public class Bank {
     }
 
     private int menuAddSecondaryHolder() {
-        System.out.print("""
-                0. Cancel operation
-                1. Add a new client
-                2. Add an existent client
-                                            
-                Option:\040""");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "0. " + RESET.getValue() + "Cancel operation");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "1. " + RESET.getValue() + "Add a new client");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "2. " + RESET.getValue() + "Add an existent client");
+        System.out.print("\nOption:\040");
 
         return Integer.parseInt(scanner.nextLine());
     }
+
+    private int updateCustomerMenu() {
+        System.out.println("What do you want to update?\n");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "0. " + RESET.getValue() + "Nothing, I changed my mind");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "1. " + RESET.getValue() + "Name");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "2. " + RESET.getValue() + "Password");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "3. " + RESET.getValue() + "Phone number");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "4. " + RESET.getValue() + "Mobile number");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "5. " + RESET.getValue() + "e-mail");
+        System.out.println(CYAN_TEXT_NORMAL.getValue() + "6. " + RESET.getValue() + "Profession");
+        System.out.print("\nOption:\040");
+
+        return Integer.parseInt(scanner.nextLine());
+    }
+                                                          /*
+- - - - - - - - - - - - - - - - - - - - - - - - - - - END MENUS - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                                         */
 
     /**
      * Contains the application core.
@@ -174,7 +190,7 @@ public class Bank {
                 default -> initialMenu();
             }
             if (!quit) {
-                System.out.print("Do you want to perform another operation? (Y)es/(N)o managent: "); //TODO delete the 'management' word
+                System.out.print("Do you want to perform another operation? (" + GREEN_TEXT_BRIGHT.getValue() + "Y" + RESET.getValue() + ")es/(" + RED_TEXT_NORMAL.getValue() + "N" + RESET.getValue() + ")o managent: "); //TODO delete the 'management' word
                 if (scanner.nextLine().equalsIgnoreCase("Y")) {
                     proceed = true;
                 } else {
@@ -205,31 +221,7 @@ public class Bank {
                 case 1 -> displayDetails();
                 case 2 -> deposit();
                 case 3 -> transfer();
-                case 4 -> {
-                    //TODO pay loan
-
-                    // Pegando informações do cartão
-                    String cardSerialNumber = getString("Enter card serial number: "); // recebe o número de série do cartão
-                    Card card = accountServiceImplementation.getCardBySerialNumberOnCurrentAccount(loggedAccount, cardSerialNumber); // busca o cartão, na conta logada, através do número de série
-
-                    if (card != null) {
-                        displayMargin(card);
-                        System.out.println(card);
-                        displayMargin(card);
-                    }
-
-                    if (validateCardSituation(card).equals(ResponseType.SUCCESS)) {
-                        double value = Double.parseDouble(getString("Enter value to pay: ")); // recebe o valor a ser pago no cartão de crédito
-                        if (cardServiceImplementation.payLoan(card, value)) { // Tenta pagar o cartão de crédito
-                            System.out.println("Operation concluded succesfully");
-                        } else {
-                            System.out.println("Value to pay exceeds value to pay");
-                        }
-                        displayMargin(card);
-                        System.out.println(card);
-                        displayMargin(card);
-                    }
-                }
+                case 4 -> payLoan();
                 case 5 -> displayAllHolders();
                 case 6 -> deleteAccount();
                 case 7 -> displayAllMovements();
@@ -239,7 +231,7 @@ public class Bank {
                 case 11 -> removeSecondaryHolder();
                 default -> mainMenu();
             }
-            System.out.print("Do you want to perform another operation? (Y)es/(N)o account: "); //TODO delete the 'account' word
+            System.out.print("Do you want to perform another operation? (" + GREEN_TEXT_BRIGHT.getValue() + "Y" + RESET.getValue() + ")es/(" + RED_TEXT_NORMAL.getValue() + "N" + RESET.getValue() + ")o account: "); //TODO delete the 'account' word
             if (scanner.nextLine().equalsIgnoreCase("Y")) {
                 doAnotherOperation = true;
             } else {
@@ -247,6 +239,33 @@ public class Bank {
             }
         } while (doAnotherOperation);
         return quit;
+    }
+
+    /**
+     * Provides an interface to treat all necessary data to pay loan in credit card in logged account.
+     */
+    private void payLoan() {
+        // Pegando informações do cartão
+        String cardSerialNumber = getString("Enter card serial number: "); // recebe o número de série do cartão
+        Card card = accountServiceImplementation.getCardBySerialNumberOnCurrentAccount(loggedAccount, cardSerialNumber); // busca o cartão, na conta logada, através do número de série
+
+        if (card != null) {
+            displayMargin(card);
+            System.out.println(card);
+            displayMargin(card);
+        }
+
+        if (validateCardSituation(card).equals(ResponseType.SUCCESS)) {
+            double value = Double.parseDouble(getString("Enter value to pay: ")); // recebe o valor a ser pago no cartão de crédito
+            if (cardServiceImplementation.payLoan(card, value)) { // Tenta pagar o cartão de crédito
+                System.out.println("Operation concluded succesfully");
+            } else {
+                System.out.println("Value to pay exceeds value to pay");
+            }
+            displayMargin(card);
+            System.out.println(card);
+            displayMargin(card);
+        }
     }
 
     private ResponseType validateCardSituation(Card card) {
@@ -269,13 +288,13 @@ public class Bank {
         Customer holderCardOwner = getCustomerByNif(true);
         Card creditCard = accountServiceImplementation.addCreditCard(loggedAccount, holderCardOwner);
         if (creditCard != null) {
-            System.out.println("Credit card successfully added to account");
+            System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Credit card successfully added to account" + RESET.getValue());
 
             displayMargin(creditCard);
             printCard(creditCard, true);
             displayMargin(creditCard);
         } else {
-            System.out.println("Client already has credit card.");
+            System.out.println(RED_TEXT_BRIGHT.getValue() + "Client already has credit card." + RESET.getValue());
         }
     }
 
@@ -338,13 +357,13 @@ public class Bank {
         Customer holderCardOwner = getCustomerByNif(true);
         Card debitCard = accountServiceImplementation.addDebitCard(loggedAccount, holderCardOwner);
         if (debitCard != null) {
-            System.out.println("Debit card successfully added to account");
+            System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Debit card successfully added to account" + RESET.getValue());
 
             displayMargin(debitCard);
             printCard(debitCard, false);
             displayMargin(debitCard);
         } else {
-            System.out.println("Client already has debit card.");
+            System.out.println(RED_TEXT_BRIGHT.getValue() + "Client already has debit card." + RESET.getValue());
         }
     }
 
@@ -366,10 +385,13 @@ public class Bank {
      * </ol>
      */
     private void deleteAccount() {
-        System.out.print("ATTENTION!\nThis action is irreversible!\nDon do want to proceed? (Y)es/(N)o: ");
+        System.out.println(PURPLE_TEXT_BOLD.getValue() + "ATTENTION!" + RESET.getValue());
+        System.out.println(PURPLE_TEXT_NORMAL.getValue() + "\nThis action is irreversible!" + RESET.getValue());
+        System.out.print("Do you want to proceed? (" + GREEN_TEXT_BRIGHT.getValue() + "Y" + RESET.getValue() + ")es/(" + RED_TEXT_NORMAL.getValue() + "N" + RESET.getValue() + ")o: ");
+
         if (scanner.nextLine().equalsIgnoreCase("Y")) {
-            accountServiceImplementation.delete(loggedAccount); //TODO implement method
-            System.out.println("Account successfully deleted");
+            accountServiceImplementation.delete(loggedAccount);
+            System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Account successfully deleted");
         }
         mainMenu();
     }
@@ -400,9 +422,10 @@ public class Bank {
         double transferValue = Double.parseDouble(scanner.nextLine());
         String destinationAccount = getString("Insert the destination account code: ");
         if (accountServiceImplementation.transfer(loggedAccount, transferValue, destinationAccount)) {
-            System.out.println("Transfer successfully done");
+            System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Transfer successfully done" + RESET.getValue());
         } else {
-            System.out.printf("Insuficient balance: %.2f€%n", loggedAccount.getBalance());
+            System.out.print(RED_TEXT_BRIGHT.getValue() + "Insuficient balance: " + RESET.getValue());
+            System.out.printf("%.2f€%n", loggedAccount.getBalance());
         }
         updateAccount(true);
     }
@@ -437,16 +460,16 @@ public class Bank {
             displayMargin(customerToBeDeleted);
             System.out.println(customerToBeDeleted);
             displayMargin(customerToBeDeleted);
-            System.out.print("Do you confirm this action? (Y)es/(N)o: ");
+            System.out.print("Do you confirm this action? (" + GREEN_TEXT_BRIGHT.getValue() + "Y" + RESET.getValue() + ")es/(" + RED_TEXT_NORMAL.getValue() + "N" + RESET.getValue() + ")o: ");
             if (scanner.nextLine().equalsIgnoreCase("Y")) {
                 if (accountServiceImplementation.deleteSecondaryHolder(loggedAccount, customerToBeDeleted)) {
-                    System.out.println("Client deleted successfully");
+                    System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Client deleted successfully" + RESET.getValue());
                 } else {
-                    System.out.println("Failed to remove: Client has debts on credit card");
+                    System.out.println(RED_TEXT_BRIGHT.getValue() + "Failed to remove: " + RESET.getValue() + "Client has debts on credit card");
                 }
             }
         } else {
-            System.out.println("This client is a main holder and cannot be deleted");
+            System.out.println(RED_TEXT_BRIGHT.getValue() + "This client is a main holder and cannot be deleted" + RESET.getValue());
         }
         updateAccount(true);
     }
@@ -469,9 +492,9 @@ public class Bank {
 
         if (secondaryHolder != null) {
             if (accountServiceImplementation.addSecondaryHolder(loggedAccount, secondaryHolder)) {
-                System.out.println("Client successfully added to account");
+                System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Client successfully added to account" + RESET.getValue());
             } else {
-                System.out.println("Client already existent in this account");
+                System.out.println(RED_TEXT_BRIGHT.getValue() + "Client already existent in this account" + RESET.getValue());
             }
         }
     }
@@ -498,9 +521,9 @@ public class Bank {
                 customerExists = true;
             } else {
                 if (verifyIfExistsInLoggedAccount) {
-                    System.out.println("There is no client for the given NIF number in this account.");
+                    System.out.println(RED_TEXT_BRIGHT.getValue() + "There is no client for the given NIF number in this account." + RESET.getValue());
                 } else {
-                    System.out.println("There is no client for the given NIF number.");
+                    System.out.println(RED_TEXT_BRIGHT + "There is no client for the given NIF number." + RESET.getValue());
                 }
             }
         } while (!customerExists);
@@ -522,7 +545,7 @@ public class Bank {
             if (loggedAccount != null) {
                 accountExists = true;
             } else {
-                System.out.println("There is no account for the given code number.");
+                System.out.println(RED_TEXT_BRIGHT.getValue() + "There is no account for the given code number." + RESET.getValue());
             }
         } while (!accountExists);
 
@@ -560,46 +583,24 @@ public class Bank {
             do {
                 switch (updateCustomerMenu()) { // Exibe um menu de opções para as informações que podem ser atualizadas
                     case 1 -> customer.setName(getString("Insert new name: ")); // atualiza o nome do cliente no objeto
-                    case 2 ->
-                            customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
-                    case 3 ->
-                            customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
-                    case 4 ->
-                            customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
-                    case 5 ->
-                            customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
-                    case 6 ->
-                            customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
+                    case 2 -> customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
+                    case 3 -> customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
+                    case 4 -> customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
+                    case 5 -> customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
+                    case 6 -> customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
                     default -> {/*retorna ao menu principal*/}
                 }
                 customerServiceImplementation.update(customer); // atualiza as informações do cliente na base de dados
-                System.out.println("Client current informations:");
+                System.out.println(YELLOW_TEXT_NORMAL.getValue() + "Client current informations:" + RESET.getValue());
                 displayMargin(customer);
                 System.out.println(customer);
                 displayMargin(customer);
 
-                if (getString("Do you want to update another client information? (Y)es/(N)o: ").equalsIgnoreCase("N")) {
+                if (getString("Do you want to update another client information? (" + GREEN_TEXT_BRIGHT.getValue() + "Y" + RESET.getValue() + ")es/(" + RED_TEXT_NORMAL.getValue() + "N" + RESET.getValue() + ")o: ").equalsIgnoreCase("N")) {
                     exitUpdateCustomerMenu = true;
                 }
             } while (!exitUpdateCustomerMenu);
         }
-    }
-
-    private int updateCustomerMenu() {
-        System.out.print("""
-                What do you want to update?
-                                        
-                0. Nothing, I changed my mind
-                1. Name
-                2. Password
-                3. Phone number
-                4. Mobile number
-                5. e-mail
-                6. Profession
-                                        
-                Option:\040""");
-
-        return Integer.parseInt(scanner.nextLine());
     }
 
     /**
@@ -625,13 +626,14 @@ public class Bank {
 
                 wasAccountCreated = true;
 
-                System.out.println("Account Created successfully");
+                System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Account Created successfully" + RESET.getValue());
                 displayMargin(loggedAccount);
                 System.out.println(loggedAccount);
                 displayMargin(loggedAccount);
 
             } else {
-                System.out.print("Insuficient value \nDo you want to enter a new value?(Y)es / (N)o \nOption: ");
+                System.out.println(RED_TEXT_BRIGHT.getValue() + "Insuficient value " + RESET.getValue() + "\nDo you want to enter a new value?(" + GREEN_TEXT_BRIGHT.getValue() + "Y" + RESET.getValue() + ")es/(");
+                System.out.print(RED_TEXT_NORMAL + "N" + RESET.getValue() + ")o \nOption: ");
                 if (scanner.nextLine().equalsIgnoreCase("n")) {
                     mainMenu(); // Go back to main menu
                 }
@@ -648,7 +650,7 @@ public class Bank {
             email = scanner.nextLine();
 
             if (!customerServiceImplementation.validateEmail(email)) {
-                System.out.println("Invalid email");
+                System.out.println(RED_TEXT_BRIGHT.getValue() + "Invalid email" + RESET.getValue());
                 isEmailOK = false;
             }
         } while (!isEmailOK);
@@ -664,7 +666,7 @@ public class Bank {
             mobile = scanner.nextLine();
 
             if (!customerServiceImplementation.validateMobile(mobile)) {
-                System.out.println("Invalid mobile number");
+                System.out.println(RED_TEXT_BRIGHT.getValue() + "Invalid mobile number" + RESET.getValue());
                 isMobileOK = false;
             }
         } while (!isMobileOK);
@@ -680,7 +682,7 @@ public class Bank {
             phone = scanner.nextLine();
 
             if (!customerServiceImplementation.validatePhone(phone)) {
-                System.out.println("Invalid phone number");
+                System.out.println(RED_TEXT_BRIGHT.getValue() + "Invalid phone number" + RESET.getValue());
                 isPhoneOK = false;
             }
         } while (!isPhoneOK);
@@ -703,7 +705,7 @@ public class Bank {
             System.out.print("Insert nif: ");
             nif = scanner.nextLine();
             if (!customerServiceImplementation.validateNif(nif)) {
-                System.out.println("Invalid NIF number.");
+                System.out.println(RED_TEXT_BRIGHT.getValue() + "Invalid NIF number." + RESET.getValue());
                 isNifOK = false;
             }
         } while (!isNifOK);
@@ -718,7 +720,7 @@ public class Bank {
             System.out.print("Insert date of birth (dd/MM/yyyy): ");
             birthDate = LocalDate.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             if (isMainHolder && !customerServiceImplementation.validateAge(birthDate)) {
-                System.out.println("Main holder must be 18 years old at least.");
+                System.out.println(RED_TEXT_BRIGHT.getValue() + "Main holder must be 18 years old at least." + RESET.getValue());
                 isOlderThan18 = false;
             }
         } while (!isOlderThan18);
