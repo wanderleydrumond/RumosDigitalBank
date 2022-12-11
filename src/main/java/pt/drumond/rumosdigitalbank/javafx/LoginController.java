@@ -11,7 +11,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import pt.drumond.rumosdigitalbank.Main;
 import pt.drumond.rumosdigitalbank.model.Card;
+import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
 import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
+import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
+import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.io.IOException;
 
@@ -25,13 +28,27 @@ public class LoginController {
     @FXML
     private AnchorPane anchorPaneWelcome;
     private Stage stage;
-//    private CardService cardServiceImplementation = new CardServiceImplementation();
+
+    private CustomerService customerServiceImplementation;
+
     private CardService cardServiceImplementation;
+    private MovementService movementServiceImplementation;
+    /**
+     * Object used to give access to methods from service layer from account.
+     */
+    private AccountService accountServiceImplementation;
+
+    public LoginController() {
+        this.customerServiceImplementation = Main.getBank().getCustomerServiceImplementation();
+        this.cardServiceImplementation = Main.getBank().getCardServiceImplementation();
+        this.movementServiceImplementation = Main.getBank().getMovementServiceImplementation();
+        this.accountServiceImplementation = Main.getBank().getAccountServiceImplementation();
+    }
 
     public void setStage(Stage stage) throws IOException {
         this.stage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("login-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
+        Scene scene = new Scene(fxmlLoader.load()); //TODO estoura aqui
         this.stage.setTitle("Rumos Digital Bank ATM");
         this.stage.setResizable(false);
         this.stage.setScene(scene);
@@ -48,6 +65,7 @@ public class LoginController {
 
     public void login(ActionEvent actionEvent) throws IOException { //TODO remove unused argument
         Card card = cardServiceImplementation.findBySerialNumber(textFieldCardSerialnumber.getText());
+        System.out.println(card); //TODO to be deleted
 
         if (card.getPin().equals(passwordFieldCardPin.getText())) {
             if (card.isVirgin()) {

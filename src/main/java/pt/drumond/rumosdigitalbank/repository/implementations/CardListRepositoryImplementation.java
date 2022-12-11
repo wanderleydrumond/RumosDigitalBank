@@ -34,7 +34,7 @@ public class CardListRepositoryImplementation implements CardRepository {
 
     @Override
     public Card findBySerialNumber(String serialNumber) {
-        return tableCards.stream().filter(debitCardElement -> debitCardElement.getSerialNumber().equals(serialNumber)).findFirst().orElse(null);
+        return tableCards.stream().filter(cardElement -> cardElement.getSerialNumber().equals(serialNumber)).findFirst().orElse(null);
     }
 
     @Override

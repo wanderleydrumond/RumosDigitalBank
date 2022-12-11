@@ -7,18 +7,6 @@ import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.model.Movement;
-import pt.drumond.rumosdigitalbank.repository.implementations.AccountListRepositoryImplementation;
-import pt.drumond.rumosdigitalbank.repository.implementations.CardListRepositoryImplementation;
-import pt.drumond.rumosdigitalbank.repository.implementations.CustomerListRepositoryImplementation;
-import pt.drumond.rumosdigitalbank.repository.implementations.MovimentListRepositoryImplementation;
-import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
-import pt.drumond.rumosdigitalbank.repository.interfaces.CardRepository;
-import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
-import pt.drumond.rumosdigitalbank.repository.interfaces.MovementListRepository;
-import pt.drumond.rumosdigitalbank.service.implementations.AccountServiceImplementation;
-import pt.drumond.rumosdigitalbank.service.implementations.CardServiceImplementation;
-import pt.drumond.rumosdigitalbank.service.implementations.CustomerServiceImplementation;
-import pt.drumond.rumosdigitalbank.service.implementations.MovimentServiceImplementation;
 import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
 import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
@@ -66,6 +54,22 @@ public class Bank {
         this.accountServiceImplementation.loadDatabase(customers, cards, movements);
 
         scanner = new Scanner(System.in);
+    }
+
+    public CustomerService getCustomerServiceImplementation() {
+        return customerServiceImplementation;
+    }
+
+    public CardService getCardServiceImplementation() {
+        return cardServiceImplementation;
+    }
+
+    public MovementService getMovementServiceImplementation() {
+        return movementServiceImplementation;
+    }
+
+    public AccountService getAccountServiceImplementation() {
+        return accountServiceImplementation;
     }
 
                                                           /*
@@ -769,7 +773,7 @@ public class Bank {
     public void printCustomer(Customer customer) {
         ArrayList<String> names = new ArrayList<>();
         String biggestName = "", biggestEmail = "", biggestProfession = "", name = "NAME", email = "E-MAIL", profession = "PROFESSION";
-        final String SPACE ="\040";
+        final String SPACE = "\040";
 
         if (loggedAccount.getSecondaryHolders() != null) {
             for (Customer customerElement : loggedAccount.getSecondaryHolders()) {
@@ -848,7 +852,7 @@ public class Bank {
     }
 
     private void printCustomerMargin(Customer customer, String biggestName, String biggestEmail, String biggestProfession, boolean isLineThin) {
-        final String PLUS = "+", MINUS ="-", EQUAL = "=";
+        final String PLUS = "+", MINUS = "-", EQUAL = "=";
 
         System.out.print(PLUS);
         for (int index = 0; index < customer.getNif().length() + 2; index++) {

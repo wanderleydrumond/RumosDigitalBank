@@ -24,25 +24,11 @@ import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 import java.io.IOException;
 
 public class Main extends Application {
+    private static Bank bank;
 
-//    private CustomerRepository customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
-    /**
-     * Object used to give access to methods from service layer from customer.
-     */
-//    private CustomerService customerServiceImplementation = new CustomerServiceImplementation(customerListRepositoryImplementation);
-
-    //    private CustomerService customerServiceImplementation = new CustomerServiceImplementation(new CustomerListRepositoryImplementation()); TODO ver essa implementação
-//    private CardRepository cardRepositoryImplementation = new CardListRepositoryImplementation();
-//    private CardService cardServiceImplementation = new CardServiceImplementation(cardRepositoryImplementation);
-//    private MovementListRepository movementListRepositoryImplementation = new MovimentListRepositoryImplementation();
-//    private MovementService movementServiceImplementation = new MovimentServiceImplementation(movementListRepositoryImplementation);
-
-//    private AccountRepository accountListRepositoryImplementation = new AccountListRepositoryImplementation();
-    /**
-     * Object used to give access to methods from service layer from account.
-     */
-//    private AccountService accountServiceImplementation = new AccountServiceImplementation(customerServiceImplementation, movementServiceImplementation, cardServiceImplementation, accountListRepositoryImplementation);
-    static Bank bank;
+    public static Bank getBank() {
+        return bank;
+    }
 
     public static void main(String[] args) {
         CustomerRepository customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
@@ -68,11 +54,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        /*FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("login-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Rumos Digital Bank ATM");
-        stage.setScene(scene);
-        stage.show();*/
         new LoginController().setStage(stage);
     }
 }

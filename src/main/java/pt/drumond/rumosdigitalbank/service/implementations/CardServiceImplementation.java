@@ -44,7 +44,7 @@ public class CardServiceImplementation implements CardService {
 
     @Override
     public Card findBySerialNumber(String serialNumber) {
-        return null;
+        return cardRepositoryImplementation.findBySerialNumber(serialNumber);
     }
 
     @Override
