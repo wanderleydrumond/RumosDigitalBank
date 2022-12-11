@@ -1,6 +1,6 @@
 package pt.drumond.rumosdigitalbank.controller;
 
-import pt.drumond.rumosdigitalbank.LoginATM;
+import pt.drumond.rumosdigitalbank.Main;
 import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.enums.ResponseType;
 import pt.drumond.rumosdigitalbank.model.Account;
@@ -37,34 +37,33 @@ import static pt.drumond.rumosdigitalbank.enums.OutputColours.*;
  * Application controller class.
  */
 public class Bank {
-    private CustomerRepository customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
     /**
      * Object used to give access to methods from service layer from customer.
      */
-    private CustomerService customerServiceImplementation = new CustomerServiceImplementation(customerListRepositoryImplementation);
+    private CustomerService customerServiceImplementation;
 
-//    private CustomerService customerServiceImplementation = new CustomerServiceImplementation(new CustomerListRepositoryImplementation()); TODO ver essa implementação
-    private CardRepository cardRepositoryImplementation = new CardListRepositoryImplementation();
-    private CardService cardServiceImplementation = new CardServiceImplementation(cardRepositoryImplementation);
-    private MovementListRepository movementListRepositoryImplementation = new MovimentListRepositoryImplementation();
-    private MovementService movementServiceImplementation = new MovimentServiceImplementation(movementListRepositoryImplementation);
-
-    private AccountRepository accountListRepositoryImplementation = new AccountListRepositoryImplementation();
+    private CardService cardServiceImplementation;
+    private MovementService movementServiceImplementation;
     /**
      * Object used to give access to methods from service layer from account.
      */
-    private AccountService accountServiceImplementation = new AccountServiceImplementation(customerServiceImplementation, movementServiceImplementation, cardServiceImplementation, accountListRepositoryImplementation);
+    private AccountService accountServiceImplementation;
     /**
      * Object that will be made all current operations.
      */
     private Account loggedAccount;
     private Scanner scanner;
 
-    public Bank() {
-        ArrayList<Customer> customers = customerServiceImplementation.loadDatabase();
-        ArrayList<Card> cards = cardServiceImplementation.loadDatabase(customers);
-        ArrayList<Movement> movements = movementServiceImplementation.loadDatabase();
-        accountServiceImplementation.loadDatabase(customers, cards, movements);
+    public Bank(CustomerService customerServiceImplementation, CardService cardServiceImplementation, MovementService movementServiceImplementation, AccountService accountServiceImplementation) {
+        this.customerServiceImplementation = customerServiceImplementation;
+        this.cardServiceImplementation = cardServiceImplementation;
+        this.movementServiceImplementation = movementServiceImplementation;
+        this.accountServiceImplementation = accountServiceImplementation;
+
+        ArrayList<Customer> customers = this.customerServiceImplementation.loadDatabase();
+        ArrayList<Card> cards = this.cardServiceImplementation.loadDatabase(customers);
+        ArrayList<Movement> movements = this.movementServiceImplementation.loadDatabase();
+        this.accountServiceImplementation.loadDatabase(customers, cards, movements);
 
         scanner = new Scanner(System.in);
     }
@@ -86,7 +85,7 @@ public class Bank {
         System.out.println(CYAN_TEXT_NORMAL.getValue() + "2. " + RESET.getValue() + "Management");
         System.out.print("\nOption:\040");
 
-        new LoginATM().startSelectedApp(Integer.parseInt(scanner.nextLine()));
+        new Main().startSelectedApp(Integer.parseInt(scanner.nextLine()));
     }
 
     /**

@@ -9,9 +9,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import pt.drumond.rumosdigitalbank.LoginATM;
+import pt.drumond.rumosdigitalbank.Main;
 import pt.drumond.rumosdigitalbank.model.Card;
-import pt.drumond.rumosdigitalbank.service.implementations.CardServiceImplementation;
 import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 
 import java.io.IOException;
@@ -31,7 +30,7 @@ public class LoginController {
 
     public void setStage(Stage stage) throws IOException {
         this.stage = stage;
-        FXMLLoader fxmlLoader = new FXMLLoader(LoginATM.class.getResource("login-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         this.stage.setTitle("Rumos Digital Bank ATM");
         this.stage.setResizable(false);
