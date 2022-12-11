@@ -1,6 +1,5 @@
 package pt.drumond.rumosdigitalbank.service.implementations;
 
-import pt.drumond.rumosdigitalbank.controller.Bank;
 import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.repository.implementations.CustomerListRepositoryImplementation;
 import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
@@ -9,8 +8,6 @@ import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Scanner;
 
 /**
  * Contains all methods responsible for the businees rules related to customers.
@@ -21,8 +18,11 @@ public class CustomerServiceImplementation implements CustomerService {
      */
     private CustomerRepository customerListRepositoryImplementation;
 
-    public CustomerServiceImplementation() {
+    /*public CustomerServiceImplementation() {
         customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
+    }*/
+    public CustomerServiceImplementation(CustomerRepository customerRepository) {
+        customerListRepositoryImplementation = customerRepository;
     }
 
 
@@ -50,7 +50,6 @@ public class CustomerServiceImplementation implements CustomerService {
      * <em>Allows returning to main menu typing 0</em>
      */
     public void delete(Customer customer) {
-
         customerListRepositoryImplementation.delete(customer);
     }
 

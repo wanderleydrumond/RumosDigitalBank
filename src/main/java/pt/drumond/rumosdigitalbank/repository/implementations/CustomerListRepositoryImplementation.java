@@ -42,6 +42,8 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
      */
     @Override
     public Customer findByNif(String nif) {
+        System.out.println("Todos os clientes"); //TODO to be deleted
+        tableCustomers.forEach(System.out::println); //TODO to be deleted
         return tableCustomers.stream().filter(customerElement -> customerElement.getNif().equals(nif)).findFirst().orElse(null);
     }
 
@@ -59,7 +61,10 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
      */
     @Override
     public void delete(Customer customer) {
+        System.out.println("Entrei no delete do repositório. Tamanho do tableCustomers" + tableCustomers.size()); //TODO to be deleted
+        tableCustomers.forEach(System.out::println); // TODO to be deleted
         tableCustomers.removeIf(customerElement -> customerElement.getNif().equals(customer.getNif()));
+        tableCustomers.forEach(System.out::println);// TODO to be deleted
     }
 
     /**
@@ -102,6 +107,7 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
         Customer customer10 = new Customer("245774144", "Tony Stark", "541166", "335478852", "999258741", "tony@marvel.com", "businessman", LocalDate.of(1923, 7, 15));
         create(customer10);
 
+        System.out.println("Tamanho do tableCustomers" + tableCustomers.size()); //TODO to be deleted
         return tableCustomers;
     }
 }

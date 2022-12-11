@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class CardListRepositoryImplementation implements CardRepository {
 
     private ArrayList<Card> tableCards = new ArrayList<>();
-    private CustomerRepository customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
+//    private CustomerRepository customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
     private static int id = 1;
 
     @Override

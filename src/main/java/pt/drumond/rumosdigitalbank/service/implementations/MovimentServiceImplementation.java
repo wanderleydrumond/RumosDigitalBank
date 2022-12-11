@@ -11,7 +11,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class MovimentServiceImplementation implements MovementService {
-    private MovementListRepository movementListRepositoryImplementation = new MovimentListRepositoryImplementation();
+    private MovementListRepository movementListRepositoryImplementation;
+
+    public MovimentServiceImplementation(MovementListRepository movementListRepositoryImplementation) {
+        this.movementListRepositoryImplementation = movementListRepositoryImplementation;
+    }
 
     /**
      * Creates a new account movement.

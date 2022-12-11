@@ -6,7 +6,6 @@ import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.model.Movement;
-import pt.drumond.rumosdigitalbank.repository.implementations.AccountListRepositoryImplementation;
 import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
 import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
 import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
@@ -15,18 +14,24 @@ import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 /**
  * Contains all methods responsible for the businees rules related to accounts.
  */
 public class AccountServiceImplementation implements AccountService {
-    private CustomerService customerServiceImplementation = new CustomerServiceImplementation();
-    private AccountRepository accountListRepositoryImplementation = new AccountListRepositoryImplementation();
-    private CardService cardServiceImplementation = new CardServiceImplementation();
-    private MovementService movimentServiceImplementation = new MovimentServiceImplementation();
+    private CustomerService customerServiceImplementation;
+    //    private CustomerService customerServiceImplementation = new CustomerServiceImplementation(new CustomerListRepositoryImplementation()); TODO ver essa implementação
+    private AccountRepository accountListRepositoryImplementation;
+    private CardService cardServiceImplementation;
+    private MovementService movimentServiceImplementation;
 
-    public AccountServiceImplementation() {
+    public AccountServiceImplementation(CustomerService customerServiceImplementation, MovementService movementServiceImplementation, CardService cardServiceImplementation, AccountRepository accountListRepositoryImplementation) {
+        this.customerServiceImplementation = customerServiceImplementation;
+        this.movimentServiceImplementation = movementServiceImplementation;
+        this.cardServiceImplementation = cardServiceImplementation;
+        this.accountListRepositoryImplementation = accountListRepositoryImplementation;
     }
 
     /**
@@ -267,61 +272,54 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public void delete(Account accountToBeDeleted) {//TODO implement method
-        /*
-        1. Verificar se tem cartões de crédito
-        2. Se tiver cartões de crédito, os mesmos não podem estar em dívida
-        3. O saldo da conta tem de estar a 0
-        4. Verificar se os clientes não tem outra conta
-        4.1. Se não estiverem em outra conta, excluí-los da tabela de clientes (ver deleteSecondaryHolders)
-        4.2. Se estiverem em outra conta, excluí-los somente na conta atual
-         */
+    public void delete(Account accountToBeDeleted) {
         if (accountToBeDeleted.getCards().stream().filter(cardElement -> cardElement.getMonthyPlafond() > 0. && cardElement.getPlafondBalance() < cardElement.getMonthyPlafond()).collect(Collectors.toCollection(ArrayList::new)).size() > 0) { // na conta, percorre a lista de cartões e busca todos os cartões de crédito que tenham dívida, caso exista algum
 //            return ResponseType.THERE_ARE_DEBTS; // Há cartões de crédito em débito
         }
         if (accountToBeDeleted.getBalance() > 0.) { // Caso o saldo da conta não esteja zerado
 //            return ResponseType.BALANCE_BIGGER_THAN_ZERO;
         }
-        /*ArrayList<Customer> customersThatAreInAnotherAccount = accountListRepositoryImplementation.findAll().stream().filter(
-                accountElement -> accountElement.getMainHolder().getNif().equals(accountToBeDeleted.getMainHolder().getNif()) // se o titular principal desta conta também é titular principal em outra
-                        ||
-                accountElement.getSecondaryHolders().stream().filter(customerElement1 -> customerElement1.getNif().equals(accountToBeDeleted.getSecondaryHolders().stream().filter(customerElement3 -> customerElement3.getNif().equals())) // se algum titular secundário da conta logada também é titular secundário em alguma outra conta
-                        ||
-                accountElement.getMainHolder().getNif().equals() // se o titular principal dessa conta for titular secundário em outra conta
-                        ||
-                accountElement.getSecondaryHolders().stream().filter(customerElement2 -> customerElement2.getNif().equals()) ));// se algum titular secundário da conta logada for titular principal de outra conta*/
 
-        ArrayList<Customer> customersThatAreInAnotherAccount = new ArrayList<>();
+        ArrayList<Customer> allCustomersInAccountToBeDeleted = new ArrayList<>(accountToBeDeleted.getSecondaryHolders());
+        allCustomersInAccountToBeDeleted.add(accountToBeDeleted.getMainHolder());
+
+        System.out.println("Tamanho do tableCustomers antes de apagar a conta: " + customerServiceImplementation.findAll().size()); //TODO to be deleted
+        accountListRepositoryImplementation.delete(accountToBeDeleted);
+
+        HashSet<Customer> customersThatAreInAnotherAccount = new HashSet<>();
         ArrayList<Account> allAccounts = accountListRepositoryImplementation.findAll();
 
         for (Account anotherAccount : allAccounts) {
-            // se o titular principal desta conta também é titular principal em outra
-            if (anotherAccount.getMainHolder().getNif().equals(accountToBeDeleted.getMainHolder().getNif())) {
-                customersThatAreInAnotherAccount.add(accountToBeDeleted.getMainHolder());
-            }
-
-            for (Customer secondaryHolderInAnotherAccount : anotherAccount.getSecondaryHolders()) {
-                // se algum titular secundário da conta logada for titular principal de outra conta
-                if (secondaryHolderInAnotherAccount.getNif().equals(accountToBeDeleted.getMainHolder().getNif())) {
-                    customersThatAreInAnotherAccount.add(accountToBeDeleted.getMainHolder());
+            for (Customer customerElement : allCustomersInAccountToBeDeleted) {
+                if (anotherAccount.getMainHolder().getNif().equals(customerElement.getNif())) {
+                    customersThatAreInAnotherAccount.add(customerElement);
+                    break;
                 }
-
-                for (Customer secondaryHolderInAccountToBeDeleted : accountToBeDeleted.getSecondaryHolders()) {
-                    // se algum titular secundário da conta logada também é titular secundário em alguma outra conta
-                    if (secondaryHolderInAnotherAccount.getNif().equals(secondaryHolderInAccountToBeDeleted.getNif())) {
-                        customersThatAreInAnotherAccount.add(secondaryHolderInAccountToBeDeleted);
-                    }
-
-                    // se algum titular secundário da conta logada também é titular principal em alguma outra conta
-                    if (secondaryHolderInAccountToBeDeleted.getNif().equals(anotherAccount.getMainHolder().getNif())) {
-                        customersThatAreInAnotherAccount.add(secondaryHolderInAccountToBeDeleted);
+                for (Customer secondaryHolderInAnotherAccount : anotherAccount.getSecondaryHolders()) {
+                    if (secondaryHolderInAnotherAccount.getNif().equals(customerElement.getNif())) {
+                        customersThatAreInAnotherAccount.add(customerElement);
+                        break;
                     }
                 }
             }
         }
+        boolean hasAnotherAccount = false;
+        for (Customer customerElement : allCustomersInAccountToBeDeleted) {
+            for (Customer customerThatAreInAnotherAccount : customersThatAreInAnotherAccount) {
+                if (customerElement.getNif().equals(customerThatAreInAnotherAccount.getNif())) {
+                    hasAnotherAccount = true;
+                }
+            }
+            if (!hasAnotherAccount) {
+                System.out.println(customerServiceImplementation.findByNif(customerElement.getNif())); //TODO to be deleted
+                customerServiceImplementation.delete(customerElement);
+            }
+            hasAnotherAccount = false;
+        }
+        
         System.out.println("Clientes da serem removidos:"); //TODO to be deleted
-        customersThatAreInAnotherAccount.forEach(System.out::println); //TODO to be deleted
+        customerServiceImplementation.findAll().forEach(System.out::println); //TODO to be deleted
 
-        accountListRepositoryImplementation.delete(accountToBeDeleted); //TODO uncomment this
+//        return ResponseType.SUCCESS;
     }
 }

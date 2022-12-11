@@ -11,7 +11,11 @@ import java.util.ArrayList;
 
 public class CardServiceImplementation implements CardService {
 
-    private CardRepository cardRepositoryImplementation = new CardListRepositoryImplementation();
+    private CardRepository cardRepositoryImplementation;
+
+    public CardServiceImplementation(CardRepository cardRepositoryImplementation) {
+        this.cardRepositoryImplementation  = cardRepositoryImplementation;
+    }
 
     @Override
     public Card create(Customer cardHolder, boolean isCreditCard) {

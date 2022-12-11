@@ -7,6 +7,14 @@ import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.model.Movement;
+import pt.drumond.rumosdigitalbank.repository.implementations.AccountListRepositoryImplementation;
+import pt.drumond.rumosdigitalbank.repository.implementations.CardListRepositoryImplementation;
+import pt.drumond.rumosdigitalbank.repository.implementations.CustomerListRepositoryImplementation;
+import pt.drumond.rumosdigitalbank.repository.implementations.MovimentListRepositoryImplementation;
+import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
+import pt.drumond.rumosdigitalbank.repository.interfaces.CardRepository;
+import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
+import pt.drumond.rumosdigitalbank.repository.interfaces.MovementListRepository;
 import pt.drumond.rumosdigitalbank.service.implementations.AccountServiceImplementation;
 import pt.drumond.rumosdigitalbank.service.implementations.CardServiceImplementation;
 import pt.drumond.rumosdigitalbank.service.implementations.CustomerServiceImplementation;
@@ -29,17 +37,23 @@ import static pt.drumond.rumosdigitalbank.enums.OutputColours.*;
  * Application controller class.
  */
 public class Bank {
+    private CustomerRepository customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
     /**
      * Object used to give access to methods from service layer from customer.
      */
-    private CustomerService customerServiceImplementation = new CustomerServiceImplementation();
-    private CardService cardServiceImplementation = new CardServiceImplementation();
-    private MovementService movementServiceImplementation = new MovimentServiceImplementation();
+    private CustomerService customerServiceImplementation = new CustomerServiceImplementation(customerListRepositoryImplementation);
 
+//    private CustomerService customerServiceImplementation = new CustomerServiceImplementation(new CustomerListRepositoryImplementation()); TODO ver essa implementação
+    private CardRepository cardRepositoryImplementation = new CardListRepositoryImplementation();
+    private CardService cardServiceImplementation = new CardServiceImplementation(cardRepositoryImplementation);
+    private MovementListRepository movementListRepositoryImplementation = new MovimentListRepositoryImplementation();
+    private MovementService movementServiceImplementation = new MovimentServiceImplementation(movementListRepositoryImplementation);
+
+    private AccountRepository accountListRepositoryImplementation = new AccountListRepositoryImplementation();
     /**
      * Object used to give access to methods from service layer from account.
      */
-    private AccountService accountServiceImplementation = new AccountServiceImplementation();
+    private AccountService accountServiceImplementation = new AccountServiceImplementation(customerServiceImplementation, movementServiceImplementation, cardServiceImplementation, accountListRepositoryImplementation);
     /**
      * Object that will be made all current operations.
      */
@@ -215,6 +229,8 @@ public class Bank {
         boolean doAnotherOperation;
         do {
             doAnotherOperation = false;
+
+            System.out.println(customerServiceImplementation.findAll().size()); //TODO to be deleted
 
             switch (updateAccountMenu()) {
                 case 1 -> displayDetails();
