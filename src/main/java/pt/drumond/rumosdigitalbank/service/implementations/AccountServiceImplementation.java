@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
  */
 public class AccountServiceImplementation implements AccountService {
     private CustomerService customerServiceImplementation;
-    //    private CustomerService customerServiceImplementation = new CustomerServiceImplementation(new CustomerListRepositoryImplementation()); TODO ver essa implementação
     private AccountRepository accountListRepositoryImplementation;
     private CardService cardServiceImplementation;
     private MovementService movimentServiceImplementation;
@@ -283,7 +282,6 @@ public class AccountServiceImplementation implements AccountService {
         ArrayList<Customer> allCustomersInAccountToBeDeleted = new ArrayList<>(accountToBeDeleted.getSecondaryHolders());
         allCustomersInAccountToBeDeleted.add(accountToBeDeleted.getMainHolder());
 
-        System.out.println("Tamanho do tableCustomers antes de apagar a conta: " + customerServiceImplementation.findAll().size()); //TODO to be deleted
         accountListRepositoryImplementation.delete(accountToBeDeleted);
 
         HashSet<Customer> customersThatAreInAnotherAccount = new HashSet<>();
@@ -311,14 +309,11 @@ public class AccountServiceImplementation implements AccountService {
                 }
             }
             if (!hasAnotherAccount) {
-                System.out.println(customerServiceImplementation.findByNif(customerElement.getNif())); //TODO to be deleted
                 customerServiceImplementation.delete(customerElement);
             }
             hasAnotherAccount = false;
         }
-        
-        System.out.println("Clientes da serem removidos:"); //TODO to be deleted
-        customerServiceImplementation.findAll().forEach(System.out::println); //TODO to be deleted
+
 
 //        return ResponseType.SUCCESS;
     }

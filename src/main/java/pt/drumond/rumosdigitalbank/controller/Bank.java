@@ -233,7 +233,6 @@ public class Bank {
         do {
             doAnotherOperation = false;
 
-            System.out.println(customerServiceImplementation.findAll().size()); //TODO to be deleted
 
             switch (updateAccountMenu()) {
                 case 1 -> displayDetails();

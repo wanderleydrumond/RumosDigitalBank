@@ -100,7 +100,6 @@ public class AccountListRepositoryImplementation implements AccountRepository {
      */
     @Override
     public void loadDatabase(ArrayList<Customer> tableCustomers, ArrayList<Card> tableCards, ArrayList<Movement> tableMovements) {
-        System.out.println("Tamanho do tableCustomers" + tableCustomers.size());
         /*Conta 100
          * Main holder: Gandalf -  cartão de débito: SIM | Cartão de crédito: SIM (Plafond: 100 | Saldo plafond: 100)
          *                         isVirgin: true        | isVirgin: true
@@ -149,6 +148,5 @@ public class AccountListRepositoryImplementation implements AccountRepository {
         account102.getCards().addAll(Arrays.asList(tableCards.get(0), tableCards.get(1), tableCards.get(2), tableCards.get(3), tableCards.get(4), tableCards.get(5), tableCards.get(6)));
         account102.getMovements().addAll(Arrays.asList(tableMovements.get(0), tableMovements.get(1), tableMovements.get(2)));
         create(account102);
-        System.out.println("Tamanho do tableCustomers" + tableCustomers.size()); //TODO to be deleted
     }
 }
