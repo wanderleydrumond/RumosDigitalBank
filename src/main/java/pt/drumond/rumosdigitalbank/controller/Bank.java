@@ -407,8 +407,16 @@ public class Bank {
         System.out.print("Do you want to proceed? (" + GREEN_TEXT_BRIGHT.getValue() + "Y" + RESET.getValue() + ")es/(" + RED_TEXT_NORMAL.getValue() + "N" + RESET.getValue() + ")o: ");
 
         if (scanner.nextLine().equalsIgnoreCase("Y")) {
-            accountServiceImplementation.delete(loggedAccount);
-            System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Account successfully deleted");
+            ResponseType answer = accountServiceImplementation.delete(loggedAccount);
+            if (answer.equals(ResponseType.BALANCE_BIGGER_THAN_ZERO)) {
+                System.out.println(RED_TEXT_BRIGHT.getValue() + "Impossible to remove account. Account balance is bigger than 0.00€" + RESET.getValue());
+            }
+            if (answer.equals(ResponseType.THERE_ARE_DEBTS)) {
+                System.out.println(RED_TEXT_BRIGHT.getValue() + "Impossible to remove account. There are debts on credit card(s)" + RESET.getValue());
+            }
+            if (answer.equals(ResponseType.SUCCESS)) {
+                System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Account successfully deleted" + RESET.getValue());
+            }
         }
         mainMenu();
     }

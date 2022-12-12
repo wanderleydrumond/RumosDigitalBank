@@ -271,12 +271,12 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public void delete(Account accountToBeDeleted) {
+    public ResponseType delete(Account accountToBeDeleted) {
         if (accountToBeDeleted.getCards().stream().filter(cardElement -> cardElement.getMonthyPlafond() > 0. && cardElement.getPlafondBalance() < cardElement.getMonthyPlafond()).collect(Collectors.toCollection(ArrayList::new)).size() > 0) { // na conta, percorre a lista de cartões e busca todos os cartões de crédito que tenham dívida, caso exista algum
-//            return ResponseType.THERE_ARE_DEBTS; // Há cartões de crédito em débito
+            return ResponseType.THERE_ARE_DEBTS; // Há cartões de crédito em débito
         }
         if (accountToBeDeleted.getBalance() > 0.) { // Caso o saldo da conta não esteja zerado
-//            return ResponseType.BALANCE_BIGGER_THAN_ZERO;
+            return ResponseType.BALANCE_BIGGER_THAN_ZERO;
         }
 
         ArrayList<Customer> allCustomersInAccountToBeDeleted = new ArrayList<>(accountToBeDeleted.getSecondaryHolders());
@@ -314,7 +314,6 @@ public class AccountServiceImplementation implements AccountService {
             hasAnotherAccount = false;
         }
 
-
-//        return ResponseType.SUCCESS;
+        return ResponseType.SUCCESS;
     }
 }

@@ -22,7 +22,7 @@ public interface AccountService {
     Card addDebitCard(Account account, Customer cardHolder);
     Card addCreditCard(Account account, Customer cardHolder);
 
-    void delete(Account loggedAccount);
+    ResponseType delete(Account loggedAccount);
 
     int getAmountOfSecondaryHolders(Account loggedAccount);
     int getAmountOfCreditCards(Account loggedAccount);
