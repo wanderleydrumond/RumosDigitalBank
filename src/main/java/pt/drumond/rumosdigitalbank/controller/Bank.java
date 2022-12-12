@@ -220,10 +220,14 @@ public class Bank {
     private Customer findAndDisplayCustomer() {
         System.out.print("Enter the NIF number of client to be found: ");
         Customer customer = customerServiceImplementation.findByNif(scanner.nextLine());
+        if (customer == null) {
+            System.out.println("Client not found");
+        } else {
 //        printCustomer(customer); // TODO Aqui dá problema porque o cliente não está em uma conta
-        displayMargin(customer);
-        System.out.println(customer);
-        displayMargin(customer);
+            displayMargin(customer);
+            System.out.println(customer);
+            displayMargin(customer);
+        }
 
         return customer;
     }
@@ -232,7 +236,6 @@ public class Bank {
         boolean doAnotherOperation;
         do {
             doAnotherOperation = false;
-
 
             switch (updateAccountMenu()) {
                 case 1 -> displayDetails();
@@ -404,6 +407,7 @@ public class Bank {
     private void deleteAccount() {
         System.out.println(PURPLE_TEXT_BOLD.getValue() + "ATTENTION!" + RESET.getValue());
         System.out.println(PURPLE_TEXT_NORMAL.getValue() + "\nThis action is irreversible!" + RESET.getValue());
+        //TODO print table account informations
         System.out.print("Do you want to proceed? (" + GREEN_TEXT_BRIGHT.getValue() + "Y" + RESET.getValue() + ")es/(" + RED_TEXT_NORMAL.getValue() + "N" + RESET.getValue() + ")o: ");
 
         if (scanner.nextLine().equalsIgnoreCase("Y")) {
