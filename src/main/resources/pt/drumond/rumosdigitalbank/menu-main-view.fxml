@@ -3,15 +3,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="paneMainMenu" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="88.0" layoutY="146.0" mnemonicParsing="false" text="DEPOSIT" textAlignment="CENTER" />
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="262.0" layoutY="146.0" mnemonicParsing="false" text="WITHDRAW" textAlignment="CENTER" />
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="440.0" layoutY="146.0" mnemonicParsing="false" text="TRANSFER" textAlignment="CENTER" />
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="88.0" layoutY="230.0" mnemonicParsing="false" text="MOVEMENTS" textAlignment="CENTER" />
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="262.0" layoutY="230.0" mnemonicParsing="false" text="MAKE LOAN" textAlignment="CENTER" />
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="440.0" layoutY="230.0" mnemonicParsing="false" text="PAY LOAN" textAlignment="CENTER" />
-      <Label layoutX="88.0" layoutY="54.0" text="Welcome, savedCard.getCardHolder().getName()" />
-      <Label layoutX="88.0" layoutY="101.0" text="Balance: " />
-   </children>
-</Pane>
+<AnchorPane fx:id="anchorPaneMainMenu" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.drumond.rumosdigitalbank.MenuMainController">
+    <children>
+        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="88.0" layoutY="146.0" mnemonicParsing="false" text="DEPOSIT" textAlignment="CENTER" />
+        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="262.0" layoutY="146.0" mnemonicParsing="false" text="WITHDRAW" textAlignment="CENTER" />
+        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="440.0" layoutY="146.0" mnemonicParsing="false" text="TRANSFER" textAlignment="CENTER" />
+        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="88.0" layoutY="230.0" mnemonicParsing="false" text="MOVEMENTS" textAlignment="CENTER" />
+        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="262.0" layoutY="230.0" mnemonicParsing="false" text="MAKE LOAN" textAlignment="CENTER" />
+        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="440.0" layoutY="230.0" mnemonicParsing="false" text="PAY LOAN" textAlignment="CENTER" />
+        <Label layoutX="88.0" layoutY="54.0" text="Welcome, savedCard.getCardHolder().getName()" />
+        <Label layoutX="88.0" layoutY="101.0" text="Balance: loggedAccount.getBalance() €" />
+    </children>
+</AnchorPane>

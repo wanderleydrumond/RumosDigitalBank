@@ -1,9 +1,11 @@
 package pt.drumond.rumosdigitalbank;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import pt.drumond.rumosdigitalbank.controller.Bank;
-import pt.drumond.rumosdigitalbank.javafx.LoginController;
 import pt.drumond.rumosdigitalbank.repository.implementations.AccountListRepositoryImplementation;
 import pt.drumond.rumosdigitalbank.repository.implementations.CardListRepositoryImplementation;
 import pt.drumond.rumosdigitalbank.repository.implementations.CustomerListRepositoryImplementation;
@@ -22,6 +24,8 @@ import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
 import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.io.IOException;
+
+import static java.util.Objects.requireNonNull;
 
 public class Main extends Application {
     private static Bank bank;
@@ -54,6 +58,11 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        new LoginController().setStage(stage);
+        Parent root = FXMLLoader.load(requireNonNull(getClass().getResource("login-view.fxml")));
+        Scene scene = new Scene(root);
+        stage.setTitle("Rumos Digital Bank ATM");
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
     }
 }
