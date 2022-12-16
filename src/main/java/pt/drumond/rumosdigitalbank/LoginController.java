@@ -61,10 +61,10 @@ public class LoginController {
             passwordFieldCardPin.setText(""); // limpa o campo do PIN
             labelErrorMessage.setLayoutX(124);
             labelErrorMessage.setText("Invalid Serial Number"); // Exibe mensagem de erro
-//            textFieldCardSerialnumber.getStyleClass().add("error"); // adiciona a classe CSS error NÃO FUNCIONA!
+            textFieldCardSerialnumber.getStyleClass().add("error"); // adiciona a classe CSS error NÃO FUNCIONA!
             new Timeline(new KeyFrame(Duration.millis(2000), actionEventElement -> {
                 labelErrorMessage.setText("");
-//                textFieldCardSerialnumber.getStyleClass().remove("error"); // remove a classe CSS error NÃO FUNCIONA!
+                textFieldCardSerialnumber.getStyleClass().remove("error"); // remove a classe CSS error NÃO FUNCIONA!
             })).play(); // limpa a mensagem após dois segundos
         } else {
             if (card.getPin().equals(passwordFieldCardPin.getText())) { // confere se este serial number existe
@@ -79,6 +79,7 @@ public class LoginController {
                 FXMLLoader fxmlLoader = new FXMLLoader(url);
                 root = fxmlLoader.load();
 
+                // Pegando todas as informações que eu preciso passar para a página que será carregada
                 UpdatePinController updatePinController = fxmlLoader.getController();
                 updatePinController.setLoggedCard(card);
 
@@ -87,15 +88,14 @@ public class LoginController {
                 stage.setScene(scene);
                 stage.show();
             } else {
-                //TODO extrair para um método
                 textFieldCardSerialnumber.setText(""); // limpa o campo do serial number
                 passwordFieldCardPin.setText(""); // limpa o campo do PIN
                 labelErrorMessage.setLayoutX(152);
                 labelErrorMessage.setText("Invalid PIN"); // Exibe mensagem de erro
-//                passwordFieldCardPin.getStyleClass().add("error"); // adiciona a classe error CSS NÃO FUNCIONA!
+                passwordFieldCardPin.getStyleClass().add("error"); // adiciona a classe error CSS NÃO FUNCIONA!
                 new Timeline(new KeyFrame(Duration.millis(2000), actionEventElement -> {
                     labelErrorMessage.setText("");
-//                    passwordFieldCardPin.getStyleClass().remove("error"); // remove a classe error CSS NÃO FUNCIONA!
+                    passwordFieldCardPin.getStyleClass().remove("error"); // remove a classe error CSS NÃO FUNCIONA!
                 })).play(); // limpa a mensagem após dois segundos
             }
         }
