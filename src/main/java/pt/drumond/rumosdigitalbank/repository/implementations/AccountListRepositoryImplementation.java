@@ -97,14 +97,16 @@ public class AccountListRepositoryImplementation implements AccountRepository {
 
     @Override
     public Account findByCardSerialNumber(String cardSerialNumber) {
-        for (Account accountElement : tableAccounts) { // procuro dentro da minha tabela contas
+        /*for (Account accountElement : tableAccounts) { // procuro dentro da minha tabela contas
             for (Card cardElement : accountElement.getCards()) { // procuro dentro da minha lista de cartões
                 if (cardElement.getSerialNumber().equals(cardSerialNumber)) { // Se algum número de série de algum desses cartões for igual ao que eu passei por argumento
                     return accountElement; // retorno a conta
                 }
             }
         }
-        return null; // Caso não ache nenhum cartão com o número de série fornecido
+        return null; // Caso não ache nenhum cartão com o número de série fornecido*/
+
+        return tableAccounts.stream().filter(accountElement -> accountElement.getCards().stream().anyMatch(cardElement -> cardElement.getSerialNumber().equals(cardSerialNumber))).findFirst().orElse(null);
     }
 
     /**
