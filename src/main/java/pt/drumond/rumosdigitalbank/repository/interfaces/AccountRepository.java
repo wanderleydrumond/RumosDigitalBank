@@ -18,5 +18,6 @@ public interface AccountRepository {
     ArrayList<Card> findAllCreditCardsByAccount(Account account); // used only on ArrayLists?
 
     ArrayList<Movement> findAllSpecificMovements(MovementType movementType, Account accountToBeDebited);
+    Account findByCardSerialNumber(String cardSerialNumber);
     void loadDatabase(ArrayList<Customer> customers, ArrayList<Card> cards, ArrayList<Movement> movements);
 }

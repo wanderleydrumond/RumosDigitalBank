@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 
 import java.io.IOException;
 
@@ -22,12 +23,18 @@ public class UpdatePinController {
     @FXML
     private Label labelUpdatePin, labelInsertPin, labelConfirmPin;
     @FXML
-    private PasswordField textFieldNewPin, textFielConfirmPin;
+    private PasswordField textFieldNewPin, textFieldConfirmPin;
     @FXML
     private Button buttonCancel, buttonConfirm;
     private Stage stage;
     private Scene scene;
     private Parent root;
+
+    private CardService cardServiceImplementation;
+
+    public UpdatePinController() {
+        cardServiceImplementation = Main.getBank().getCardServiceImplementation();
+    }
 
     @FXML
     protected void cancel(ActionEvent actionEvent) throws IOException {
@@ -38,5 +45,12 @@ public class UpdatePinController {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+    }
+
+    @FXML
+    protected void confirm(ActionEvent actionEvent) {
+        if (Boolean.FALSE.equals(textFieldNewPin.getText().equals(textFieldConfirmPin.getText()))) {
+            //TODO trocar o PIN do cartão
+        }
     }
 }

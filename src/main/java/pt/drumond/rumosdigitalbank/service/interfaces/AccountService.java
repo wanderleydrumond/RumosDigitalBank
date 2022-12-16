@@ -32,5 +32,6 @@ public interface AccountService {
     Customer findCustomerByNif(String nif, Account loggedAccount);
     Boolean isMainHolder(Customer customerToBeDeleted, Account loggedAccount);
     Card getCardBySerialNumberOnCurrentAccount(Account loggedAccount, String cardSerialNumber);
+    Account getAccountByCardSerialNumber(String cardSerialNumber);
     void loadDatabase(ArrayList<Customer> customers, ArrayList<Card> cards, ArrayList<Movement> movements);
 }

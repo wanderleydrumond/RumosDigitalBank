@@ -236,6 +236,11 @@ public class AccountServiceImplementation implements AccountService {
         return loggedAccount.getCards().stream().filter(cardElement -> cardElement.getSerialNumber().equals(cardSerialNumber)).findFirst().orElse(null);
     }
 
+    @Override
+    public Account getAccountByCardSerialNumber(String cardSerialNumber) {
+        return accountListRepositoryImplementation.findByCardSerialNumber(cardSerialNumber);
+    }
+
     private boolean existsThisTypeCardForThisHolder(Customer cardHolder, ArrayList<Card> cards) {
         boolean exists = false;
         if (cards.size() > 0) { // Se a conta já tiver o tipo de cartão.

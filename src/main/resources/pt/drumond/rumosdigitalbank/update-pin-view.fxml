@@ -9,7 +9,7 @@
         <Label fx:id="labelInsertPin" layoutX="101.0" layoutY="109.0" text="Insert New PIN" />
         <PasswordField fx:id="textFieldNewPin" layoutX="101.0" layoutY="126.0" promptText="New PIN" />
         <Label fx:id="labelConfirmPin" layoutX="101.0" layoutY="175.0" text="Confirm New PIN" />
-        <PasswordField fx:id="textFielConfirmPin" layoutX="101.0" layoutY="192.0" promptText="Confirm PIN" />
+        <PasswordField fx:id="textFieldConfirmPin" layoutX="101.0" layoutY="192.0" promptText="Confirm PIN" />
         <Button fx:id="buttonCancel" cancelButton="true" layoutX="101.0" layoutY="258.0" mnemonicParsing="false" text="CANCEL" onAction="#cancel" />
         <Button fx:id="buttonConfirm" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="180.0" layoutY="258.0" mnemonicParsing="false" text="CONFIRM" textAlignment="RIGHT" />
     </children>
