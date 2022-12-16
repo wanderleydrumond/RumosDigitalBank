@@ -24,8 +24,6 @@ import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 import java.io.IOException;
 import java.net.URL;
 
-import static java.util.Objects.requireNonNull;
-
 public class LoginController {
     @FXML
     private AnchorPane anchorPaneWelcome;
@@ -77,7 +75,13 @@ public class LoginController {
                     url = getClass().getResource("menu-main-view.fxml");
                 }
                 // Carrega a informações para abrir uma nova tela
-                root = FXMLLoader.load(requireNonNull(url));
+//                root = FXMLLoader.load(requireNonNull(url));
+                FXMLLoader fxmlLoader = new FXMLLoader(url);
+                root = fxmlLoader.load();
+
+                UpdatePinController updatePinController = fxmlLoader.getController();
+                updatePinController.setLoggedCard(card);
+
                 stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
                 scene = new Scene(root);
                 stage.setScene(scene);

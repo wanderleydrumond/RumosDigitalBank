@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 
 import java.io.IOException;
@@ -29,6 +30,8 @@ public class UpdatePinController {
     private Stage stage;
     private Scene scene;
     private Parent root;
+    private Card loggedCard;
+
 
     private CardService cardServiceImplementation;
 
@@ -36,6 +39,9 @@ public class UpdatePinController {
         cardServiceImplementation = Main.getBank().getCardServiceImplementation();
     }
 
+    public void setLoggedCard(Card loggedCard) {
+        this.loggedCard = loggedCard;
+    }
     @FXML
     protected void cancel(ActionEvent actionEvent) throws IOException {
         root = FXMLLoader.load(requireNonNull(getClass().getResource("login-view.fxml")));
