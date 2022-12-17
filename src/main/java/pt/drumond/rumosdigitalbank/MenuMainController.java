@@ -1,12 +1,15 @@
 package pt.drumond.rumosdigitalbank;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
 
 public class MenuMainController {
+    @FXML
+    private Label labelWelcome;
     @FXML
     private AnchorPane anchorPaneMainMenu;
 
@@ -24,5 +27,9 @@ public class MenuMainController {
 
     public void setLoggedAccount() {
         this.loggedAccount = accountServiceImplementation.getAccountByCardSerialNumber(loggedCard.getSerialNumber());;
+    }
+
+    public void setWelcome() {
+        labelWelcome.setText("Welcome " + loggedCard.getCardHolder());
     }
 }

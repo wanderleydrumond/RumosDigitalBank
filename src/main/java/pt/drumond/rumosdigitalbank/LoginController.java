@@ -61,16 +61,24 @@ public class LoginController {
                 URL url;
                 if (card.isVirgin()) {
                     url = getClass().getResource("update-pin-view.fxml");
+                    // Carrega a informações para abrir uma nova tela
+                    FXMLLoader fxmlLoader = new FXMLLoader(url);
+                    root = fxmlLoader.load();
+
+                    // Pegando todas as informações que eu preciso passar para a página que será carregada
+                    UpdatePinController updatePinController = fxmlLoader.getController();
+                    updatePinController.setLoggedCard(card);
                 } else {
                     url = getClass().getResource("menu-main-view.fxml");
-                }
-                // Carrega a informações para abrir uma nova tela
-                FXMLLoader fxmlLoader = new FXMLLoader(url);
-                root = fxmlLoader.load();
+                    // Carrega a informações para abrir uma nova tela
+                    FXMLLoader fxmlLoader = new FXMLLoader(url);
+                    root = fxmlLoader.load();
 
-                // Pegando todas as informações que eu preciso passar para a página que será carregada
-                UpdatePinController updatePinController = fxmlLoader.getController();
-                updatePinController.setLoggedCard(card);
+                    // Pegando todas as informações que eu preciso passar para a página que será carregada
+                    MenuMainController menuMainController = fxmlLoader.getController();
+                    menuMainController.setLoggedCard(card);
+                }
+
 
                 stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
                 scene = new Scene(root);

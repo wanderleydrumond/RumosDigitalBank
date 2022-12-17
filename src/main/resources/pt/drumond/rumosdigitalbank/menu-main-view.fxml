@@ -11,7 +11,8 @@
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="88.0" layoutY="230.0" mnemonicParsing="false" text="MOVEMENTS" textAlignment="CENTER" />
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="262.0" layoutY="230.0" mnemonicParsing="false" text="MAKE LOAN" textAlignment="CENTER" />
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="440.0" layoutY="230.0" mnemonicParsing="false" text="PAY LOAN" textAlignment="CENTER" />
-        <Label layoutX="88.0" layoutY="54.0" text="Welcome, savedCard.getCardHolder().getName()" />
+        <Label fx:id="labelWelcome" layoutX="88.0" layoutY="54.0" />
         <Label layoutX="88.0" layoutY="101.0" text="Balance: loggedAccount.getBalance() €" />
+      <Button layoutX="512.0" layoutY="335.0" mnemonicParsing="false" text="Logout" />
     </children>
 </AnchorPane>
