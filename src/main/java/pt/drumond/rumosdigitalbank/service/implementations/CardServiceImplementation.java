@@ -1,9 +1,8 @@
 package pt.drumond.rumosdigitalbank.service.implementations;
 
 import pt.drumond.rumosdigitalbank.model.Account;
-import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.model.Card;
-import pt.drumond.rumosdigitalbank.repository.implementations.CardListRepositoryImplementation;
+import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.repository.interfaces.CardRepository;
 import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 
@@ -33,13 +32,10 @@ public class CardServiceImplementation implements CardService {
     }
 
     @Override
-    public Card update(Card card) {
-        return null;
-    }
-
-    @Override
-    public Card update(String pin) {
-        return null;
+    public Card update(String pin, Card card) {
+        card.setPin(pin);
+        card.setVirgin(false);
+        return cardRepositoryImplementation.update(card);
     }
 
     @Override
@@ -64,7 +60,7 @@ public class CardServiceImplementation implements CardService {
         }
 
         card.setPlafondBalance(card.getPlafondBalance() + value); // atualiza o plafond do cartão com o valor pago
-        update(card); // atualiza o cartão na base de dados
+        cardRepositoryImplementation.update(card); // atualiza o cartão na base de dados
         return true;
     }
 

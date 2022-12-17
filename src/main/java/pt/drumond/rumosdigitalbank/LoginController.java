@@ -16,10 +16,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import pt.drumond.rumosdigitalbank.model.Card;
-import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
 import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
-import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
-import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.io.IOException;
 import java.net.URL;
@@ -39,23 +36,16 @@ public class LoginController {
     private Stage stage;
     private Scene scene;
     private Parent root;
-
-    private CustomerService customerServiceImplementation;
     private CardService cardServiceImplementation;
-    private MovementService movementServiceImplementation;
-    private AccountService accountServiceImplementation;
+
 
     public LoginController() {
-        customerServiceImplementation = Main.getBank().getCustomerServiceImplementation();
         cardServiceImplementation = Main.getBank().getCardServiceImplementation();
-        movementServiceImplementation = Main.getBank().getMovementServiceImplementation();
-        accountServiceImplementation = Main.getBank().getAccountServiceImplementation();
     }
 
     @FXML
     protected void login(ActionEvent actionEvent) throws IOException {
         Card card = cardServiceImplementation.findBySerialNumber(textFieldCardSerialnumber.getText());
-//        Account loggedAccount = accountServiceImplementation.getAccountByCardSerialNumber(card.getSerialNumber());
         if (card == null) {
             textFieldCardSerialnumber.setText(""); // limpa o campo do serial number
             passwordFieldCardPin.setText(""); // limpa o campo do PIN
@@ -75,7 +65,6 @@ public class LoginController {
                     url = getClass().getResource("menu-main-view.fxml");
                 }
                 // Carrega a informações para abrir uma nova tela
-//                root = FXMLLoader.load(requireNonNull(url));
                 FXMLLoader fxmlLoader = new FXMLLoader(url);
                 root = fxmlLoader.load();
 

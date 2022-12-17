@@ -1,5 +1,7 @@
 package pt.drumond.rumosdigitalbank;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 
@@ -22,9 +25,9 @@ public class UpdatePinController {
     @FXML
     private AnchorPane anchorPaneUpdatePin;
     @FXML
-    private Label labelUpdatePin, labelInsertPin, labelConfirmPin;
+    private Label labelUpdatePin, labelInsertPin, labelConfirmPin, labelErrorMessage;
     @FXML
-    private PasswordField textFieldNewPin, textFieldConfirmPin;
+    private PasswordField passwordFieldNewPin, passwordFieldConfirmPin;
     @FXML
     private Button buttonCancel, buttonConfirm;
     private Stage stage;
@@ -54,9 +57,33 @@ public class UpdatePinController {
     }
 
     @FXML
-    protected void confirm(ActionEvent actionEvent) {
-        if (Boolean.FALSE.equals(textFieldNewPin.getText().equals(textFieldConfirmPin.getText()))) {
-            //TODO trocar o PIN do cartão
+    protected void confirm(ActionEvent actionEvent) throws IOException {
+        if (passwordFieldNewPin.getText().equals(passwordFieldConfirmPin.getText())) {
+            Card loggedCard = cardServiceImplementation.update(passwordFieldConfirmPin.getText(), this.loggedCard); // troca o PIN do cartão
+            System.out.println(passwordFieldConfirmPin.getText());// TODO to be deleted
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("menu-main-view.fxml"));
+            root = fxmlLoader.load();
+
+            MenuMainController menuMainController = fxmlLoader.getController();
+            menuMainController.setLoggedCard(loggedCard);
+            menuMainController.setLoggedAccount();
+
+            stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } else {
+            passwordFieldNewPin.setText("");
+            passwordFieldConfirmPin.setText("");
+            labelErrorMessage.setText("PIN numbers do not match");
+            passwordFieldNewPin.getStyleClass().add("error");
+            passwordFieldConfirmPin.getStyleClass().add("error");
+            new Timeline(new KeyFrame(Duration.millis(2000), actionEventElement -> {
+                labelErrorMessage.setText("");
+                passwordFieldNewPin.getStyleClass().remove("error"); // remove a classe error CSS NÃO FUNCIONA!
+                passwordFieldConfirmPin.getStyleClass().remove("error"); // remove a classe error CSS NÃO FUNCIONA!
+            })).play(); // limpa a mensagem após dois segundos
         }
     }
 }

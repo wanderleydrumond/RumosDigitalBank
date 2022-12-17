@@ -4,7 +4,6 @@ import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.repository.interfaces.CardRepository;
-import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
 
 import java.util.ArrayList;
 
@@ -21,14 +20,12 @@ public class CardListRepositoryImplementation implements CardRepository {
 //        debitCard.setPin(String.valueOf((int)(Math.random() * 4)));
         card.setPin("1234");
         tableCards.add(card);
-
         return card;
     }
 
     @Override
     public Card update(Card card) {
         tableCards.set(tableCards.indexOf(card), card);
-
         return card;
     }
 

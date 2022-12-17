@@ -8,8 +8,7 @@ import java.util.ArrayList;
 
 public interface CardService {
     Card create(Customer cardHolder, boolean isCreditCard);
-    Card update(Card card);
-    Card update(String pin);
+    Card update(String pin, Card card);
     Card findBySerialNumber(String serialNumber);
     ArrayList<Card> findAllByAccount(Account account);
     void delete(Card cardOwnedByCustomerToBeDeleted);
