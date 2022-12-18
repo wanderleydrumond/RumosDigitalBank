@@ -30,6 +30,6 @@ public class MenuMainController {
     }
 
     public void setWelcome() {
-        labelWelcome.setText("Welcome " + loggedCard.getCardHolder());
+        labelWelcome.setText("Welcome " + loggedCard.getCardHolder().getName());
     }
 }

@@ -68,6 +68,7 @@ public class UpdatePinController {
             MenuMainController menuMainController = fxmlLoader.getController();
             menuMainController.setLoggedCard(loggedCard);
             menuMainController.setLoggedAccount();
+            menuMainController.setWelcome();
 
             stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             scene = new Scene(root);
@@ -81,8 +82,8 @@ public class UpdatePinController {
             passwordFieldConfirmPin.getStyleClass().add("error");
             new Timeline(new KeyFrame(Duration.millis(2000), actionEventElement -> {
                 labelErrorMessage.setText("");
-                passwordFieldNewPin.getStyleClass().remove("error"); // remove a classe error CSS NÃO FUNCIONA!
-                passwordFieldConfirmPin.getStyleClass().remove("error"); // remove a classe error CSS NÃO FUNCIONA!
+                passwordFieldNewPin.getStyleClass().remove("error");
+                passwordFieldConfirmPin.getStyleClass().remove("error");
             })).play(); // limpa a mensagem após dois segundos
         }
     }

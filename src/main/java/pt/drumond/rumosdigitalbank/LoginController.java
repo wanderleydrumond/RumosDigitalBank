@@ -77,6 +77,7 @@ public class LoginController {
                     // Pegando todas as informações que eu preciso passar para a página que será carregada
                     MenuMainController menuMainController = fxmlLoader.getController();
                     menuMainController.setLoggedCard(card);
+                    menuMainController.setWelcome();
                 }
 
 
