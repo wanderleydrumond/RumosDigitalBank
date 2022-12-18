@@ -3,15 +3,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPaneUpdatePin" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.drumond.rumosdigitalbank.UpdatePinController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.drumond.rumosdigitalbank.UpdatePinController">
     <children>
         <Label fx:id="labelUpdatePin" alignment="CENTER" contentDisplay="CENTER" layoutX="142.0" layoutY="59.0" text="UPDATE PIN" textAlignment="CENTER" />
         <Label fx:id="labelInsertPin" layoutX="101.0" layoutY="109.0" text="Insert New PIN" />
         <PasswordField fx:id="passwordFieldNewPin" layoutX="101.0" layoutY="126.0" promptText="New PIN" stylesheets="@CSS/PasswordField.css" />
-        <Label fx:id="labelConfirmPin" layoutX="101.0" layoutY="175.0" text="Confirm New PIN" />
+        <Label layoutX="101.0" layoutY="175.0" text="Confirm New PIN" />
         <PasswordField fx:id="passwordFieldConfirmPin" layoutX="101.0" layoutY="192.0" promptText="Confirm PIN" stylesheets="@CSS/PasswordField.css" />
-        <Button fx:id="buttonCancel" cancelButton="true" layoutX="101.0" layoutY="258.0" mnemonicParsing="false" onAction="#cancel" text="CANCEL" />
-        <Button fx:id="buttonConfirm" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="180.0" layoutY="258.0" mnemonicParsing="false" onAction="#confirm" text="CONFIRM" textAlignment="RIGHT" />
+        <Button cancelButton="true" layoutX="101.0" layoutY="258.0" mnemonicParsing="false" onAction="#cancel" text="CANCEL" />
+        <Button alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="180.0" layoutY="258.0" mnemonicParsing="false" onAction="#confirm" text="CONFIRM" textAlignment="RIGHT" />
       <Label fx:id="labelErrorMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="103.0" layoutY="228.0" textAlignment="CENTER" textFill="RED" />
     </children>
 </AnchorPane>

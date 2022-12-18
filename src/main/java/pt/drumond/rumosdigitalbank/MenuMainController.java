@@ -9,7 +9,7 @@ import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
 
 public class MenuMainController {
     @FXML
-    private Label labelWelcome;
+    private Label labelWelcome, labelBalance;
     @FXML
     private AnchorPane anchorPaneMainMenu;
 
@@ -31,5 +31,9 @@ public class MenuMainController {
 
     public void setWelcome() {
         labelWelcome.setText("Welcome " + loggedCard.getCardHolder().getName());
+    }
+
+    public void setBalance() {
+        labelBalance.setText("Balance: " + loggedAccount.getBalance() + "€");
     }
 }

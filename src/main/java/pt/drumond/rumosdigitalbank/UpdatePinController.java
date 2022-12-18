@@ -8,10 +8,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import pt.drumond.rumosdigitalbank.model.Card;
@@ -23,13 +21,9 @@ import static java.util.Objects.requireNonNull;
 
 public class UpdatePinController {
     @FXML
-    private AnchorPane anchorPaneUpdatePin;
-    @FXML
-    private Label labelUpdatePin, labelInsertPin, labelConfirmPin, labelErrorMessage;
+    private Label labelErrorMessage;
     @FXML
     private PasswordField passwordFieldNewPin, passwordFieldConfirmPin;
-    @FXML
-    private Button buttonCancel, buttonConfirm;
     private Stage stage;
     private Scene scene;
     private Parent root;
@@ -69,6 +63,7 @@ public class UpdatePinController {
             menuMainController.setLoggedCard(loggedCard);
             menuMainController.setLoggedAccount();
             menuMainController.setWelcome();
+            menuMainController.setBalance();
 
             stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             scene = new Scene(root);

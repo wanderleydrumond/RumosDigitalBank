@@ -12,7 +12,7 @@
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="262.0" layoutY="230.0" mnemonicParsing="false" text="MAKE LOAN" textAlignment="CENTER" />
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="440.0" layoutY="230.0" mnemonicParsing="false" text="PAY LOAN" textAlignment="CENTER" />
         <Label fx:id="labelWelcome" layoutX="88.0" layoutY="54.0" />
-        <Label layoutX="88.0" layoutY="101.0" text="Balance: loggedAccount.getBalance() €" />
+        <Label fx:id="labelBalance" layoutX="88.0" layoutY="101.0" text="Balance: loggedAccount.getBalance() €" />
       <Button layoutX="512.0" layoutY="335.0" mnemonicParsing="false" text="Logout" />
     </children>
 </AnchorPane>

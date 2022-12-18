@@ -8,11 +8,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import pt.drumond.rumosdigitalbank.model.Card;
@@ -23,13 +21,9 @@ import java.net.URL;
 
 public class LoginController {
     @FXML
-    private AnchorPane anchorPaneWelcome;
-    @FXML
     private TextField textFieldCardSerialnumber;
     @FXML
     private PasswordField passwordFieldCardPin;
-    @FXML
-    private Button buttonCancel, buttonLogin;
     @FXML
     private Label labelErrorMessage;
 
@@ -77,9 +71,10 @@ public class LoginController {
                     // Pegando todas as informações que eu preciso passar para a página que será carregada
                     MenuMainController menuMainController = fxmlLoader.getController();
                     menuMainController.setLoggedCard(card);
+                    menuMainController.setLoggedAccount();
                     menuMainController.setWelcome();
+                    menuMainController.setBalance();
                 }
-
 
                 stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
                 scene = new Scene(root);
