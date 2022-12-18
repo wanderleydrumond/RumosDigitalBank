@@ -54,7 +54,6 @@ public class UpdatePinController {
     protected void confirm(ActionEvent actionEvent) throws IOException {
         if (passwordFieldNewPin.getText().equals(passwordFieldConfirmPin.getText())) {
             Card loggedCard = cardServiceImplementation.update(passwordFieldConfirmPin.getText(), this.loggedCard); // troca o PIN do cartão
-            System.out.println(passwordFieldConfirmPin.getText());// TODO to be deleted
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("menu-main-view.fxml"));
             root = fxmlLoader.load();

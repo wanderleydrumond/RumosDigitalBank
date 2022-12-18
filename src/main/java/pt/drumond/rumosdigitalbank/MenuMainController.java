@@ -14,6 +14,7 @@ import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 import static java.util.Objects.requireNonNull;
 
@@ -47,7 +48,14 @@ public class MenuMainController {
     }
 
     public void setBalance() {
-        labelBalance.setText("Balance: " + loggedAccount.getBalance() + "€");
+        labelBalance.setText("Balance: " + new DecimalFormat("0.00").format(loggedAccount.getBalance()) + "€");
+    }
+
+    @FXML
+    protected void deposit(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("deposit-dialog.fxml"));
+        DepositController depositController = fxmlLoader.load();
     }
 
     @FXML

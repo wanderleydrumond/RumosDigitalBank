@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane prefHeight="37.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <buttonTypes>
+      <ButtonType fx:constant="CANCEL" />
+      <ButtonType fx:constant="OK" />
+   </buttonTypes>
+   <content>
+      <VBox prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <TextField promptText="Deposit value" />
+         </children>
+      </VBox>
+   </content>
+   <header>
+      <AnchorPane prefHeight="35.0" prefWidth="200.0">
+         <children>
+            <Label layoutX="74.0" layoutY="14.0" text="Enter deposit value" AnchorPane.topAnchor="14.0" />
+         </children>
+      </AnchorPane>
+   </header>
+</DialogPane>
