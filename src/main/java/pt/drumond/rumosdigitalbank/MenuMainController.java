@@ -8,7 +8,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
@@ -19,13 +18,14 @@ import java.text.DecimalFormat;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Controller of the main menu screen.
+ */
 public class MenuMainController {
     @FXML
     private Button buttonMakeLoan, buttonPayLoan;
     @FXML
     private Label labelWelcome, labelBalance;
-    @FXML
-    private AnchorPane anchorPaneMainMenu;
 
     private Stage stage;
     private Scene scene;
@@ -62,6 +62,12 @@ public class MenuMainController {
         labelBalance.setText("Balance: " + new DecimalFormat("0.00").format(loggedAccount.getBalance()) + "€");
     }
 
+    /**
+     * Creates and changes focus to a new screen to make the deposit operation.
+     *
+     * @param actionEvent contains the method to get the instance of the screen
+     * @throws IOException in case of any type of inputing error
+     */
     @FXML
     protected void deposit(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("deposit-view.fxml"));
@@ -71,6 +77,28 @@ public class MenuMainController {
         DepositController depositController = fxmlLoader.getController();
         depositController.setLoggedCard(loggedCard);
         depositController.setLoggedAccount(loggedAccount);
+
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    /**
+     * Creates and changes focus to a new screen to make the withdrawal operation.
+     *
+     * @param actionEvent contains the method to get the instance of the screen
+     * @throws IOException in case of any type of inputing error
+     */
+    @FXML
+    protected void withdraw(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("withdraw-view.fxml"));
+        root = fxmlLoader.load();
+
+        // Aqui eu passo as informações de conta e cartão, existentes em MenuMainController e passando-as para DepositController
+        WithdrawController withdrawController = fxmlLoader.getController();
+        withdrawController.setLoggedCard(loggedCard);
+        withdrawController.setLoggedAccount(loggedAccount);
 
         stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         scene = new Scene(root);

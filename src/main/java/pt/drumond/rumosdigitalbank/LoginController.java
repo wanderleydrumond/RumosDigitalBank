@@ -76,8 +76,8 @@ public class LoginController {
                         menuMainController.getButtonPayLoan().setVisible(false); // esconde o botão pagar empréstimo
                     }
                     menuMainController.setLoggedAccount();
-                    menuMainController.setWelcome();
-                    menuMainController.setBalance();
+                    menuMainController.setWelcome(); // mostra uma mensagem de boas-vindas com o nome do dono do cartão
+                    menuMainController.setBalance(); // mostra o saldo atual da conta
                 }
 
                 stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
@@ -89,10 +89,10 @@ public class LoginController {
                 passwordFieldCardPin.setText(""); // limpa o campo do PIN
                 labelErrorMessage.setLayoutX(152);
                 labelErrorMessage.setText("Invalid PIN"); // Exibe mensagem de erro
-                passwordFieldCardPin.getStyleClass().add("error"); // adiciona a classe error CSS NÃO FUNCIONA!
+                passwordFieldCardPin.getStyleClass().add("error"); // adiciona a classe error
                 new Timeline(new KeyFrame(Duration.millis(2000), actionEventElement -> {
                     labelErrorMessage.setText("");
-                    passwordFieldCardPin.getStyleClass().remove("error"); // remove a classe error CSS NÃO FUNCIONA!
+                    passwordFieldCardPin.getStyleClass().remove("error"); // remove a classe error
                 })).play(); // limpa a mensagem após dois segundos
             }
         }
