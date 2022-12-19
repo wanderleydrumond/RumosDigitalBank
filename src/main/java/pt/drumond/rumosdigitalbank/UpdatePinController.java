@@ -60,6 +60,10 @@ public class UpdatePinController {
 
             MenuMainController menuMainController = fxmlLoader.getController();
             menuMainController.setLoggedCard(loggedCard);
+            if (loggedCard.getMonthyPlafond() == 0.) { // Verifica se o cartão é de débito, se for
+                menuMainController.getButtonMakeLoan().setVisible(false); // esconde o botão fazer empréstimo
+                menuMainController.getButtonPayLoan().setVisible(false); // esconde o botão pagar empréstimo
+            }
             menuMainController.setLoggedAccount();
             menuMainController.setWelcome();
             menuMainController.setBalance();

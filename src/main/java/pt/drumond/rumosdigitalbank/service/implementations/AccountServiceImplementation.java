@@ -79,22 +79,21 @@ public class AccountServiceImplementation implements AccountService {
         }
         secondaryHolders.add(secondaryHolder);
         accountListRepositoryImplementation.update(loggedAccount);
-
         return true;
     }
 
     @Override
-    public void deposit(Account destinationAccount, double depositValue, MovementType movementType) {
+    public boolean deposit(Account destinationAccount, double depositValue, MovementType movementType) {
         destinationAccount.setBalance(destinationAccount.getBalance() + depositValue);
         destinationAccount.getMovements().add(movimentServiceImplementation.create(depositValue, movementType));
-        accountListRepositoryImplementation.update(destinationAccount);
+
+        return accountListRepositoryImplementation.update(destinationAccount) != null;
     }
 
     @Override
     public boolean transfer(Account originAccount, double value, String destinationAccountCode) {
         if (withdraw(value, originAccount, MovementType.TRANSFER_OUT).equals(ResponseType.SUCCESS)) { // Se o retorno do método de saque (com o valor determinado e o tipo de movimento configurado como transferência de saída, que em tese, é a mesma coisa que o saque) for do tipo enum SUCCESS
             deposit(findByCode(destinationAccountCode), value, MovementType.TRANSFER_IN);// Então faz o depósito na conta a ser pesquisada
-
             return true;
         }
         return false;

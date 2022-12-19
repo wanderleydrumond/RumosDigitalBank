@@ -71,6 +71,10 @@ public class LoginController {
                     // Pegando todas as informações que eu preciso passar para a página que será carregada
                     MenuMainController menuMainController = fxmlLoader.getController();
                     menuMainController.setLoggedCard(card);
+                    if (card.getMonthyPlafond() == 0.) { // Verifica se o cartão é de débito, se for
+                        menuMainController.getButtonMakeLoan().setVisible(false); // esconde o botão fazer empréstimo
+                        menuMainController.getButtonPayLoan().setVisible(false); // esconde o botão pagar empréstimo
+                    }
                     menuMainController.setLoggedAccount();
                     menuMainController.setWelcome();
                     menuMainController.setBalance();

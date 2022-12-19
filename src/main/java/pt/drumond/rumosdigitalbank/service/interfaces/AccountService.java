@@ -15,7 +15,7 @@ public interface AccountService {
     boolean validateInitialDeposit(double depositValue);
     Account findByCode(String code);
     boolean addSecondaryHolder(Account account, Customer secondaryHolder);
-    void deposit(Account account, double value, MovementType deposit);
+    boolean deposit(Account account, double value, MovementType deposit);
     boolean transfer(Account account, double value, String destinyAccountCode);
     ResponseType withdraw(double value, Account accountToBeDebited, MovementType movementType);
     boolean deleteSecondaryHolder(Account account, Customer secondaryHolder);
