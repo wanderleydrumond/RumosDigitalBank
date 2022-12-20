@@ -25,7 +25,7 @@ public class MenuMainController {
     @FXML
     private Button buttonMakeLoan, buttonPayLoan;
     @FXML
-    private Label labelWelcome, labelBalance;
+    private Label labelWelcome, labelBalance, labelMonthlyPlafond, labelPlafondBalance;
 
     private Stage stage;
     private Scene scene;
@@ -58,8 +58,16 @@ public class MenuMainController {
         labelWelcome.setText("Welcome " + loggedCard.getCardHolder().getName());
     }
 
-    public void setBalance() {
-        labelBalance.setText("Balance: " + new DecimalFormat("0.00").format(loggedAccount.getBalance()) + "€");
+    public void setAccountBalance() {
+        labelBalance.setText("Account balance: " + new DecimalFormat("0.00").format(loggedAccount.getBalance()) + "€");
+    }
+
+    public void setLabelMonthlyPlafond() {
+        labelMonthlyPlafond.setText("Credit card monthly plafond: " + new DecimalFormat("0.00").format(loggedCard.getMonthyPlafond()) + "€");
+    }
+
+    public void setLabelPlafondBalance() {
+        labelPlafondBalance.setText("Credit card available plafond: " + new DecimalFormat("0.00").format(loggedCard.getPlafondBalance()) + "€");
     }
 
     /**
@@ -99,6 +107,28 @@ public class MenuMainController {
         WithdrawController withdrawController = fxmlLoader.getController();
         withdrawController.setLoggedCard(loggedCard);
         withdrawController.setLoggedAccount(loggedAccount);
+
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    /**
+     * Creates and changes focus to a new screen to make the transfer operation.
+     *
+     * @param actionEvent contains the method to get the instance of the screen
+     * @throws IOException in case of any type of inputing error
+     */
+    @FXML
+    protected void transfer(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("transfer-view.fxml"));
+        root = fxmlLoader.load();
+
+        // Aqui eu passo as informações de conta e cartão, existentes em MenuMainController e passando-as para DepositController
+        TransferController transferController = fxmlLoader.getController();
+        transferController.setLoggedCard(loggedCard);
+        transferController.setLoggedAccount(loggedAccount);
 
         stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         scene = new Scene(root);

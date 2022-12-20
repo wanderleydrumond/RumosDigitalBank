@@ -74,10 +74,13 @@ public class LoginController {
                     if (card.getMonthyPlafond() == 0.) { // Verifica se o cartão é de débito, se for
                         menuMainController.getButtonMakeLoan().setVisible(false); // esconde o botão fazer empréstimo
                         menuMainController.getButtonPayLoan().setVisible(false); // esconde o botão pagar empréstimo
+                    } else {
+                        menuMainController.setLabelMonthlyPlafond(); // mostra o limite mensal do cartão
+                        menuMainController.setLabelPlafondBalance(); // mostra o saldo disponível do limite do cartão
                     }
                     menuMainController.setLoggedAccount();
                     menuMainController.setWelcome(); // mostra uma mensagem de boas-vindas com o nome do dono do cartão
-                    menuMainController.setBalance(); // mostra o saldo atual da conta
+                    menuMainController.setAccountBalance(); // mostra o saldo atual da conta
                 }
 
                 stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();

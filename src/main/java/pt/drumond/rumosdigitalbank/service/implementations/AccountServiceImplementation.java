@@ -67,7 +67,7 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public Account findByCode(String code) {
+    public Account getByCode(String code) {
         return accountListRepositoryImplementation.findByCode(code);
     }
 
@@ -91,12 +91,17 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public boolean transfer(Account originAccount, double value, String destinationAccountCode) {
-        if (withdraw(value, originAccount, MovementType.TRANSFER_OUT).equals(ResponseType.SUCCESS)) { // Se o retorno do método de saque (com o valor determinado e o tipo de movimento configurado como transferência de saída, que em tese, é a mesma coisa que o saque) for do tipo enum SUCCESS
-            deposit(findByCode(destinationAccountCode), value, MovementType.TRANSFER_IN);// Então faz o depósito na conta a ser pesquisada
-            return true;
+    public ResponseType transfer(Account originAccount, double value, String destinationAccountCode) {
+        Account destinationAccount = getByCode(destinationAccountCode); // Procura a conta de destino
+        if (destinationAccount == null) { // Se não encontrar
+            return ResponseType.INEXISTENT;
         }
-        return false;
+        ResponseType responseTypeWithdraw = withdraw(value, originAccount, MovementType.TRANSFER_OUT); // Faz o saque e recebe a resposta
+
+        if (responseTypeWithdraw.equals(ResponseType.SUCCESS)) { // Se o retorno do método de saque (com o valor determinado e o tipo de movimento configurado como transferência de saída, que em tese, é a mesma coisa que o saque) for do tipo enum SUCCESS
+            deposit(destinationAccount, value, MovementType.TRANSFER_IN);// Então faz o depósito na conta a ser pesquisada
+        }
+        return responseTypeWithdraw; // Só pode ser SUCCESS ou INSUFFICIENT_BALANCE
     }
 
     @Override

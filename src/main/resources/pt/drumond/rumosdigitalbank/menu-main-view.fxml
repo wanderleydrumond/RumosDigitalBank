@@ -5,14 +5,16 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.drumond.rumosdigitalbank.MenuMainController">
     <children>
+        <Label fx:id="labelWelcome" layoutX="88.0" layoutY="54.0" />
+        <Label fx:id="labelBalance" layoutX="88.0" layoutY="101.0" />
+      <Label fx:id="labelMonthlyPlafond" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="315.0" layoutY="54.0" textAlignment="RIGHT" />
+      <Label fx:id="labelPlafondBalance" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="315.0" layoutY="101.0" textAlignment="RIGHT" />
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="88.0" layoutY="146.0" mnemonicParsing="false" onAction="#deposit" text="DEPOSIT" textAlignment="CENTER" />
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="262.0" layoutY="146.0" mnemonicParsing="false" onAction="#withdraw" text="WITHDRAW" textAlignment="CENTER" />
-        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="440.0" layoutY="146.0" mnemonicParsing="false" text="TRANSFER" textAlignment="CENTER" />
+        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="440.0" layoutY="146.0" mnemonicParsing="false" onAction="#transfer" text="TRANSFER" textAlignment="CENTER" />
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="88.0" layoutY="230.0" mnemonicParsing="false" text="MOVEMENTS" textAlignment="CENTER" />
         <Button fx:id="buttonMakeLoan" alignment="CENTER" contentDisplay="CENTER" layoutX="262.0" layoutY="230.0" mnemonicParsing="false" text="MAKE LOAN" textAlignment="CENTER" />
         <Button fx:id="buttonPayLoan" alignment="CENTER" contentDisplay="CENTER" layoutX="440.0" layoutY="230.0" mnemonicParsing="false" text="PAY LOAN" textAlignment="CENTER" />
-        <Label fx:id="labelWelcome" layoutX="88.0" layoutY="54.0" />
-        <Label fx:id="labelBalance" layoutX="88.0" layoutY="101.0" />
       <Button layoutX="512.0" layoutY="335.0" mnemonicParsing="false" onAction="#logout" text="Logout" />
     </children>
 </AnchorPane>

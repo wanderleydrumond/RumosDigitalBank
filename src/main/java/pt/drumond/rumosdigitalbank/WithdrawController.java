@@ -42,7 +42,7 @@ public class WithdrawController {
         switch (accountServiceImplementation.withdraw(Double.parseDouble(textFieldValue.getText()), loggedAccount, MovementType.WITHDRAW)) {
             case INSUFFICIENT_BALANCE -> {
                 alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Withdraw ATM");
+                alert.setTitle("Withdrawal ATM");
                 alert.setHeaderText("Error:");
                 alert.setContentText("Not enough balance");
                 loadMainScreen(actionEvent);
@@ -50,7 +50,7 @@ public class WithdrawController {
             }
             case WITHDRAW_OVERFLOW -> {
                 alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Withdraw ATM");
+                alert.setTitle("Withdrawal ATM");
                 alert.setHeaderText("Error:");
                 alert.setContentText("Value exceeds the daily amount");
                 loadMainScreen(actionEvent);
@@ -58,9 +58,9 @@ public class WithdrawController {
             }
             case SUCCESS -> {
                 alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Deposit ATM");
+                alert.setTitle("Withdrawal ATM");
                 alert.setHeaderText(null);
-                alert.setContentText("Withdrawal successfully perfomed");
+                alert.setContentText("Transfer successfully perfomed");
                 loadMainScreen(actionEvent);
                 alert.showAndWait();
             }
@@ -81,10 +81,13 @@ public class WithdrawController {
         if (loggedCard.getMonthyPlafond() == 0.) { // Verifica se o cartão é de débito, se for
             menuMainController.getButtonMakeLoan().setVisible(false); // esconde o botão fazer empréstimo
             menuMainController.getButtonPayLoan().setVisible(false); // esconde o botão pagar empréstimo
+        } else {
+            menuMainController.setLabelMonthlyPlafond(); // mostra o limite mensal do cartão
+            menuMainController.setLabelPlafondBalance(); // mostra o saldo disponível do limite do cartão
         }
         menuMainController.setLoggedAccount();
         menuMainController.setWelcome();
-        menuMainController.setBalance();
+        menuMainController.setAccountBalance();
 
         stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         scene = new Scene(root);

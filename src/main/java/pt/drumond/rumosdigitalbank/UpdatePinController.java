@@ -63,10 +63,13 @@ public class UpdatePinController {
             if (loggedCard.getMonthyPlafond() == 0.) { // Verifica se o cartão é de débito, se for
                 menuMainController.getButtonMakeLoan().setVisible(false); // esconde o botão fazer empréstimo
                 menuMainController.getButtonPayLoan().setVisible(false); // esconde o botão pagar empréstimo
+            } else {
+                menuMainController.setLabelMonthlyPlafond(); // mostra o limite mensal do cartão
+                menuMainController.setLabelPlafondBalance(); // mostra o saldo disponível do limite do cartão
             }
             menuMainController.setLoggedAccount();
             menuMainController.setWelcome();
-            menuMainController.setBalance();
+            menuMainController.setAccountBalance();
 
             stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             scene = new Scene(root);

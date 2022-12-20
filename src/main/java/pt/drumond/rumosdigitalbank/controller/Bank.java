@@ -450,11 +450,15 @@ public class Bank {
         System.out.print("Insert the transfer value: ");
         double transferValue = Double.parseDouble(scanner.nextLine());
         String destinationAccount = getString("Insert the destination account code: ");
-        if (accountServiceImplementation.transfer(loggedAccount, transferValue, destinationAccount)) {
-            System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Transfer successfully done" + RESET.getValue());
-        } else {
-            System.out.print(RED_TEXT_BRIGHT.getValue() + "Insuficient balance: " + RESET.getValue());
-            System.out.printf("%.2f€%n", loggedAccount.getBalance());
+        ResponseType answer = accountServiceImplementation.transfer(loggedAccount, transferValue, destinationAccount);
+
+        switch (answer) {
+            case SUCCESS -> System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Transfer successfully done" + RESET.getValue());
+            case INSUFFICIENT_BALANCE -> {
+                System.out.print(RED_TEXT_BRIGHT.getValue() + "Insuficient balance: " + RESET.getValue());
+                System.out.printf("%.2f€%n", loggedAccount.getBalance());
+            }
+            case INEXISTENT -> System.out.println(RED_TEXT_BRIGHT.getValue() + "Account not found" + RESET.getValue());
         }
         updateAccount(true);
     }
@@ -571,7 +575,7 @@ public class Bank {
         do {
             accountExists = false;
             System.out.print("Insert account code: ");
-            loggedAccount = accountServiceImplementation.findByCode(scanner.nextLine());
+            loggedAccount = accountServiceImplementation.getByCode(scanner.nextLine());
             if (loggedAccount != null) {
                 accountExists = true;
             } else {

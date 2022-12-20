@@ -9,16 +9,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import pt.drumond.rumosdigitalbank.enums.MovementType;
+import pt.drumond.rumosdigitalbank.enums.ResponseType;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
 
 import java.io.IOException;
 
-public class DepositController {
+public class TransferController {
     @FXML
-    private TextField textFieldValue;
+    private TextField textFieldAccount, textFieldValue;
     private AccountService accountServiceImplementation = Main.getBank().getAccountServiceImplementation();
 
     private Stage stage;
@@ -36,26 +36,26 @@ public class DepositController {
     }
 
     @FXML
-    protected void deposit(ActionEvent actionEvent) throws IOException {
-        boolean answer = accountServiceImplementation.deposit(loggedAccount, Double.parseDouble(textFieldValue.getText()), MovementType.DEPOSIT);
-        Alert alert;
-        if (answer) {
-            // Alert sucesso
-            alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Deposit ATM");
-            alert.setHeaderText(null);
-            alert.setContentText("Deposit successfully perfomed");
+    protected void transfer(ActionEvent actionEvent) throws IOException {
+        Alert alert = null;
+        ResponseType answer = accountServiceImplementation.transfer(loggedAccount, Double.parseDouble(textFieldValue.getText()), textFieldAccount.getText());
 
-        } else {
-            //Alert erro
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Deposit ATM");
-            alert.setHeaderText("Error:");
-            alert.setContentText("Deposit not perfomed");
+        switch (answer) {
+            case SUCCESS -> alert = generateAlert(Alert.AlertType.INFORMATION, null, "Transfer successfully perfomed");
+            case INSUFFICIENT_BALANCE -> alert = generateAlert(Alert.AlertType.ERROR, "Error", "Not enough balance");
+            case INEXISTENT -> alert = generateAlert(Alert.AlertType.ERROR, "Error", "Account not found");
         }
         loadMainScreen(actionEvent);
-
         alert.showAndWait();
+    }
+
+    private Alert generateAlert(Alert.AlertType alertType, String header, String content) {
+        Alert alert;
+        alert = new Alert(alertType);
+        alert.setTitle("Transfer ATM");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        return alert;
     }
 
     @FXML
@@ -87,7 +87,16 @@ public class DepositController {
     }
 
     @FXML
-    protected void formatTextFieldToNumbersOnly() {
+    protected void formatTextFieldAccountToNumbersOnly() {
+        textFieldAccount.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                textFieldAccount.setText(newValue.replaceAll("\\D", ""));
+            }
+        });
+    }
+
+    @FXML
+    protected void formatTextFieldValueToNumbersOnly() {
         textFieldValue.textProperty().addListener((observableValue, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 textFieldValue.setText(newValue.replaceAll("\\D", ""));

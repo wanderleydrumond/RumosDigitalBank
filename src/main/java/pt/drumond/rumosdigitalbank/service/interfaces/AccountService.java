@@ -13,10 +13,10 @@ public interface AccountService {
     Account create(Account account, Customer mainHolder);
     Account update(Account account);
     boolean validateInitialDeposit(double depositValue);
-    Account findByCode(String code);
+    Account getByCode(String code);
     boolean addSecondaryHolder(Account account, Customer secondaryHolder);
     boolean deposit(Account account, double value, MovementType deposit);
-    boolean transfer(Account account, double value, String destinyAccountCode);
+    ResponseType transfer(Account account, double value, String destinyAccountCode);
     ResponseType withdraw(double value, Account accountToBeDebited, MovementType movementType);
     boolean deleteSecondaryHolder(Account account, Customer secondaryHolder);
     Card addDebitCard(Account account, Customer cardHolder);
