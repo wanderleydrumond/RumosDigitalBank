@@ -6,6 +6,7 @@
 <AnchorPane prefHeight="100.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.drumond.rumosdigitalbank.WithdrawController">
     <children>
         <TextField fx:id="textFieldValue" layoutX="26.0" layoutY="25.0" onKeyTyped="#formatTextFieldToNumbersOnly" promptText="Withdrawal value" />
+        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="28.0" layoutY="3.0" text="Daily amount limit: 500,00€" textAlignment="CENTER" />
         <Button cancelButton="true" layoutX="26.0" layoutY="61.0" mnemonicParsing="false" onAction="#cancel" text="CANCEL" />
         <Button alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="141.0" layoutY="61.0" mnemonicParsing="false" onAction="#withdraw" text="OK" textAlignment="RIGHT" />
     </children>

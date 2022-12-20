@@ -9,17 +9,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
+import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 
 import java.io.IOException;
 
-public class WithdrawController {
+public class MakeLoanController {
     @FXML
     private TextField textFieldValue;
     private AccountService accountServiceImplementation = Main.getBank().getAccountServiceImplementation();
+    private CardService cardServiceImplementation = Main.getBank().getCardServiceImplementation();
 
     private Stage stage;
     private Scene scene;
@@ -36,13 +37,12 @@ public class WithdrawController {
     }
 
     @FXML
-    protected void withdraw(ActionEvent actionEvent) throws IOException {
-        Alert alert = null;
-
-        switch (accountServiceImplementation.withdraw(Double.parseDouble(textFieldValue.getText()), loggedAccount, MovementType.WITHDRAW)) {
-            case INSUFFICIENT_BALANCE -> alert = generateAlert(Alert.AlertType.ERROR, "Error", "Not enough balance");
-            case WITHDRAW_OVERFLOW -> alert = generateAlert(Alert.AlertType.ERROR, "Error", "Value exceeds the daily amount");
-            case SUCCESS -> alert = generateAlert(Alert.AlertType.INFORMATION, null, "Withdrawal successfully perfomed");
+    protected void makeLoan(ActionEvent actionEvent) throws IOException {
+        Alert alert;
+        if (cardServiceImplementation.makeLoan(loggedCard, Double.parseDouble(textFieldValue.getText()))) {
+            alert = generateAlert(Alert.AlertType.INFORMATION, null, "Loan successfully perfomed");
+        } else {
+            alert = generateAlert(Alert.AlertType.ERROR, "Error", "Value exceeds the available plafond");
         }
         loadMainScreen(actionEvent);
         alert.showAndWait();

@@ -59,8 +59,19 @@ public class CardServiceImplementation implements CardService {
             return false;
         }
 
-        card.setPlafondBalance(card.getPlafondBalance() + value); // atualiza o plafond do cartão com o valor pago
+        card.setPlafondBalance(card.getPlafondBalance() + value); // atualiza o saldo do plafond do cartão com o valor pago
         cardRepositoryImplementation.update(card); // atualiza o cartão na base de dados
+        return true;
+    }
+
+    @Override
+    public boolean makeLoan(Card card, double value) {
+        if (card.getPlafondBalance() < value) { // Se não houver plafond disponível
+            return false;
+        }
+
+        card.setPlafondBalance(card.getPlafondBalance() - value); // atualiza o saldo plafond do cartão com o valor sacado
+        cardRepositoryImplementation.update(card);
         return true;
     }
 

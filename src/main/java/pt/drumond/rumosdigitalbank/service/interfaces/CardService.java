@@ -13,5 +13,6 @@ public interface CardService {
     ArrayList<Card> findAllByAccount(Account account);
     void delete(Card cardOwnedByCustomerToBeDeleted);
     boolean payLoan(Card card, double value);
+    boolean makeLoan(Card card, double value);
     ArrayList<Card> loadDatabase(ArrayList<Customer> customers);
 }
