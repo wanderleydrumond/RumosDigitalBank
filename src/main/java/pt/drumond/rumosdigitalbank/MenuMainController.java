@@ -136,7 +136,7 @@ public class MenuMainController {
         stage.show();
     }
     /**
-     * Creates and changes focus to a new screen to make the loan operation.
+     * Creates and changes focus to a new screen to make loan operation.
      *
      * @param actionEvent contains the method to get the instance of the screen
      * @throws IOException in case of any type of inputing error
@@ -150,6 +150,28 @@ public class MenuMainController {
         MakeLoanController makeLoanController = fxmlLoader.getController();
         makeLoanController.setLoggedCard(loggedCard);
         makeLoanController.setLoggedAccount(loggedAccount);
+
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+    
+    /**
+     * Creates and changes focus to a new screen to pay loan operation.
+     *
+     * @param actionEvent contains the method to get the instance of the screen
+     * @throws IOException in case of any type of inputing error
+     */
+    @FXML
+    protected void payLoan(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("pay-loan-view.fxml"));
+        root = fxmlLoader.load();
+
+        // Aqui eu passo as informações de conta e cartão, existentes em MenuMainController e passando-as para DepositController
+        PayLoanController payLoanController = fxmlLoader.getController();
+        payLoanController.setLoggedCard(loggedCard);
+        payLoanController.setLoggedAccount(loggedAccount);
 
         stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         scene = new Scene(root);

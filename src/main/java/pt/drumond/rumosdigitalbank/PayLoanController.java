@@ -15,7 +15,7 @@ import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 
 import java.io.IOException;
 
-public class MakeLoanController {
+public class PayLoanController {
     @FXML
     private TextField textFieldValue;
     private CardService cardServiceImplementation = Main.getBank().getCardServiceImplementation();
@@ -35,12 +35,12 @@ public class MakeLoanController {
     }
 
     @FXML
-    protected void makeLoan(ActionEvent actionEvent) throws IOException {
+    protected void payLoan(ActionEvent actionEvent) throws IOException {
         Alert alert;
-        if (cardServiceImplementation.makeLoan(loggedCard, Double.parseDouble(textFieldValue.getText()))) {
+        if (cardServiceImplementation.payLoan(loggedCard, Double.parseDouble(textFieldValue.getText()))) {
             alert = generateAlert(Alert.AlertType.INFORMATION, null, "Loan successfully perfomed");
         } else {
-            alert = generateAlert(Alert.AlertType.ERROR, "Error", "Value exceeds the available plafond");
+            alert = generateAlert(Alert.AlertType.ERROR, "Error", "Value to be paid exceeds value in debt");
         }
         loadMainScreen(actionEvent);
         alert.showAndWait();
