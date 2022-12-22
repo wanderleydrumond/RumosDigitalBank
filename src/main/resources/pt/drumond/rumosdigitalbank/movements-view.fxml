@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.drumond.rumosdigitalbank.MovementsController">
+   <children>
+      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#showOnlyDeposits" text="Show only deposits" />
+      <Button layoutX="140.0" layoutY="14.0" mnemonicParsing="false" onAction="#showOnlyWithdraws" text="Show only withdraws" />
+      <Button layoutX="275.0" layoutY="14.0" mnemonicParsing="false" onAction="#showOnlyTransfers" text="Show only transfers" />
+      <Button layoutX="401.0" layoutY="14.0" mnemonicParsing="false" onAction="#showAll" text="Show all" />
+      <TableView fx:id="tableViewMovements" layoutX="14.0" layoutY="67.0" prefHeight="321.0" prefWidth="576.0">
+        <columns>
+          <TableColumn fx:id="tableColumnDate" prefWidth="194.0" text="DATE" />
+          <TableColumn fx:id="tableColumnType" prefWidth="270.0" text="TYPE" />
+            <TableColumn fx:id="tableColumnValue" prefWidth="111.0" text="VALUE" />
+        </columns>
+      </TableView>
+      <Button alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="545.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" text="Back" textAlignment="RIGHT" />
+   </children>
+</AnchorPane>

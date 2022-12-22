@@ -12,7 +12,7 @@
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="88.0" layoutY="146.0" mnemonicParsing="false" onAction="#deposit" text="DEPOSIT" textAlignment="CENTER" />
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="262.0" layoutY="146.0" mnemonicParsing="false" onAction="#withdraw" text="WITHDRAW" textAlignment="CENTER" />
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="440.0" layoutY="146.0" mnemonicParsing="false" onAction="#transfer" text="TRANSFER" textAlignment="CENTER" />
-        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="88.0" layoutY="230.0" mnemonicParsing="false" text="MOVEMENTS" textAlignment="CENTER" />
+        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="88.0" layoutY="230.0" mnemonicParsing="false" onAction="#movements" text="MOVEMENTS" textAlignment="CENTER" />
         <Button fx:id="buttonMakeLoan" alignment="CENTER" contentDisplay="CENTER" layoutX="262.0" layoutY="230.0" mnemonicParsing="false" onAction="#makeLoan" text="MAKE LOAN" textAlignment="CENTER" />
         <Button fx:id="buttonPayLoan" alignment="CENTER" contentDisplay="CENTER" layoutX="440.0" layoutY="230.0" mnemonicParsing="false" onAction="#payLoan" text="PAY LOAN" textAlignment="CENTER" />
       <Button layoutX="512.0" layoutY="335.0" mnemonicParsing="false" onAction="#logout" text="Logout" />

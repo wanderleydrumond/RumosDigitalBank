@@ -135,6 +135,30 @@ public class MenuMainController {
         stage.setScene(scene);
         stage.show();
     }
+
+    /**
+     * Creates and changes focus to a new screen to make show movements operation.
+     *
+     * @param actionEvent contains the method to get the instance of the screen
+     * @throws IOException in case of any type of inputing error
+     */
+    @FXML
+    protected void movements(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("movements-view.fxml"));
+        root = fxmlLoader.load();
+
+        // Aqui eu passo as informações de conta e cartão, existentes em MenuMainController e passando-as para DepositController
+        MovementsController movementsController = fxmlLoader.getController();
+        movementsController.setLoggedCard(loggedCard);
+        movementsController.setLoggedAccount(loggedAccount);
+        movementsController.showAll();
+
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
     /**
      * Creates and changes focus to a new screen to make loan operation.
      *

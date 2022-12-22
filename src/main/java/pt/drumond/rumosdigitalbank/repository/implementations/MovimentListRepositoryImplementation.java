@@ -1,7 +1,6 @@
 package pt.drumond.rumosdigitalbank.repository.implementations;
 
 import pt.drumond.rumosdigitalbank.enums.MovementType;
-import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Movement;
 import pt.drumond.rumosdigitalbank.repository.interfaces.MovementListRepository;
 
@@ -22,13 +21,8 @@ public class MovimentListRepositoryImplementation implements MovementListReposit
     }
 
     @Override
-    public Movement delete(Account account) {
-        return null;
-    }
-
-    @Override
-    public ArrayList<Movement> findAllBetweenTwoDates(LocalDate begin, LocalDate end) {
-        return null;
+    public ArrayList<Movement> findAll() {
+        return tableMovements;
     }
 
     @Override
