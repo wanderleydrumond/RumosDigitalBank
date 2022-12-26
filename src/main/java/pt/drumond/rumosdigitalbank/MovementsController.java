@@ -8,20 +8,21 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import pt.drumond.rumosdigitalbank.enums.MovementType;
-import pt.drumond.rumosdigitalbank.enums.ResponseType;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Movement;
-import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
 import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -32,10 +33,9 @@ public class MovementsController {
     @FXML
     private TableColumn<Movement, LocalDate> tableColumnDate;
     @FXML
-    private TableColumn<Movement, ResponseType> tableColumnType;
+    private TableColumn<Movement, MovementType> tableColumnType;
     @FXML
     private TableColumn<Movement, Double> tableColumnValue;
-    private AccountService accountServiceImplementation = Main.getBank().getAccountServiceImplementation();
     private MovementService movementServiceImplementation = Main.getBank().getMovementServiceImplementation();
     private Stage stage;
     private Scene scene;
@@ -58,10 +58,6 @@ public class MovementsController {
 
         ObservableList<Movement> depositsObservableList = FXCollections.observableList(depositsArrayList);
 
-        tableColumnDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-        tableColumnType.setCellValueFactory(new PropertyValueFactory<>("type"));
-        tableColumnValue.setCellValueFactory(new PropertyValueFactory<>("value"));
-
         tableViewMovements.setItems(depositsObservableList);
     }
 
@@ -71,21 +67,14 @@ public class MovementsController {
 
         ObservableList<Movement> depositsObservableList = FXCollections.observableList(depositsArrayList);
 
-        tableColumnDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-        tableColumnType.setCellValueFactory(new PropertyValueFactory<>("type"));
-        tableColumnValue.setCellValueFactory(new PropertyValueFactory<>("value"));
-
         tableViewMovements.setItems(depositsObservableList);
     }
+
     @FXML
     protected void showOnlyWithdraws() {
         ArrayList<Movement> depositsArrayList = getMovements().stream().filter(movementElement -> movementElement.getType().equals(MovementType.WITHDRAW)).collect(Collectors.toCollection(ArrayList::new));
 
         ObservableList<Movement> depositsObservableList = FXCollections.observableList(depositsArrayList);
-
-        tableColumnDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-        tableColumnType.setCellValueFactory(new PropertyValueFactory<>("type"));
-        tableColumnValue.setCellValueFactory(new PropertyValueFactory<>("value"));
 
         tableViewMovements.setItems(depositsObservableList);
     }
@@ -93,9 +82,8 @@ public class MovementsController {
     @FXML
     protected void showAll() {
         ObservableList<Movement> movementObservableList = getMovements();
-        tableColumnDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-        tableColumnType.setCellValueFactory(new PropertyValueFactory<>("type"));
-        tableColumnValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+
+        generateFormattedCells();
 
         tableViewMovements.setItems(movementObservableList);
     }
@@ -107,6 +95,48 @@ public class MovementsController {
             movements = FXCollections.observableList(allMovements);
         }
         return movements;
+    }
+
+    public void loadColumns() {
+        tableColumnDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        tableColumnType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        tableColumnValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+    }
+
+    private void generateFormattedCells() {
+        tableColumnDate.setCellFactory(tableColumnValue -> new TableCell<>() {
+            @Override
+            protected void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                }
+            }
+        });
+        tableColumnType.setCellFactory(tableColumnValue -> new TableCell<>() {
+            @Override
+            protected void updateItem(MovementType movementType, boolean empty) {
+                super.updateItem(movementType, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(movementType.getVALUE());
+                }
+            }
+        });
+        tableColumnValue.setCellFactory(tableColumnValue -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double value, boolean empty) {
+                super.updateItem(value, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(new DecimalFormat("0.00").format(value) + "€");
+                }
+            }
+        });
     }
 
     @FXML

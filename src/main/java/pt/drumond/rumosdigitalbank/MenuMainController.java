@@ -151,6 +151,7 @@ public class MenuMainController {
         MovementsController movementsController = fxmlLoader.getController();
         movementsController.setLoggedCard(loggedCard);
         movementsController.setLoggedAccount(loggedAccount);
+        movementsController.loadColumns();
         movementsController.showAll();
 
         stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
