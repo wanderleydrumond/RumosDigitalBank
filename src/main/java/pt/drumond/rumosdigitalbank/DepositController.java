@@ -38,24 +38,27 @@ public class DepositController {
     @FXML
     protected void deposit(ActionEvent actionEvent) throws IOException {
         boolean answer = accountServiceImplementation.deposit(loggedAccount, Double.parseDouble(textFieldValue.getText()), MovementType.DEPOSIT);
+
         Alert alert;
         if (answer) {
             // Alert sucesso
-            alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Deposit ATM");
-            alert.setHeaderText(null);
-            alert.setContentText("Deposit successfully perfomed");
-
+            alert = generateAlert(Alert.AlertType.INFORMATION, null, "Deposit successfully perfomed");
         } else {
             //Alert erro
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Deposit ATM");
-            alert.setHeaderText("Error:");
-            alert.setContentText("Deposit not perfomed");
+            alert = generateAlert(Alert.AlertType.ERROR, "Error:", "Deposit not perfomed");
         }
         loadMainScreen(actionEvent);
 
         alert.showAndWait();
+    }
+
+    private Alert generateAlert(Alert.AlertType alertType, String header, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle("Deposit ATM");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+
+        return alert;
     }
 
     @FXML
