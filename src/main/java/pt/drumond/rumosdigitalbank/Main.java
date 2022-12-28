@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import pt.drumond.rumosdigitalbank.controller.Bank;
 import pt.drumond.rumosdigitalbank.repository.implementations.AccountListRepositoryImplementation;
@@ -60,6 +61,7 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(requireNonNull(getClass().getResource("login-view.fxml")));
         Scene scene = new Scene(root);
+        stage.getIcons().add(new Image(requireNonNull(getClass().getResourceAsStream("images/logo.png"))));
         stage.setTitle("Rumos Digital Bank ATM");
         stage.setResizable(false);
         stage.setScene(scene);

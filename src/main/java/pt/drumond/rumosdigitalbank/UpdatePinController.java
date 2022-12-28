@@ -8,8 +8,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import pt.drumond.rumosdigitalbank.model.Card;
@@ -20,6 +22,10 @@ import java.io.IOException;
 import static java.util.Objects.requireNonNull;
 
 public class UpdatePinController {
+    @FXML
+    private CheckBox checkboxNewPin, checkboxConfirmPin;
+    @FXML
+    private TextField textFieldNewPin, textFieldConfirmNewPin;
     @FXML
     private Label labelErrorMessage;
     @FXML
@@ -86,6 +92,40 @@ public class UpdatePinController {
                 passwordFieldNewPin.getStyleClass().remove("error");
                 passwordFieldConfirmPin.getStyleClass().remove("error");
             })).play(); // limpa a mensagem após dois segundos
+        }
+    }
+
+    @FXML
+    protected void changeNewPinVisibility() {
+        if (passwordFieldNewPin.isVisible()) {
+            passwordFieldNewPin.setVisible(false);
+            textFieldNewPin.setVisible(true);
+//            checkboxNewPin.setGraphic(new ImageView(requireNonNull(getClass().getResource("images/show-small.png")).toExternalForm()));
+
+            textFieldNewPin.setText(passwordFieldNewPin.getText());
+        } else {
+            passwordFieldNewPin.setVisible(true);
+            textFieldNewPin.setVisible(false);
+//            checkboxNewPin.setGraphic(new ImageView(requireNonNull(getClass().getResource("images/hide-small.png")).toExternalForm()));
+
+            passwordFieldNewPin.setText(passwordFieldNewPin.getText());
+        }
+    }
+
+    @FXML
+    protected void changeConfirmNewPinVisibility() {
+        if (passwordFieldConfirmPin.isVisible()) {
+            passwordFieldConfirmPin.setVisible(false);
+            textFieldConfirmNewPin.setVisible(true);
+//            checkboxConfirmPin.setGraphic(new ImageView(requireNonNull(getClass().getResource("images/show-small.png")).toExternalForm()));
+
+            textFieldConfirmNewPin.setText(passwordFieldConfirmPin.getText());
+        } else {
+            passwordFieldConfirmPin.setVisible(true);
+            textFieldConfirmNewPin.setVisible(false);
+//            checkboxConfirmPin.setGraphic(new ImageView(requireNonNull(getClass().getResource("images/hide-small.png")).toExternalForm()));
+
+            passwordFieldConfirmPin.setText(textFieldConfirmNewPin.getText());
         }
     }
 }

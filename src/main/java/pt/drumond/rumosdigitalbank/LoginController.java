@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -21,7 +22,9 @@ import java.net.URL;
 
 public class LoginController {
     @FXML
-    private TextField textFieldCardSerialnumber;
+    private CheckBox checkboxShowPin;
+    @FXML
+    private TextField textFieldCardSerialnumber, textFieldCardPin;
     @FXML
     private PasswordField passwordFieldCardPin;
     @FXML
@@ -45,10 +48,10 @@ public class LoginController {
             passwordFieldCardPin.setText(""); // limpa o campo do PIN
             labelErrorMessage.setLayoutX(124);
             labelErrorMessage.setText("Invalid Serial Number"); // Exibe mensagem de erro
-            textFieldCardSerialnumber.getStyleClass().add("error"); // adiciona a classe CSS error NÃO FUNCIONA!
+            textFieldCardSerialnumber.getStyleClass().add("error"); // adiciona a classe CSS error
             new Timeline(new KeyFrame(Duration.millis(2000), actionEventElement -> {
                 labelErrorMessage.setText("");
-                textFieldCardSerialnumber.getStyleClass().remove("error"); // remove a classe CSS error NÃO FUNCIONA!
+                textFieldCardSerialnumber.getStyleClass().remove("error"); // remove a classe CSS error
             })).play(); // limpa a mensagem após dois segundos
         } else {
             if (card.getPin().equals(passwordFieldCardPin.getText())) { // confere se este serial number existe
@@ -98,6 +101,23 @@ public class LoginController {
                     passwordFieldCardPin.getStyleClass().remove("error"); // remove a classe error
                 })).play(); // limpa a mensagem após dois segundos
             }
+        }
+    }
+
+    @FXML
+    protected void changeTextFieldVisibility() {
+        if (passwordFieldCardPin.isVisible()) {
+            passwordFieldCardPin.setVisible(false);
+            textFieldCardPin.setVisible(true);
+//            checkboxShowPin.setGraphic(new ImageView(Objects.requireNonNull(getClass().getResource("images/show-small.png")).toExternalForm()));
+
+            textFieldCardPin.setText(passwordFieldCardPin.getText());
+        } else {
+            passwordFieldCardPin.setVisible(true);
+            textFieldCardPin.setVisible(false);
+//            checkboxShowPin.setGraphic(new ImageView(Objects.requireNonNull(getClass().getResource("images/hide-small.png")).toExternalForm()));
+
+            passwordFieldCardPin.setText(textFieldCardPin.getText());
         }
     }
 }
