@@ -30,7 +30,7 @@
             </ImageView>
          </graphic></Button>
       <Label fx:id="labelErrorMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="103.0" layoutY="228.0" textAlignment="CENTER" textFill="RED" />
-      <CheckBox fx:id="checkboxNewPin" layoutX="263.0" layoutY="130.0" mnemonicParsing="false" onAction="#changeNewPinVisibility" stylesheets="@CSS/Checkbox.css" />
-      <CheckBox fx:id="checkboxConfirmPin" layoutX="263.0" layoutY="196.0" mnemonicParsing="false" onAction="#changeConfirmNewPinVisibility" stylesheets="@CSS/Checkbox.css" />
+      <CheckBox layoutX="263.0" layoutY="130.0" mnemonicParsing="false" onAction="#changeNewPinVisibility" stylesheets="@CSS/Checkbox.css" />
+      <CheckBox layoutX="263.0" layoutY="196.0" mnemonicParsing="false" onAction="#changeConfirmNewPinVisibility" stylesheets="@CSS/Checkbox.css" />
     </children>
 </AnchorPane>

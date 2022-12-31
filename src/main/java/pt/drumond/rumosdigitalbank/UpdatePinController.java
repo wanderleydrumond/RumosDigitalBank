@@ -8,7 +8,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -22,8 +21,6 @@ import java.io.IOException;
 import static java.util.Objects.requireNonNull;
 
 public class UpdatePinController {
-    @FXML
-    private CheckBox checkboxNewPin, checkboxConfirmPin;
     @FXML
     private TextField textFieldNewPin, textFieldConfirmNewPin;
     @FXML
@@ -83,7 +80,9 @@ public class UpdatePinController {
             stage.show();
         } else {
             passwordFieldNewPin.setText("");
+            textFieldNewPin.setText(passwordFieldNewPin.getText());
             passwordFieldConfirmPin.setText("");
+            textFieldConfirmNewPin.setText(passwordFieldConfirmPin.getText());
             labelErrorMessage.setText("PIN numbers do not match");
             passwordFieldNewPin.getStyleClass().add("error");
             passwordFieldConfirmPin.getStyleClass().add("error");
