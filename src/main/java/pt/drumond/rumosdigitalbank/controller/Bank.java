@@ -80,6 +80,9 @@ public class Bank {
      * Displays the very first app menu.
      */
     public void initialMenu() {
+        System.out.println(DARK_GRAY_TEXT_NORMAL.getValue() + "javafx.runtime.version: " + System.getProperty("javafx.runtime.version"));
+        System.out.println("java.runtime.version: " + System.getProperty("java.runtime.version"));
+
         System.out.println(YELLOW_TEXT_BRIGHT.getValue() + "╭══════════════════════" + WHITE_TEXT_BRIGHT_BOLD.getValue() + "$" + YELLOW_TEXT_BRIGHT.getValue() + "═══╮");
         System.out.println("\040\040\040\040\040" + BLUE_TEXT_BOLD.getValue() + "RUMOS DIGITAL BANK" + "\040\040\040\040\040");
         System.out.println(YELLOW_TEXT_BRIGHT.getValue() + "╰═══" + WHITE_TEXT_BRIGHT_BOLD.getValue() + "€" + YELLOW_TEXT_BRIGHT.getValue() + "══════════════════════╯");

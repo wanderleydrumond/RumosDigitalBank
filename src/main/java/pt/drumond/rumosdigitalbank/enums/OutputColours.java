@@ -9,7 +9,12 @@ public enum OutputColours {
     /**
      * Reset all configurations
      */
+
     RESET("\u001B[0m"),
+    /**
+     * Black regular text
+     */
+    DARK_GRAY_TEXT_NORMAL("\u001B[38;5;8m"),
     /**
      * Red regular text
      */
