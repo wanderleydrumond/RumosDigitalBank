@@ -15,6 +15,7 @@ import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -73,7 +74,7 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public boolean addSecondaryHolder(Account loggedAccount, Customer secondaryHolder) {
-        ArrayList<Customer> secondaryHolders = loggedAccount.getSecondaryHolders();
+        List<Customer> secondaryHolders = loggedAccount.getSecondaryHolders();
         if (secondaryHolders.stream().anyMatch(customerElement -> customerElement.getNif().equals(secondaryHolder.getNif())) || loggedAccount.getMainHolder().getNif().equals(secondaryHolder.getNif())) {
             return false;
         }
@@ -107,7 +108,7 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public ResponseType withdraw(double value, Account accountToBeDebited, MovementType movementType) {
         if (movementType.equals(MovementType.WITHDRAW)) { // Se o tipo de movimentação for saque (pode ser TRANFER_OUT ou WITHDRAW)
-            ArrayList<Movement> withdraws = accountListRepositoryImplementation.findAllSpecificMovements(MovementType.WITHDRAW, accountToBeDebited); // busca todos os movimentos do tipo sque feitos pelo cliente
+            ArrayList<Movement> withdraws = (ArrayList<Movement>) accountListRepositoryImplementation.findAllSpecificMovements(MovementType.WITHDRAW, accountToBeDebited); // busca todos os movimentos do tipo sque feitos pelo cliente
             LocalDate today = LocalDate.now();
             double amountWithdrawToday = 0;
             for (Movement withdrawElement : withdraws) { // Percorrer a lista de movimentos, cujo tipo é saque
@@ -162,7 +163,7 @@ public class AccountServiceImplementation implements AccountService {
 
         int timesOfCustomerFound = 0;
         // Verificar se o cliente possui alguma outra conta no banco
-        ArrayList<Account> allAccounts = accountListRepositoryImplementation.findAll();
+        List<Account> allAccounts = accountListRepositoryImplementation.findAll();
         for (Account accountElement : allAccounts) { // Percorrer a lista de contas
             if (accountElement.getMainHolder().getNif().equals(secondaryHolder.getNif())) { // Se encontrar o referido cliente como cliente principal de outra conta
                 timesOfCustomerFound++; // acrescenta 1 ao contador
@@ -210,12 +211,12 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public ArrayList<Card> getDebitCards(Account loggedAccount) {
-        return accountListRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount);
+        return (ArrayList<Card>) accountListRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount);
     }
 
     @Override
     public ArrayList<Card> getCreditCards(Account loggedAccount) {
-        return accountListRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount);
+        return (ArrayList<Card>) accountListRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount);
     }
 
     @Override
@@ -260,8 +261,8 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public void loadDatabase(ArrayList<Customer> customers, ArrayList<Card> cards, ArrayList<Movement> movements) {
-        accountListRepositoryImplementation.loadDatabase(customers, cards, movements);
+    public void loadDatabase(List<Customer> customers, List<Card> cards, List<Movement> movements) {
+        accountListRepositoryImplementation.loadDatabase((ArrayList<Customer>) customers, (ArrayList<Card>) cards, (ArrayList<Movement>) movements);
     }
 
     @Override
@@ -288,13 +289,13 @@ public class AccountServiceImplementation implements AccountService {
             return ResponseType.BALANCE_BIGGER_THAN_ZERO;
         }
 
-        ArrayList<Customer> allCustomersInAccountToBeDeleted = new ArrayList<>(accountToBeDeleted.getSecondaryHolders());
+        List<Customer> allCustomersInAccountToBeDeleted = new ArrayList<>(accountToBeDeleted.getSecondaryHolders());
         allCustomersInAccountToBeDeleted.add(accountToBeDeleted.getMainHolder());
 
         accountListRepositoryImplementation.delete(accountToBeDeleted);
 
         HashSet<Customer> customersThatAreInAnotherAccount = new HashSet<>();
-        ArrayList<Account> allAccounts = accountListRepositoryImplementation.findAll();
+        List<Account> allAccounts = accountListRepositoryImplementation.findAll();
 
         for (Account anotherAccount : allAccounts) {
             for (Customer customerElement : allCustomersInAccountToBeDeleted) {

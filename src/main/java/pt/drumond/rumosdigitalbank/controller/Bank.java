@@ -14,10 +14,7 @@ import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Scanner;
+import java.util.*;
 
 import static pt.drumond.rumosdigitalbank.enums.OutputColours.*;
 
@@ -48,9 +45,9 @@ public class Bank {
         this.movementServiceImplementation = movementServiceImplementation;
         this.accountServiceImplementation = accountServiceImplementation;
 
-        ArrayList<Customer> customers = this.customerServiceImplementation.loadDatabase();
-        ArrayList<Card> cards = this.cardServiceImplementation.loadDatabase(customers);
-        ArrayList<Movement> movements = this.movementServiceImplementation.loadDatabase();
+        List<Customer> customers = this.customerServiceImplementation.loadDatabase();
+        List<Card> cards = this.cardServiceImplementation.loadDatabase((ArrayList<Customer>) customers);
+        List<Movement> movements = this.movementServiceImplementation.loadDatabase();
         this.accountServiceImplementation.loadDatabase(customers, cards, movements);
 
         scanner = new Scanner(System.in);
@@ -560,7 +557,7 @@ public class Bank {
                 if (verifyIfExistsInLoggedAccount) {
                     System.out.println(RED_TEXT_BRIGHT.getValue() + "There is no client for the given NIF number in this account." + RESET.getValue());
                 } else {
-                    System.out.println(RED_TEXT_BRIGHT + "There is no client for the given NIF number." + RESET.getValue());
+                    System.out.println(RED_TEXT_BRIGHT.getValue() + "There is no client for the given NIF number." + RESET.getValue());
                 }
             }
         } while (!customerExists);
@@ -676,8 +673,8 @@ public class Bank {
                 displayMargin(loggedAccount);
 
             } else {
-                System.out.println(RED_TEXT_BRIGHT.getValue() + "Insuficient value " + RESET.getValue() + "\nDo you want to enter a new value?(" + GREEN_TEXT_BRIGHT.getValue() + "Y" + RESET.getValue() + ")es/(");
-                System.out.print(RED_TEXT_NORMAL + "N" + RESET.getValue() + ")o \nOption: ");
+                System.out.print(RED_TEXT_BRIGHT.getValue() + "Insuficient value " + RESET.getValue() + "\nDo you want to enter a new value?(" + GREEN_TEXT_BRIGHT.getValue() + "Y" + RESET.getValue() + ")es/(");
+                System.out.print(RED_TEXT_NORMAL.getValue() + "N" + RESET.getValue() + ")o \nOption: ");
                 if (scanner.nextLine().equalsIgnoreCase("n")) {
                     mainMenu(); // Go back to main menu
                 }

@@ -7,6 +7,7 @@ import pt.drumond.rumosdigitalbank.repository.interfaces.CardRepository;
 import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CardServiceImplementation implements CardService {
 
@@ -44,7 +45,7 @@ public class CardServiceImplementation implements CardService {
     }
 
     @Override
-    public ArrayList<Card> findAllByAccount(Account account) {
+    public List<Card> findAllByAccount(Account account) {
         return null;
     }
 
@@ -76,7 +77,7 @@ public class CardServiceImplementation implements CardService {
     }
 
     @Override
-    public ArrayList<Card> loadDatabase(ArrayList<Customer> customers) {
+    public List<Card> loadDatabase(ArrayList<Customer> customers) {
         return cardRepositoryImplementation.loadDatabase(customers);
     }
 }

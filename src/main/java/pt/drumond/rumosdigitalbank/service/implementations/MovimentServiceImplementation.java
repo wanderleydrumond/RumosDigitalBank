@@ -7,7 +7,7 @@ import pt.drumond.rumosdigitalbank.repository.interfaces.MovementListRepository;
 import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.List;
 
 public class MovimentServiceImplementation implements MovementService {
     private MovementListRepository movementListRepositoryImplementation;
@@ -39,12 +39,12 @@ public class MovimentServiceImplementation implements MovementService {
     }
 
     @Override
-    public ArrayList<Movement> getAll() {
+    public List<Movement> getAll() {
         return movementListRepositoryImplementation.findAll();
     }
 
     @Override
-    public ArrayList<Movement> loadDatabase() {
+    public List<Movement> loadDatabase() {
         return movementListRepositoryImplementation.loadDatabase();
     }
 }

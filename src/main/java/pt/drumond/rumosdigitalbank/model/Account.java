@@ -1,18 +1,20 @@
 package pt.drumond.rumosdigitalbank.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Entity class Account.
  */
-public class Account {
-    private static int id = 1;
+public class Account implements Serializable {
+    private int id = 1;
     private String code;
     private double balance;
     private Customer mainHolder;
-    private ArrayList<Customer> secondaryHolders = new ArrayList<>();
-    private ArrayList<Movement> movements = new ArrayList<>();
-    private ArrayList<Card> cards = new ArrayList<>();
+    private List<Customer> secondaryHolders = new ArrayList<>();
+    private List<Movement> movements = new ArrayList<>();
+    private List<Card> cards = new ArrayList<>();
 
     public Account(double balance, Customer mainHolder) {
         this.balance = balance;
@@ -24,7 +26,7 @@ public class Account {
     }
 
     public void setId(int id) {
-        Account.id = id;
+        this.id = id;
     }
 
     public String getCode() {
@@ -51,7 +53,7 @@ public class Account {
         this.mainHolder = mainHolder;
     }
 
-    public ArrayList<Customer> getSecondaryHolders() {
+    public List<Customer> getSecondaryHolders() {
         return secondaryHolders;
     }
 
@@ -59,7 +61,7 @@ public class Account {
         this.secondaryHolders = secondaryHolders;
     }
 
-    public ArrayList<Movement> getMovements() {
+    public List<Movement> getMovements() {
         return movements;
     }
 
@@ -67,11 +69,11 @@ public class Account {
         this.movements = movements;
     }
 
-    public ArrayList<Card> getCards() {
+    public List<Card> getCards() {
         return cards;
     }
 
-    public void setCards(ArrayList<Card> cards) {
+    public void setCards(List<Card> cards) {
         this.cards = cards;
     }
 

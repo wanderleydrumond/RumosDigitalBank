@@ -1,4 +1,4 @@
-package pt.drumond.rumosdigitalbank.repository.implementations;
+package pt.drumond.rumosdigitalbank.repository.implementations.list;
 
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;

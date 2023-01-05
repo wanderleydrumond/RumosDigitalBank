@@ -1,4 +1,4 @@
-package pt.drumond.rumosdigitalbank.repository.implementations;
+package pt.drumond.rumosdigitalbank.repository.implementations.list;
 
 import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.model.Movement;
@@ -6,10 +6,11 @@ import pt.drumond.rumosdigitalbank.repository.interfaces.MovementListRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MovimentListRepositoryImplementation implements MovementListRepository {
 
-    private ArrayList<Movement> tableMovements = new ArrayList<>();
+    private List<Movement> tableMovements = new ArrayList<>();
     private static int id = 1;
 
     @Override
@@ -21,12 +22,12 @@ public class MovimentListRepositoryImplementation implements MovementListReposit
     }
 
     @Override
-    public ArrayList<Movement> findAll() {
+    public List<Movement> findAll() {
         return tableMovements;
     }
 
     @Override
-    public ArrayList<Movement> loadDatabase() {
+    public List<Movement> loadDatabase() {
         // Conta 102
         Movement movement0 = new Movement(MovementType.WITHDRAW, LocalDate.of(2022, 12, 1), 50.);
         create(movement0);

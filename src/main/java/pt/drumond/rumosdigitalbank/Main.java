@@ -7,10 +7,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import pt.drumond.rumosdigitalbank.controller.Bank;
-import pt.drumond.rumosdigitalbank.repository.implementations.AccountListRepositoryImplementation;
-import pt.drumond.rumosdigitalbank.repository.implementations.CardListRepositoryImplementation;
-import pt.drumond.rumosdigitalbank.repository.implementations.CustomerListRepositoryImplementation;
-import pt.drumond.rumosdigitalbank.repository.implementations.MovimentListRepositoryImplementation;
+import pt.drumond.rumosdigitalbank.repository.implementations.list.AccountListRepositoryImplementation;
+import pt.drumond.rumosdigitalbank.repository.implementations.list.CardListRepositoryImplementation;
+import pt.drumond.rumosdigitalbank.repository.implementations.list.CustomerListRepositoryImplementation;
+import pt.drumond.rumosdigitalbank.repository.implementations.list.MovimentListRepositoryImplementation;
 import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
 import pt.drumond.rumosdigitalbank.repository.interfaces.CardRepository;
 import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
@@ -66,5 +66,9 @@ public class Main extends Application {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+        /*stage.setOnCloseRequest(windowEvent -> {
+            stage.close();
+            bank.initialMenu(); // https://stackoverflow.com/questions/24320014/how-to-call-launch-more-than-once-in-java
+        });*/
     }
 }

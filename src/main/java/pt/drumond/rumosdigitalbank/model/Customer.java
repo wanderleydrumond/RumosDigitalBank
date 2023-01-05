@@ -1,15 +1,18 @@
 package pt.drumond.rumosdigitalbank.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * Entity class Customer.
  */
-public class Customer {
+public class Customer implements Serializable {
     private int id;
     private String nif, name, password, phone, mobile, email, profession;
     private LocalDate birthDate;
+    private List<Account> accounts;
 
 
     public Customer(String nif, String name, String password, String phone, String mobile, String email, String profession, LocalDate birthDate) {
@@ -134,6 +137,14 @@ public class Customer {
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
     }
 
     @Override

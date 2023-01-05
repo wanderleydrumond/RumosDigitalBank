@@ -3,7 +3,7 @@ package pt.drumond.rumosdigitalbank.service.interfaces;
 import pt.drumond.rumosdigitalbank.model.Customer;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.List;
 
 public interface CustomerService {
     Customer save(Customer customer);
@@ -11,8 +11,8 @@ public interface CustomerService {
     Customer findByNif(String nif);
     Customer update(Customer customer);
     void delete(Customer customer);
-    ArrayList<Customer> findAll();
-    ArrayList<Customer> loadDatabase();
+    List<Customer> findAll();
+    List<Customer> loadDatabase();
 
     boolean validateAge(LocalDate birthDate);
 
@@ -23,5 +23,4 @@ public interface CustomerService {
     boolean validateMobile(String mobile);
 
     boolean validateEmail(String email);
-
 }

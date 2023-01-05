@@ -1,7 +1,7 @@
 package pt.drumond.rumosdigitalbank.model;
 
 public class Card {
-    private static int id;
+    private int id;
     private String serialNumber, pin;
     private boolean isVirgin;
     private Customer cardHolder;
@@ -22,7 +22,7 @@ public class Card {
     }
 
     public void setId(int id) {
-        Card.id = id;
+        this.id = id;
     }
 
     public String getSerialNumber() {

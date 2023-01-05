@@ -1,4 +1,4 @@
-package pt.drumond.rumosdigitalbank.repository.implementations;
+package pt.drumond.rumosdigitalbank.repository.implementations.list;
 
 import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.model.Account;
@@ -9,12 +9,13 @@ import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class AccountListRepositoryImplementation implements AccountRepository {
 
     private static int id = 1;
-    private ArrayList<Account> tableAccounts = new ArrayList<>();
+    private List<Account> tableAccounts = new ArrayList<>();
 
     public AccountListRepositoryImplementation() {
     }
@@ -34,12 +35,12 @@ public class AccountListRepositoryImplementation implements AccountRepository {
     }
 
     @Override
-    public ArrayList<Account> findAll() {
+    public List<Account> findAll() {
         return tableAccounts;
     }
 
     @Override
-    public ArrayList<Card> findAllDebitCardsByAccount(Account account) {
+    public List<Card> findAllDebitCardsByAccount(Account account) {
         ArrayList<Card> debitCards = new ArrayList<>();
         account.getCards().forEach(cardElement -> {
             if (cardElement.getMonthyPlafond() == 0.) {
@@ -50,8 +51,8 @@ public class AccountListRepositoryImplementation implements AccountRepository {
     }
 
     @Override
-    public ArrayList<Card> findAllCreditCardsByAccount(Account account) {
-        ArrayList<Card> creditCards = new ArrayList<>();
+    public List<Card> findAllCreditCardsByAccount(Account account) {
+        List<Card> creditCards = new ArrayList<>();
         account.getCards().forEach(cardElement -> {
             if (cardElement.getMonthyPlafond() > 0.) {
                 creditCards.add(cardElement);
@@ -85,7 +86,7 @@ public class AccountListRepositoryImplementation implements AccountRepository {
 
 
     @Override
-    public ArrayList<Movement> findAllSpecificMovements(MovementType movementType, Account accountToBeDebited) {
+    public List<Movement> findAllSpecificMovements(MovementType movementType, Account accountToBeDebited) {
         /*ArrayList<Movement> specificMovements = new ArrayList<>();
         accountToBeDebited.getMovements().forEach(movementElement -> {
             if (movementElement.getType().equals(movementType)) {

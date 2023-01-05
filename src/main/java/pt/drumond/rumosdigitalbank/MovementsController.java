@@ -24,6 +24,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class MovementsController {
@@ -42,7 +43,7 @@ public class MovementsController {
     private Parent root;
     private Card loggedCard;
     private Account loggedAccount;
-    private ArrayList<Movement> allMovements;
+    private List<Movement> allMovements;
 
     public void setLoggedCard(Card loggedCard) {
         this.loggedCard = loggedCard;

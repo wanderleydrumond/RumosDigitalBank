@@ -1,13 +1,12 @@
 package pt.drumond.rumosdigitalbank.service.implementations;
 
 import pt.drumond.rumosdigitalbank.model.Customer;
-import pt.drumond.rumosdigitalbank.repository.implementations.CustomerListRepositoryImplementation;
 import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
 import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains all methods responsible for the businees rules related to customers.
@@ -18,9 +17,6 @@ public class CustomerServiceImplementation implements CustomerService {
      */
     private CustomerRepository customerListRepositoryImplementation;
 
-    /*public CustomerServiceImplementation() {
-        customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
-    }*/
     public CustomerServiceImplementation(CustomerRepository customerRepository) {
         customerListRepositoryImplementation = customerRepository;
     }
@@ -56,7 +52,7 @@ public class CustomerServiceImplementation implements CustomerService {
     /**
      * Displays all customers.
      */
-    public ArrayList<Customer> findAll() {
+    public List<Customer> findAll() {
         return customerListRepositoryImplementation.findAll();
     }
 
@@ -79,18 +75,14 @@ public class CustomerServiceImplementation implements CustomerService {
     public boolean validateAge(LocalDate birthDate) {
         LocalDate today = LocalDate.now();
         int age = Period.between(birthDate, today).getYears();
-        if (age >= 18) {
-            return true;
-        }
-        return false;
+        return age >= 18;
     }
 
     /**
      * Generates initial data to fill the Arraylist that's serves as database.
      */
     @Override
-    public ArrayList<Customer> loadDatabase() {
-
+    public List<Customer> loadDatabase() {
         return customerListRepositoryImplementation.loadDatabase();
     }
 }

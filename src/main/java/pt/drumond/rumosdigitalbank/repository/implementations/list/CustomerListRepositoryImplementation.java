@@ -1,17 +1,18 @@
-package pt.drumond.rumosdigitalbank.repository.implementations;
+package pt.drumond.rumosdigitalbank.repository.implementations.list;
 
 import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Database layer.<br>
  * <em>Implementation by <code>ArrayList</code></em>
  */
 public class CustomerListRepositoryImplementation implements CustomerRepository {
-    private ArrayList<Customer> tableCustomers = new ArrayList<>();
+    private List<Customer> tableCustomers = new ArrayList<>();
     private static int id = 1;
 
     public CustomerListRepositoryImplementation() {
@@ -68,7 +69,7 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
      * @return the whole customer's list
      */
     @Override
-    public ArrayList<Customer> findAll() {
+    public List<Customer> findAll() {
         return tableCustomers;
     }
 
@@ -80,7 +81,7 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
     /**
      * Generates initial data to fill the customer HashSet that's serves as database.
      */
-    public ArrayList<Customer> loadDatabase() {
+    public List<Customer> loadDatabase() {
         Customer customer1 = new Customer("987456321", "Jane Doe", "123456", "321654987", "99885544", "someone@email.com", "Lawyer", LocalDate.of(1983, 2, 24));
         create(customer1);
         Customer customer2 = new Customer("123456789", "John Doe", "654321", "321644481", "99221166", "anything@email.com", "Pilot", LocalDate.of(1973, 12, 12));

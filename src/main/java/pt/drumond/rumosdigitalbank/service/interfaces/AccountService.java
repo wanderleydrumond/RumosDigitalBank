@@ -1,13 +1,13 @@
 package pt.drumond.rumosdigitalbank.service.interfaces;
 
+import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.enums.ResponseType;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
-import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.model.Movement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface AccountService {
     Account create(Account account, Customer mainHolder);
@@ -27,11 +27,11 @@ public interface AccountService {
     int getAmountOfSecondaryHolders(Account loggedAccount);
     int getAmountOfCreditCards(Account loggedAccount);
     int getAmountOfDebitCards(Account loggedAccount);
-    ArrayList<Card> getDebitCards(Account loggedAccount);
-    ArrayList<Card> getCreditCards(Account loggedAccount);
+    List<Card> getDebitCards(Account loggedAccount);
+    List<Card> getCreditCards(Account loggedAccount);
     Customer findCustomerByNif(String nif, Account loggedAccount);
     Boolean isMainHolder(Customer customerToBeDeleted, Account loggedAccount);
     Card getCardBySerialNumberOnCurrentAccount(Account loggedAccount, String cardSerialNumber);
     Account getAccountByCardSerialNumber(String cardSerialNumber);
-    void loadDatabase(ArrayList<Customer> customers, ArrayList<Card> cards, ArrayList<Movement> movements);
+    void loadDatabase(List<Customer> customers, List<Card> cards, List<Movement> movements);
 }

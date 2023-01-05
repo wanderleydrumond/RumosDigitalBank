@@ -2,12 +2,13 @@ package pt.drumond.rumosdigitalbank.model;
 
 import pt.drumond.rumosdigitalbank.enums.MovementType;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class Movement {
-    private static int id = 1;
+public class Movement implements Serializable {
+    private int id = 1;
     private MovementType type;
     private LocalDate date;
     private double value;
@@ -26,7 +27,7 @@ public class Movement {
     }
 
     public void setId(int id) {
-        Movement.id = id;
+        this.id = id;
     }
 
     public MovementType getType() {

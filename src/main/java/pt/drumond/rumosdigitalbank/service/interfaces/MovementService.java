@@ -1,15 +1,14 @@
 package pt.drumond.rumosdigitalbank.service.interfaces;
 
+import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Movement;
-import pt.drumond.rumosdigitalbank.enums.MovementType;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface MovementService {
     Movement create(double value, MovementType movementType);
     Movement deleteAll(Account account);
-    ArrayList<Movement> getAll();
-
-    ArrayList<Movement> loadDatabase();
+    List<Movement> getAll();
+    List<Movement> loadDatabase();
 }
