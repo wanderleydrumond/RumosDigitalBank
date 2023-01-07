@@ -12,10 +12,23 @@ public class Customer implements Serializable {
     private int id;
     private String nif, name, password, phone, mobile, email, profession;
     private LocalDate birthDate;
-    private List<Account> accounts;
+    private List<Account> accountsWhereIsMainHolder;
+    private List<Account> accountsWhereIsSecondaryHolder;
 
 
     public Customer(String nif, String name, String password, String phone, String mobile, String email, String profession, LocalDate birthDate) {
+        this.nif = nif;
+        this.name = name;
+        this.password = password;
+        this.phone = phone;
+        this.mobile = mobile;
+        this.email = email;
+        this.profession = profession;
+        this.birthDate = birthDate;
+    }
+
+    public Customer(int id, String nif, String name, String password, String phone, String mobile, String email, String profession, LocalDate birthDate) {
+        this.id = id;
         this.nif = nif;
         this.name = name;
         this.password = password;
@@ -139,12 +152,20 @@ public class Customer implements Serializable {
         this.birthDate = birthDate;
     }
 
-    public List<Account> getAccounts() {
-        return accounts;
+    public List<Account> getAccountsWhereIsMainHolder() {
+        return accountsWhereIsMainHolder;
     }
 
-    public void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
+    public void setAccountsWhereIsMainHolder(List<Account> accountsWhereIsMainHolder) {
+        this.accountsWhereIsMainHolder = accountsWhereIsMainHolder;
+    }
+
+    public List<Account> getAccountsWhereIsSecondaryHolder() {
+        return accountsWhereIsSecondaryHolder;
+    }
+
+    public void setAccountsWhereIsSecondaryHolder(List<Account> accountsWhereIsSecondaryHolder) {
+        this.accountsWhereIsSecondaryHolder = accountsWhereIsSecondaryHolder;
     }
 
     @Override

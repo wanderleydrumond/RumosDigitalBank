@@ -2,11 +2,12 @@ package pt.drumond.rumosdigitalbank.service.interfaces;
 
 import pt.drumond.rumosdigitalbank.model.Customer;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
 public interface CustomerService {
-    Customer save(Customer customer);
+    Customer save(Customer customer) throws SQLException;
 
     Customer findByNif(String nif);
     Customer update(Customer customer);

@@ -6,6 +6,10 @@ public class Card {
     private boolean isVirgin;
     private Customer cardHolder;
     private double monthyPlafond, plafondBalance;
+    /**
+     * Account that this card belongs to
+     */
+    private Account account;
 
     public Card() {
     }

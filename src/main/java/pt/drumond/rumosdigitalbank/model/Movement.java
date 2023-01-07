@@ -12,6 +12,10 @@ public class Movement implements Serializable {
     private MovementType type;
     private LocalDate date;
     private double value;
+    /**
+     * Account that owns this movement
+     */
+    private Account account;
 
     public Movement() {
     }
@@ -52,6 +56,14 @@ public class Movement implements Serializable {
 
     public void setValue(double value) {
         this.value = value;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     @Override

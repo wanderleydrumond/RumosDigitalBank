@@ -6,15 +6,18 @@ import pt.drumond.rumosdigitalbank.enums.ResponseType;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
-import pt.drumond.rumosdigitalbank.model.Movement;
 import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
 import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
 import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Scanner;
 
 import static pt.drumond.rumosdigitalbank.enums.OutputColours.*;
 
@@ -45,10 +48,10 @@ public class Bank {
         this.movementServiceImplementation = movementServiceImplementation;
         this.accountServiceImplementation = accountServiceImplementation;
 
-        List<Customer> customers = this.customerServiceImplementation.loadDatabase();
+        /*List<Customer> customers = this.customerServiceImplementation.loadDatabase();
         List<Card> cards = this.cardServiceImplementation.loadDatabase((ArrayList<Customer>) customers);
         List<Movement> movements = this.movementServiceImplementation.loadDatabase();
-        this.accountServiceImplementation.loadDatabase(customers, cards, movements);
+        this.accountServiceImplementation.loadDatabase(customers, cards, movements);*/
 
         scanner = new Scanner(System.in);
     }
@@ -76,7 +79,7 @@ public class Bank {
     /**
      * Displays the very first app menu.
      */
-    public void initialMenu() {
+    public void initialMenu() throws SQLException {
         System.out.println(DARK_GRAY_TEXT_NORMAL.getValue() + "javafx.runtime.version: " + System.getProperty("javafx.runtime.version"));
         System.out.println("java.runtime.version: " + System.getProperty("java.runtime.version"));
 
@@ -186,7 +189,7 @@ public class Bank {
     /**
      * Contains the application core.
      */
-    public void startAppManagement() {
+    public void startAppManagement() throws SQLException {
         boolean proceed = false, quit;
         do {
             quit = false;
@@ -232,7 +235,7 @@ public class Bank {
         return customer;
     }
 
-    private boolean updateAccount(boolean quit) {
+    private boolean updateAccount(boolean quit) throws SQLException {
         boolean doAnotherOperation;
         do {
             doAnotherOperation = false;
@@ -446,7 +449,7 @@ public class Bank {
      *     <li>Redirect to current menu</li>
      * </ol>
      */
-    private void transfer() {
+    private void transfer() throws SQLException {
         System.out.print("Insert the transfer value: ");
         double transferValue = Double.parseDouble(scanner.nextLine());
         String destinationAccount = getString("Insert the destination account code: ");
@@ -487,7 +490,7 @@ public class Bank {
      * Remove a secondary holder from the current account. If they don't exist on any other account (as main or
      * secondary holder), delete them from the bank database.
      */
-    private void removeSecondaryHolder() {
+    private void removeSecondaryHolder() throws SQLException {
         Customer customerToBeDeleted = getCustomerByNif(true);
         if (Boolean.FALSE.equals(accountServiceImplementation.isMainHolder(customerToBeDeleted, loggedAccount))) { // Se não for um titular principal
             /*displayMargin(customerToBeDeleted);
@@ -512,7 +515,7 @@ public class Bank {
      * <p>Adds a new secondary holder into the logged account.</p>
      * <p>They can be a new customer or an existent one.</p>
      */
-    private void addSecondaryHolder() {
+    private void addSecondaryHolder() throws SQLException {
         if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 3) {
             return;
         }
@@ -592,7 +595,7 @@ public class Bank {
      * @param isMainHolder important to validate the holder's age
      * @return the new holder
      */
-    private Customer createCustomer(boolean isMainHolder) {
+    private Customer createCustomer(boolean isMainHolder) throws SQLException {
         LocalDate birthDate = getBirthDateAndValidateAge(isMainHolder);
         String nif = getAndValidateNif();
         String phone = getAndValidatePhone();
@@ -617,10 +620,8 @@ public class Bank {
             do {
                 switch (updateCustomerMenu()) { // Exibe um menu de opções para as informações que podem ser atualizadas
                     case 1 -> customer.setName(getString("Insert new name: ")); // atualiza o nome do cliente no objeto
-                    case 2 ->
-                            customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
-                    case 3 ->
-                            customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
+                    case 2 -> customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
+                    case 3 -> customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
                     case 4 ->
                             customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
                     case 5 ->

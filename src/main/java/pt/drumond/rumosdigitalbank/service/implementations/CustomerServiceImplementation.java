@@ -4,6 +4,7 @@ import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
 import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -15,21 +16,21 @@ public class CustomerServiceImplementation implements CustomerService {
     /**
      * Contains all methods from the persistence layer.
      */
-    private CustomerRepository customerListRepositoryImplementation;
+    private CustomerRepository customerRepositoryImplementation;
 
     public CustomerServiceImplementation(CustomerRepository customerRepository) {
-        customerListRepositoryImplementation = customerRepository;
+        customerRepositoryImplementation = customerRepository;
     }
 
 
     @Override
-    public Customer save(Customer customer) {
-        return customerListRepositoryImplementation.create(customer);
+    public Customer save(Customer customer) throws SQLException {
+        return customerRepositoryImplementation.create(customer);
     }
 
     @Override
     public Customer update(Customer customer) {
-        return customerListRepositoryImplementation.update(customer);
+        return customerRepositoryImplementation.update(customer);
     }
 
     /**
@@ -38,7 +39,7 @@ public class CustomerServiceImplementation implements CustomerService {
      * @return the <code>Customer</code> object
      */
     public Customer findByNif(String nif) {
-        return customerListRepositoryImplementation.findByNif(nif);
+        return customerRepositoryImplementation.findByNif(nif);
     }
 
     /**
@@ -46,18 +47,18 @@ public class CustomerServiceImplementation implements CustomerService {
      * <em>Allows returning to main menu typing 0</em>
      */
     public void delete(Customer customer) {
-        customerListRepositoryImplementation.delete(customer);
+        customerRepositoryImplementation.delete(customer);
     }
 
     /**
      * Displays all customers.
      */
     public List<Customer> findAll() {
-        return customerListRepositoryImplementation.findAll();
+        return customerRepositoryImplementation.findAll();
     }
 
     public boolean validateNif(String nif) {
-        return Boolean.FALSE.equals(customerListRepositoryImplementation.verifyIfNifAlreadyExists(nif)) && nif.matches("^[1-9][0-9]{8}$");
+        return Boolean.FALSE.equals(customerRepositoryImplementation.verifyIfNifAlreadyExists(nif)) && nif.matches("^[1-9][0-9]{8}$");
     }
 
     public boolean validatePhone(String phone) {
@@ -83,6 +84,6 @@ public class CustomerServiceImplementation implements CustomerService {
      */
     @Override
     public List<Customer> loadDatabase() {
-        return customerListRepositoryImplementation.loadDatabase();
+        return customerRepositoryImplementation.loadDatabase();
     }
 }

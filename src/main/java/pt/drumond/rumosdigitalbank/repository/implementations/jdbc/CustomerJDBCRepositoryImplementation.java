@@ -1,0 +1,111 @@
+package pt.drumond.rumosdigitalbank.repository.implementations.jdbc;
+
+import pt.drumond.rumosdigitalbank.model.Customer;
+import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
+
+import java.sql.Date;
+import java.sql.SQLException;
+import java.util.List;
+
+public class CustomerJDBCRepositoryImplementation extends JDBCRepository implements CustomerRepository {
+    @Override
+    public Customer create(Customer customer) {
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("INSERT INTO customers VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+            preparedStatement.setString(1, customer.getNif());
+            preparedStatement.setString(2, customer.getName());
+            preparedStatement.setString(3, customer.getPassword());
+            preparedStatement.setString(4, customer.getPhone());
+            preparedStatement.setString(5, customer.getMobile());
+            preparedStatement.setString(6, customer.getEmail());
+            preparedStatement.setString(7, customer.getProfession());
+            preparedStatement.setDate(8, Date.valueOf(customer.getBirthDate()));
+
+            preparedStatement.execute();
+        } catch (SQLException sqlException) {
+            System.err.println("Error on CustomerJDBCRepositoryImplementation.create() " + sqlException.getMessage());
+            return null;
+//            throw new RuntimeException(e);
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection" + classNotFoundException.getMessage());
+//            throw new RuntimeException(e);
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+            System.err.println("Error closing database connection " + sqlException.getMessage());
+//                throw new RuntimeException(e);
+            }
+        }
+        Customer customerToReturn = findByNif(customer.getNif());
+        return customerToReturn;
+    }
+
+    @Override
+    public Customer findByNif(String nif) {
+        Customer customer = null;
+
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM customers WHERE nif = " + nif + ";");
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                customer = new Customer(
+                        resultSet.getInt("id"),
+                        resultSet.getString("nif"),
+                        resultSet.getString("name"),
+                        resultSet.getString("password"),
+                        resultSet.getString("phone"),
+                        resultSet.getString("mobile"),
+                        resultSet.getString("mobile"),
+                        resultSet.getString("email"),
+                        resultSet.getDate("birthdate").toLocalDate());
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Error on CustomerJDBCRepositoryImplementation.create() " + sqlException.getMessage());
+            return null;
+//            throw new RuntimeException(e);
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+//            throw new RuntimeException(e);
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+//                throw new RuntimeException(e);
+            }
+        }
+        return customer;
+    }
+
+    @Override
+    public Customer update(Customer customer) {
+        return null;
+    }
+
+    @Override
+    public void delete(Customer customer) {
+
+    }
+
+    @Override
+    public List<Customer> findAll() {
+        return null;
+    }
+
+    @Override
+    public boolean verifyIfNifAlreadyExists(String nif) {
+        return false;
+    }
+
+    @Override
+    public List<Customer> loadDatabase() {
+        return null;
+    }
+}

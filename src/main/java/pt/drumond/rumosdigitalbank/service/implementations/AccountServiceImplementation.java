@@ -23,15 +23,15 @@ import java.util.stream.Collectors;
  */
 public class AccountServiceImplementation implements AccountService {
     private CustomerService customerServiceImplementation;
-    private AccountRepository accountListRepositoryImplementation;
+    private AccountRepository accountRepositoryImplementation;
     private CardService cardServiceImplementation;
     private MovementService movimentServiceImplementation;
 
-    public AccountServiceImplementation(CustomerService customerServiceImplementation, MovementService movementServiceImplementation, CardService cardServiceImplementation, AccountRepository accountListRepositoryImplementation) {
+    public AccountServiceImplementation(CustomerService customerServiceImplementation, MovementService movementServiceImplementation, CardService cardServiceImplementation, AccountRepository accountRepositoryImplementation) {
         this.customerServiceImplementation = customerServiceImplementation;
         this.movimentServiceImplementation = movementServiceImplementation;
         this.cardServiceImplementation = cardServiceImplementation;
-        this.accountListRepositoryImplementation = accountListRepositoryImplementation;
+        this.accountRepositoryImplementation = accountRepositoryImplementation;
     }
 
     /**
@@ -43,7 +43,7 @@ public class AccountServiceImplementation implements AccountService {
     public Account create(Account account, Customer mainHolder) {
         account.getMovements().add(movimentServiceImplementation.create(account.getBalance(), MovementType.DEPOSIT)); // Adiciona movimento à conta
 
-        return accountListRepositoryImplementation.create(account);
+        return accountRepositoryImplementation.create(account);
     }
 
     /**
@@ -51,7 +51,7 @@ public class AccountServiceImplementation implements AccountService {
      */
     @Override
     public Account update(Account account) {
-        return accountListRepositoryImplementation.create(account);
+        return accountRepositoryImplementation.create(account);
     }
 
     /**
@@ -69,7 +69,7 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public Account getByCode(String code) {
-        return accountListRepositoryImplementation.findByCode(code);
+        return accountRepositoryImplementation.findByCode(code);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class AccountServiceImplementation implements AccountService {
             return false;
         }
         secondaryHolders.add(secondaryHolder);
-        accountListRepositoryImplementation.update(loggedAccount);
+        accountRepositoryImplementation.update(loggedAccount);
         return true;
     }
 
@@ -88,7 +88,7 @@ public class AccountServiceImplementation implements AccountService {
         destinationAccount.setBalance(destinationAccount.getBalance() + depositValue);
         destinationAccount.getMovements().add(movimentServiceImplementation.create(depositValue, movementType));
 
-        return accountListRepositoryImplementation.update(destinationAccount) != null;
+        return accountRepositoryImplementation.update(destinationAccount) != null;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public ResponseType withdraw(double value, Account accountToBeDebited, MovementType movementType) {
         if (movementType.equals(MovementType.WITHDRAW)) { // Se o tipo de movimentação for saque (pode ser TRANFER_OUT ou WITHDRAW)
-            ArrayList<Movement> withdraws = (ArrayList<Movement>) accountListRepositoryImplementation.findAllSpecificMovements(MovementType.WITHDRAW, accountToBeDebited); // busca todos os movimentos do tipo sque feitos pelo cliente
+            ArrayList<Movement> withdraws = (ArrayList<Movement>) accountRepositoryImplementation.findAllSpecificMovements(MovementType.WITHDRAW, accountToBeDebited); // busca todos os movimentos do tipo sque feitos pelo cliente
             LocalDate today = LocalDate.now();
             double amountWithdrawToday = 0;
             for (Movement withdrawElement : withdraws) { // Percorrer a lista de movimentos, cujo tipo é saque
@@ -132,7 +132,7 @@ public class AccountServiceImplementation implements AccountService {
     public boolean deleteSecondaryHolder(Account loggedAccount, Customer secondaryHolder) {
         Card creditCardOwnedByCustomerToBeDeleted = null, debitCardOwnedByCustomerToBeDeleted = null;
 
-        for (Card cardElement : accountListRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount)) { // busca todos os cartões de crédito da conta logada
+        for (Card cardElement : accountRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount)) { // busca todos os cartões de crédito da conta logada
             if (cardElement.getCardHolder().getNif().equals(secondaryHolder.getNif())) { // Se o nif do dono do cartão for igual no NIF do titular que dever ser removido
                 creditCardOwnedByCustomerToBeDeleted = cardElement;
             }
@@ -142,7 +142,7 @@ public class AccountServiceImplementation implements AccountService {
             return false;
         }
 
-        for (Card cardElement : accountListRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount)) { // busca todos os cartões de débito da conta logada
+        for (Card cardElement : accountRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount)) { // busca todos os cartões de débito da conta logada
             if (cardElement.getCardHolder().getNif().equals(secondaryHolder.getNif())) { // Se o nif do dono do cartão for igual no NIF do titular que dever ser removido
                 debitCardOwnedByCustomerToBeDeleted = cardElement;
             }
@@ -151,7 +151,7 @@ public class AccountServiceImplementation implements AccountService {
         loggedAccount.getSecondaryHolders().removeIf(customerElement -> customerElement.getNif().equals(secondaryHolder.getNif())); // Excluir o cliente secundário antes de verificar se ele existe em alguma outra conta
         loggedAccount.getCards().removeIf(cardElement -> cardElement.getCardHolder().getNif().equals(secondaryHolder.getNif())); // Excluir todos os cartões daquele cliente na conta logada
 
-        accountListRepositoryImplementation.update(loggedAccount); // atualiza a situação dessa conta na base de dados
+        accountRepositoryImplementation.update(loggedAccount); // atualiza a situação dessa conta na base de dados
 
         if (debitCardOwnedByCustomerToBeDeleted != null) {
             cardServiceImplementation.delete(debitCardOwnedByCustomerToBeDeleted); // deleta o cartão de débito da base de dados
@@ -163,7 +163,7 @@ public class AccountServiceImplementation implements AccountService {
 
         int timesOfCustomerFound = 0;
         // Verificar se o cliente possui alguma outra conta no banco
-        List<Account> allAccounts = accountListRepositoryImplementation.findAll();
+        List<Account> allAccounts = accountRepositoryImplementation.findAll();
         for (Account accountElement : allAccounts) { // Percorrer a lista de contas
             if (accountElement.getMainHolder().getNif().equals(secondaryHolder.getNif())) { // Se encontrar o referido cliente como cliente principal de outra conta
                 timesOfCustomerFound++; // acrescenta 1 ao contador
@@ -196,7 +196,7 @@ public class AccountServiceImplementation implements AccountService {
         } else {
             Card card = cardServiceImplementation.create(cardHolder, isCreditCard);
             loggedAccount.getCards().add(card);
-            accountListRepositoryImplementation.update(loggedAccount);
+            accountRepositoryImplementation.update(loggedAccount);
 
             return card;
         }
@@ -211,12 +211,12 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public ArrayList<Card> getDebitCards(Account loggedAccount) {
-        return (ArrayList<Card>) accountListRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount);
+        return (ArrayList<Card>) accountRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount);
     }
 
     @Override
     public ArrayList<Card> getCreditCards(Account loggedAccount) {
-        return (ArrayList<Card>) accountListRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount);
+        return (ArrayList<Card>) accountRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount);
     }
 
     @Override
@@ -243,7 +243,7 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public Account getAccountByCardSerialNumber(String cardSerialNumber) {
-        return accountListRepositoryImplementation.findByCardSerialNumber(cardSerialNumber);
+        return accountRepositoryImplementation.findByCardSerialNumber(cardSerialNumber);
     }
 
     private boolean existsThisTypeCardForThisHolder(Customer cardHolder, ArrayList<Card> cards) {
@@ -262,7 +262,7 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public void loadDatabase(List<Customer> customers, List<Card> cards, List<Movement> movements) {
-        accountListRepositoryImplementation.loadDatabase((ArrayList<Customer>) customers, (ArrayList<Card>) cards, (ArrayList<Movement>) movements);
+        accountRepositoryImplementation.loadDatabase((ArrayList<Customer>) customers, (ArrayList<Card>) cards, (ArrayList<Movement>) movements);
     }
 
     @Override
@@ -272,12 +272,12 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public int getAmountOfCreditCards(Account loggedAccount) {
-        return accountListRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount).size();
+        return accountRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount).size();
     }
 
     @Override
     public int getAmountOfDebitCards(Account loggedAccount) {
-        return accountListRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount).size();
+        return accountRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount).size();
     }
 
     @Override
@@ -292,10 +292,10 @@ public class AccountServiceImplementation implements AccountService {
         List<Customer> allCustomersInAccountToBeDeleted = new ArrayList<>(accountToBeDeleted.getSecondaryHolders());
         allCustomersInAccountToBeDeleted.add(accountToBeDeleted.getMainHolder());
 
-        accountListRepositoryImplementation.delete(accountToBeDeleted);
+        accountRepositoryImplementation.delete(accountToBeDeleted);
 
         HashSet<Customer> customersThatAreInAnotherAccount = new HashSet<>();
-        List<Account> allAccounts = accountListRepositoryImplementation.findAll();
+        List<Account> allAccounts = accountRepositoryImplementation.findAll();
 
         for (Account anotherAccount : allAccounts) {
             for (Customer customerElement : allCustomersInAccountToBeDeleted) {

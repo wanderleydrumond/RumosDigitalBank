@@ -7,9 +7,9 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import pt.drumond.rumosdigitalbank.controller.Bank;
-import pt.drumond.rumosdigitalbank.repository.implementations.list.AccountListRepositoryImplementation;
+import pt.drumond.rumosdigitalbank.repository.implementations.jdbc.AccountJDBCRepositoryImplemention;
+import pt.drumond.rumosdigitalbank.repository.implementations.jdbc.CustomerJDBCRepositoryImplementation;
 import pt.drumond.rumosdigitalbank.repository.implementations.list.CardListRepositoryImplementation;
-import pt.drumond.rumosdigitalbank.repository.implementations.list.CustomerListRepositoryImplementation;
 import pt.drumond.rumosdigitalbank.repository.implementations.list.MovimentListRepositoryImplementation;
 import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
 import pt.drumond.rumosdigitalbank.repository.interfaces.CardRepository;
@@ -25,6 +25,7 @@ import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
 import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -35,21 +36,21 @@ public class Main extends Application {
         return bank;
     }
 
-    public static void main(String[] args) {
-        CustomerRepository customerListRepositoryImplementation = new CustomerListRepositoryImplementation();
-        CustomerService customerServiceImplementation = new CustomerServiceImplementation(customerListRepositoryImplementation);
+    public static void main(String[] args) throws SQLException {
+        CustomerRepository customerRepositoryImplementation = new CustomerJDBCRepositoryImplementation(); // utilizando JDBC
+        CustomerService customerServiceImplementation = new CustomerServiceImplementation(customerRepositoryImplementation);
         CardRepository cardRepositoryImplementation = new CardListRepositoryImplementation();
         CardService cardServiceImplementation = new CardServiceImplementation(cardRepositoryImplementation);
         MovementListRepository movementListRepositoryImplementation = new MovimentListRepositoryImplementation();
         MovementService movementServiceImplementation = new MovimentServiceImplementation(movementListRepositoryImplementation);
-        AccountRepository accountListRepositoryImplementation = new AccountListRepositoryImplementation();
-        AccountService accountServiceImplementation = new AccountServiceImplementation(customerServiceImplementation, movementServiceImplementation, cardServiceImplementation, accountListRepositoryImplementation);
+        AccountRepository accountRepositoryImplementation = new AccountJDBCRepositoryImplemention(); // utilizando JDBC
+        AccountService accountServiceImplementation = new AccountServiceImplementation(customerServiceImplementation, movementServiceImplementation, cardServiceImplementation, accountRepositoryImplementation);
 
         bank = new Bank(customerServiceImplementation, cardServiceImplementation, movementServiceImplementation, accountServiceImplementation);
         bank.initialMenu();
     }
 
-    public void startSelectedApp(int option) {
+    public void startSelectedApp(int option) throws SQLException {
         switch (option) {
             case 1 -> launch();
             case 2 -> bank.startAppManagement();

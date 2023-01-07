@@ -1,13 +1,11 @@
 package pt.drumond.rumosdigitalbank.repository.implementations.jdbc;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
-public abstract class JDBCRepository {
-    private Connection connection;
-    private PreparedStatement preparedStatement;
+abstract class JDBCRepository {
+    protected Connection connection;
+    protected PreparedStatement preparedStatement;
+    protected ResultSet resultSet;
     private final String SCHEMA = "rumos_digital_bank",
                          DATABASE = "mysql",
                          HOST = "localhost",
