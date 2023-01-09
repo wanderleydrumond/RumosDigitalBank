@@ -10,7 +10,7 @@ import pt.drumond.rumosdigitalbank.model.Movement;
 import java.util.List;
 
 public interface AccountService {
-    Account create(Account account, Customer mainHolder);
+    Account create(Account account);
     Account update(Account account);
     boolean validateInitialDeposit(double depositValue);
     Account getByCode(String code);

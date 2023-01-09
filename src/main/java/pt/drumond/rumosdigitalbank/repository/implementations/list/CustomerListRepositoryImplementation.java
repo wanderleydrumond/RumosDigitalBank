@@ -47,6 +47,11 @@ public class CustomerListRepositoryImplementation implements CustomerRepository 
     }
 
     @Override
+    public Customer findById(int id) {
+        return null;
+    }
+
+    @Override
     public Customer update(Customer customer) {
         tableCustomers.set(tableCustomers.indexOf(customer), customer);
 

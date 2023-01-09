@@ -1,4 +1,4 @@
-package pt.drumond.rumosdigitalbank.service.implementations;
+package pt.drumond.rumosdigitalbank.service.implementations.list;
 
 import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.model.Account;
@@ -9,10 +9,10 @@ import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 import java.time.LocalDate;
 import java.util.List;
 
-public class MovimentServiceImplementation implements MovementService {
+public class MovementListServiceImplementation implements MovementService {
     private MovementListRepository movementListRepositoryImplementation;
 
-    public MovimentServiceImplementation(MovementListRepository movementListRepositoryImplementation) {
+    public MovementListServiceImplementation(MovementListRepository movementListRepositoryImplementation) {
         this.movementListRepositoryImplementation = movementListRepositoryImplementation;
     }
 
@@ -31,6 +31,11 @@ public class MovimentServiceImplementation implements MovementService {
         movement.setType(movementType);
 
         return movementListRepositoryImplementation.create(movement);
+    }
+
+    @Override
+    public void create(double value, MovementType movementType, Account account) {
+
     }
 
     @Override

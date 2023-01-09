@@ -1,4 +1,4 @@
-package pt.drumond.rumosdigitalbank.service.implementations;
+package pt.drumond.rumosdigitalbank.service.implementations.jdbc;
 
 import pt.drumond.rumosdigitalbank.model.Customer;
 import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
@@ -12,13 +12,13 @@ import java.util.List;
 /**
  * Contains all methods responsible for the businees rules related to customers.
  */
-public class CustomerServiceImplementation implements CustomerService {
+public class CustomerJDBCServiceImplementation implements CustomerService {
     /**
      * Contains all methods from the persistence layer.
      */
     private CustomerRepository customerRepositoryImplementation;
 
-    public CustomerServiceImplementation(CustomerRepository customerRepository) {
+    public CustomerJDBCServiceImplementation(CustomerRepository customerRepository) {
         customerRepositoryImplementation = customerRepository;
     }
 

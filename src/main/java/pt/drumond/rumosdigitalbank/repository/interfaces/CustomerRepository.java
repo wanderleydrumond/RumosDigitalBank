@@ -8,6 +8,7 @@ import java.util.List;
 public interface CustomerRepository {
     Customer create(Customer customer) throws SQLException;
     Customer findByNif(String nif);
+    Customer findById(int id);
     Customer update(Customer customer);
     void delete(Customer customer);
     List<Customer> findAll();

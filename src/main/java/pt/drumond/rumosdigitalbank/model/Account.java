@@ -21,6 +21,12 @@ public class Account implements Serializable {
         this.mainHolder = mainHolder;
     }
 
+    public Account(int id, String code, double balance) {
+        this.id = id;
+        this.code = code;
+        this.balance = balance;
+    }
+
     public int getId() {
         return id;
     }

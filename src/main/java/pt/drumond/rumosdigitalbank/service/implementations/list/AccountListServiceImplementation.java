@@ -1,4 +1,4 @@
-package pt.drumond.rumosdigitalbank.service.implementations;
+package pt.drumond.rumosdigitalbank.service.implementations.list;
 
 import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.enums.ResponseType;
@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 /**
  * Contains all methods responsible for the businees rules related to accounts.
  */
-public class AccountServiceImplementation implements AccountService {
+public class AccountListServiceImplementation implements AccountService {
     private CustomerService customerServiceImplementation;
     private AccountRepository accountRepositoryImplementation;
     private CardService cardServiceImplementation;
     private MovementService movimentServiceImplementation;
 
-    public AccountServiceImplementation(CustomerService customerServiceImplementation, MovementService movementServiceImplementation, CardService cardServiceImplementation, AccountRepository accountRepositoryImplementation) {
+    public AccountListServiceImplementation(CustomerService customerServiceImplementation, MovementService movementServiceImplementation, CardService cardServiceImplementation, AccountRepository accountRepositoryImplementation) {
         this.customerServiceImplementation = customerServiceImplementation;
         this.movimentServiceImplementation = movementServiceImplementation;
         this.cardServiceImplementation = cardServiceImplementation;
@@ -40,7 +40,7 @@ public class AccountServiceImplementation implements AccountService {
      * @return the new account created
      */
     @Override
-    public Account create(Account account, Customer mainHolder) {
+    public Account create(Account account) {
         account.getMovements().add(movimentServiceImplementation.create(account.getBalance(), MovementType.DEPOSIT)); // Adiciona movimento à conta
 
         return accountRepositoryImplementation.create(account);

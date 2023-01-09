@@ -40,13 +40,12 @@ public class CustomerJDBCRepositoryImplementation extends JDBCRepository impleme
 //                throw new RuntimeException(e);
             }
         }
-        Customer customerToReturn = findByNif(customer.getNif());
-        return customerToReturn;
+        return findByNif(customer.getNif());
     }
 
     @Override
     public Customer findByNif(String nif) {
-        Customer customer = null;
+        Customer customerToBeFound = null;
 
         try {
             openConnection();
@@ -55,7 +54,7 @@ public class CustomerJDBCRepositoryImplementation extends JDBCRepository impleme
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                customer = new Customer(
+                customerToBeFound = new Customer(
                         resultSet.getInt("id"),
                         resultSet.getString("nif"),
                         resultSet.getString("name"),
@@ -69,19 +68,53 @@ public class CustomerJDBCRepositoryImplementation extends JDBCRepository impleme
         } catch (SQLException sqlException) {
             System.err.println("Error on CustomerJDBCRepositoryImplementation.create() " + sqlException.getMessage());
             return null;
-//            throw new RuntimeException(e);
         } catch (ClassNotFoundException classNotFoundException) {
             System.err.println("Error opening database connection " + classNotFoundException.getMessage());
-//            throw new RuntimeException(e);
         } finally {
             try {
                 closeConnection();
             } catch (SQLException sqlException) {
                 System.err.println("Error closing database connection " + sqlException.getMessage());
-//                throw new RuntimeException(e);
             }
         }
-        return customer;
+        return customerToBeFound;
+    }
+
+    @Override
+    public Customer findById(int id) {
+        Customer customerToBeFound = null;
+
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM customers WHERE id = " + id + ";");
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                customerToBeFound = new Customer(
+                        resultSet.getInt("id"),
+                        resultSet.getString("nif"),
+                        resultSet.getString("name"),
+                        resultSet.getString("password"),
+                        resultSet.getString("phone"),
+                        resultSet.getString("mobile"),
+                        resultSet.getString("mobile"),
+                        resultSet.getString("email"),
+                        resultSet.getDate("birthdate").toLocalDate());
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Error on CustomerJDBCRepositoryImplementation.create() " + sqlException.getMessage());
+            return null;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return customerToBeFound;
     }
 
     @Override

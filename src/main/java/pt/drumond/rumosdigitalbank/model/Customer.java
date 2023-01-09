@@ -3,7 +3,6 @@ package pt.drumond.rumosdigitalbank.model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 /**
  * Entity class Customer.
@@ -12,8 +11,6 @@ public class Customer implements Serializable {
     private int id;
     private String nif, name, password, phone, mobile, email, profession;
     private LocalDate birthDate;
-    private List<Account> accountsWhereIsMainHolder;
-    private List<Account> accountsWhereIsSecondaryHolder;
 
 
     public Customer(String nif, String name, String password, String phone, String mobile, String email, String profession, LocalDate birthDate) {
@@ -150,22 +147,6 @@ public class Customer implements Serializable {
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
-    }
-
-    public List<Account> getAccountsWhereIsMainHolder() {
-        return accountsWhereIsMainHolder;
-    }
-
-    public void setAccountsWhereIsMainHolder(List<Account> accountsWhereIsMainHolder) {
-        this.accountsWhereIsMainHolder = accountsWhereIsMainHolder;
-    }
-
-    public List<Account> getAccountsWhereIsSecondaryHolder() {
-        return accountsWhereIsSecondaryHolder;
-    }
-
-    public void setAccountsWhereIsSecondaryHolder(List<Account> accountsWhereIsSecondaryHolder) {
-        this.accountsWhereIsSecondaryHolder = accountsWhereIsSecondaryHolder;
     }
 
     @Override

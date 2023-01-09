@@ -664,7 +664,7 @@ public class Bank {
             System.out.print("Insert initial deposit value: ");
             double firstDeposit = Double.parseDouble(scanner.nextLine());
             if (accountServiceImplementation.validateInitialDeposit(firstDeposit)) {
-                loggedAccount = accountServiceImplementation.create(new Account(firstDeposit, mainHolder), mainHolder);
+                loggedAccount = accountServiceImplementation.create(new Account(firstDeposit, mainHolder));
 
                 wasAccountCreated = true;
 

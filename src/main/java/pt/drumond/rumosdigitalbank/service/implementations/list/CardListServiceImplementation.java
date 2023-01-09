@@ -1,4 +1,4 @@
-package pt.drumond.rumosdigitalbank.service.implementations;
+package pt.drumond.rumosdigitalbank.service.implementations.list;
 
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
@@ -9,11 +9,11 @@ import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CardServiceImplementation implements CardService {
+public class CardListServiceImplementation implements CardService {
 
     private CardRepository cardRepositoryImplementation;
 
-    public CardServiceImplementation(CardRepository cardRepositoryImplementation) {
+    public CardListServiceImplementation(CardRepository cardRepositoryImplementation) {
         this.cardRepositoryImplementation  = cardRepositoryImplementation;
     }
 

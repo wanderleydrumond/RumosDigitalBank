@@ -18,14 +18,14 @@ create table rumos_digital_bank.customers
 
 create table rumos_digital_bank.accounts
 (
-    id          int SERIAL DEFAULT VALUE auto_increment,
-    code        int          not null,
-    balance     double       not null,
-    accounts_id int          null,
+    id           int SERIAL DEFAULT VALUE not null,
+    code         int                      not null,
+    balance      double                   not null,
+    customers_id int                      not null,
     constraint accounts_pk
         primary key (id),
     constraint accounts_customers_id_fk
-        foreign key (accounts_id) references rumos_digital_bank.customers (id)
+        foreign key (customers_id) references rumos_digital_bank.customers (id)
 );
 
 create table rumos_digital_bank.customers_accounts
@@ -79,4 +79,12 @@ DROP TABLE customers_accounts;
 DROP TABLE accounts;
 DROP TABLE customers;
 
+DESCRIBE accounts;
+
+DELETE FROM customers;
+DELETE FROM accounts;
+DELETE FROM movements;
+
 SELECT * FROM customers;
+SELECT * FROM accounts;
+SELECT * FROM movements;
