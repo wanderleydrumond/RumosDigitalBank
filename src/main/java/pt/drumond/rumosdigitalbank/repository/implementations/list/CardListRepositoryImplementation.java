@@ -36,7 +36,6 @@ public class CardListRepositoryImplementation implements CardRepository {
 
     @Override
     public ArrayList<Card> findAllByAccount(Account account) {
-        //TODO implement method?
         return null;
     }
 

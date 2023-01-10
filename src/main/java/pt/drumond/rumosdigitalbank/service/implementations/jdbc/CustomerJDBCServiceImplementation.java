@@ -38,7 +38,7 @@ public class CustomerJDBCServiceImplementation implements CustomerService {
      *
      * @return the <code>Customer</code> object
      */
-    public Customer findByNif(String nif) {
+    public Customer getByNif(String nif) {
         return customerRepositoryImplementation.findByNif(nif);
     }
 
@@ -53,7 +53,7 @@ public class CustomerJDBCServiceImplementation implements CustomerService {
     /**
      * Displays all customers.
      */
-    public List<Customer> findAll() {
+    public List<Customer> getAll() {
         return customerRepositoryImplementation.findAll();
     }
 

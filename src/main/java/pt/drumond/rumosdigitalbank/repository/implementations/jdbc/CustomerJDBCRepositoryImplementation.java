@@ -28,16 +28,13 @@ public class CustomerJDBCRepositoryImplementation extends JDBCRepository impleme
         } catch (SQLException sqlException) {
             System.err.println("Error on CustomerJDBCRepositoryImplementation.create() " + sqlException.getMessage());
             return null;
-//            throw new RuntimeException(e);
         } catch (ClassNotFoundException classNotFoundException) {
             System.err.println("Error opening database connection" + classNotFoundException.getMessage());
-//            throw new RuntimeException(e);
         } finally {
             try {
                 closeConnection();
             } catch (SQLException sqlException) {
             System.err.println("Error closing database connection " + sqlException.getMessage());
-//                throw new RuntimeException(e);
             }
         }
         return findByNif(customer.getNif());
@@ -119,7 +116,41 @@ public class CustomerJDBCRepositoryImplementation extends JDBCRepository impleme
 
     @Override
     public Customer update(Customer customer) {
-        return null;
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("UPDATE customers SET nif = ?, " +
+                    "name = ?, " +
+                    "password = ?, " +
+                    "phone = ?, " +
+                    "mobile = ?, " +
+                    "email = ?, " +
+                    "profession = ?, " +
+                    "birthdate = ?");
+
+            preparedStatement.setString(1, customer.getNif());
+            preparedStatement.setString(2, customer.getName());
+            preparedStatement.setString(3, customer.getPassword());
+            preparedStatement.setString(4, customer.getPhone());
+            preparedStatement.setString(5, customer.getMobile());
+            preparedStatement.setString(6, customer.getEmail());
+            preparedStatement.setString(7, customer.getProfession());
+            preparedStatement.setDate(8, Date.valueOf(customer.getBirthDate()));
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException sqlException) {
+            System.err.println("Error on CustomerJDBCRepositoryImplementation.create() " + sqlException.getMessage());
+            return null;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection" + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return findByNif(customer.getNif());
     }
 
     @Override

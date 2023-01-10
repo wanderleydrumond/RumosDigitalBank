@@ -9,10 +9,10 @@ import java.util.List;
 public interface CustomerService {
     Customer save(Customer customer) throws SQLException;
 
-    Customer findByNif(String nif);
+    Customer getByNif(String nif);
     Customer update(Customer customer);
     void delete(Customer customer);
-    List<Customer> findAll();
+    List<Customer> getAll();
     List<Customer> loadDatabase();
 
     boolean validateAge(LocalDate birthDate);

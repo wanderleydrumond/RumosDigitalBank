@@ -220,11 +220,16 @@ public class Bank {
         } while (proceed);
     } //FIM startAppManagement()
 
+    /**
+     * Provides an interface to find a specific customer by their nif number.
+     *
+     * @return the <code>Customer</code> found
+     */
     private Customer findAndDisplayCustomer() {
         System.out.print("Enter the NIF number of client to be found: ");
-        Customer customer = customerServiceImplementation.findByNif(scanner.nextLine());
+        Customer customer = customerServiceImplementation.getByNif(scanner.nextLine());
         if (customer == null) {
-            System.out.println("Client not found");
+            System.out.println(YELLOW_TEXT_NORMAL.getValue() + "Client not found" + RESET.getValue());
         } else {
 //        printCustomer(customer); // TODO Aqui dá problema porque o cliente não está em uma conta
             displayMargin(customer);
@@ -367,8 +372,7 @@ public class Bank {
             }
             if (accountServiceImplementation.getAmountOfCreditCards(loggedAccount) > 0) {
                 System.out.println("CREDIT CARDS:");
-                //TODO imprimir cartões
-                accountServiceImplementation.getCreditCards(loggedAccount).forEach(System.out::println); //TODO extrair para um método
+                accountServiceImplementation.getCreditCards(loggedAccount).forEach(System.out::println);
             }
         }
     }
@@ -552,7 +556,7 @@ public class Bank {
             if (verifyIfExistsInLoggedAccount) {
                 customer = accountServiceImplementation.findCustomerByNif(nif, loggedAccount);
             } else {
-                customer = customerServiceImplementation.findByNif(nif);
+                customer = customerServiceImplementation.getByNif(nif);
             }
             if (customer != null) {
                 customerExists = true;
@@ -613,30 +617,25 @@ public class Bank {
      */
     private void updateCustomer() {
         Customer customer = findAndDisplayCustomer(); // Procura alguém na base de dados com o mesmo NIF
-        if (customer == null) { // Se não encontrar
-            System.out.println("Client not found");
-        } else { // Se encontrar
+        if (customer != null) { // Se não encontrar
             boolean exitUpdateCustomerMenu = false;
             do {
                 switch (updateCustomerMenu()) { // Exibe um menu de opções para as informações que podem ser atualizadas
                     case 1 -> customer.setName(getString("Insert new name: ")); // atualiza o nome do cliente no objeto
                     case 2 -> customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
                     case 3 -> customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
-                    case 4 ->
-                            customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
-                    case 5 ->
-                            customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
-                    case 6 ->
-                            customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
+                    case 4 -> customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
+                    case 5 -> customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
+                    case 6 -> customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
                     default -> {/*retorna ao menu principal*/}
                 }
                 customerServiceImplementation.update(customer); // atualiza as informações do cliente na base de dados
                 System.out.println(YELLOW_TEXT_NORMAL.getValue() + "Client current informations:" + RESET.getValue());
-                /*displayMargin(customer);
+                displayMargin(customer);
                 System.out.println(customer);
-                displayMargin(customer);*/
+                displayMargin(customer);
 
-                printCustomer(customer);
+//                printCustomer(customer);
 
                 if (getString("Do you want to update another client information? (" + GREEN_TEXT_BRIGHT.getValue() + "Y" + RESET.getValue() + ")es/(" + RED_TEXT_NORMAL.getValue() + "N" + RESET.getValue() + ")o: ").equalsIgnoreCase("N")) {
                     exitUpdateCustomerMenu = true;
