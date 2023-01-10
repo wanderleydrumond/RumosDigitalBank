@@ -1,6 +1,5 @@
 package pt.drumond.rumosdigitalbank.repository.implementations.jdbc;
 
-import pt.drumond.rumosdigitalbank.Main;
 import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
@@ -16,10 +15,8 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
 
     @Override
     public Account create(Account account) {
-
         try {
             openConnection();
-//            connection.setAutoCommit(false);
 
             String query = "INSERT INTO accounts (balance, customers_id) VALUES (?, ?)";
 
@@ -30,10 +27,18 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
             preparedStatement.execute();
             preparedStatement.clearParameters();
 
-            preparedStatement = connection.prepareStatement("SELECT code FROM accounts WHERE id = last_insert_id();");
+            preparedStatement = connection.prepareStatement("SELECT MAX(id) FROM accounts");
             resultSet = preparedStatement.executeQuery();
 
-//            connection.commit();
+            int lastId = 0;
+            while (resultSet.next()) {
+                lastId = resultSet.getInt(1);
+            }
+            preparedStatement.clearParameters();
+
+            preparedStatement = connection.prepareStatement("SELECT code FROM accounts WHERE id = " + lastId + ";");
+            resultSet = preparedStatement.executeQuery();
+
             resultSet.next();
 
             return findByCode(resultSet.getString(1));
@@ -63,7 +68,7 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
                 idCustomer = resultSet.getInt("customers_id");
             }
 
-            Main.getBank().getCustomerServiceImplementation();
+//            Main.getBank().getCustomerServiceImplementation();
         } catch (SQLException sqlException) {
             System.err.println("Error on CustomerJDBCRepositoryImplementation.create() " + sqlException.getMessage());
             return null;
@@ -116,6 +121,5 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
 
     @Override
     public void loadDatabase(ArrayList<Customer> customers, ArrayList<Card> cards, ArrayList<Movement> movements) {
-
     }
 }

@@ -106,12 +106,14 @@ SET GLOBAL SQL_MODE = '';
 
 SELECT last_insert_id();
 
+SELECT MAX(id) FROM accounts;
+
 CREATE TRIGGER
     account_number_generator
-    BEFORE
-    INSERT
-ON accounts FOR EACH ROW
-    SET NEW.code = (last_insert_id() + 100);
+    BEFORE INSERT
+ON accounts FOR EACH ROW BEGIN
+    SET NEW.code = (SELECT MAX(id) + 100 FROM accounts);
+    END;
 
 INSERT INTO accounts (balance, customers_id) VALUES (50, 1);
 SELECT code FROM accounts WHERE id = last_insert_id();
