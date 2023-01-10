@@ -19,7 +19,7 @@ create table rumos_digital_bank.customers
 create table rumos_digital_bank.accounts
 (
     id           int SERIAL DEFAULT VALUE not null,
-    code         int                      not null,
+    code         int                          null,
     balance      double                   not null,
     customers_id int                      not null,
     constraint accounts_pk
@@ -88,3 +88,34 @@ DELETE FROM movements;
 SELECT * FROM customers;
 SELECT * FROM accounts;
 SELECT * FROM movements;
+
+
+
+
+
+
+
+
+
+# ******************
+
+SELECT version();
+
+SELECT @@GLOBAL.sql_mode;
+SET GLOBAL SQL_MODE = '';
+
+SELECT last_insert_id();
+
+CREATE TRIGGER
+    account_number_generator
+    BEFORE
+    INSERT
+ON accounts FOR EACH ROW
+    SET NEW.code = (last_insert_id() + 100);
+
+INSERT INTO accounts (balance, customers_id) VALUES (50, 1);
+SELECT code FROM accounts WHERE id = last_insert_id();
+ALTER TABLE accounts MODIFY code int null;
+
+DELETE FROM accounts WHERE id > 1;
+DELETE FROM customers WHERE id > 1;

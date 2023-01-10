@@ -16,31 +16,33 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
 
     @Override
     public Account create(Account account) {
-        int codeNewAccount = 0;
+
         try {
             openConnection();
+//            connection.setAutoCommit(false);
 
-            preparedStatement = connection.prepareStatement("SELECT COUNT(*) AS counter FROM accounts;" );
-            resultSet = preparedStatement.executeQuery();
-            int count = 0;
-            while (resultSet.next()) {
-                count = resultSet.getInt("counter");
-            }
-            codeNewAccount = count + 100;
-            
-            preparedStatement.clearParameters();
-            preparedStatement = connection.prepareStatement("INSERT INTO accounts VALUES (null, ?, ?, ?)");
-            preparedStatement.setInt(1, codeNewAccount);
-            preparedStatement.setDouble(2, account.getBalance());
-            preparedStatement.setInt(3, account.getMainHolder().getId());
+            String query = "INSERT INTO accounts (balance, customers_id) VALUES (?, ?)";
+
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setDouble(1, account.getBalance());
+            preparedStatement.setInt(2, account.getMainHolder().getId());
 
             preparedStatement.execute();
+            preparedStatement.clearParameters();
+
+            preparedStatement = connection.prepareStatement("SELECT code FROM accounts WHERE id = last_insert_id();");
+            resultSet = preparedStatement.executeQuery();
+
+//            connection.commit();
+            resultSet.next();
+
+            return findByCode(resultSet.getString(1));
         } catch (ClassNotFoundException classNotFoundException) {
             System.err.println("Error opening database connection" + classNotFoundException.getMessage());
         } catch (SQLException sqlException) {
             System.err.println("Error on AccountJDBCRepositoryImplemention.create() " + sqlException.getMessage());
         }
-        return findByCode(String.valueOf(codeNewAccount));
+        return null;
     }
 
     @Override

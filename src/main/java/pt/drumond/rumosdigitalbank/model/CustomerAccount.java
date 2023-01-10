@@ -1,8 +1,6 @@
 package pt.drumond.rumosdigitalbank.model;
 
-import java.io.Serializable;
-
-public class CustomerAccount implements Serializable {
+public class CustomerAccount {
     private Customer customer;
     private Account account;
 

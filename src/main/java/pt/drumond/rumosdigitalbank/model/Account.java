@@ -1,13 +1,12 @@
 package pt.drumond.rumosdigitalbank.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Entity class Account.
  */
-public class Account implements Serializable {
+public class Account {
     private int id = 1;
     private String code;
     private double balance;

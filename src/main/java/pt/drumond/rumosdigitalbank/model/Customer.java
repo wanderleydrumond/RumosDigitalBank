@@ -1,13 +1,12 @@
 package pt.drumond.rumosdigitalbank.model;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
  * Entity class Customer.
  */
-public class Customer implements Serializable {
+public class Customer {
     private int id;
     private String nif, name, password, phone, mobile, email, profession;
     private LocalDate birthDate;
