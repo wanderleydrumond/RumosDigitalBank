@@ -17,10 +17,7 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
     public Account create(Account account) {
         try {
             openConnection();
-
-            String query = "INSERT INTO accounts (balance, customers_id) VALUES (?, ?)";
-
-            preparedStatement = connection.prepareStatement(query);
+            preparedStatement = connection.prepareStatement("INSERT INTO accounts (balance, customers_id) VALUES (?, ?)"); // supostamente funcionaria para tudo
             preparedStatement.setDouble(1, account.getBalance());
             preparedStatement.setInt(2, account.getMainHolder().getId());
 
@@ -36,12 +33,13 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
             }
             preparedStatement.clearParameters();
 
-            preparedStatement = connection.prepareStatement("SELECT code FROM accounts WHERE id = " + lastId + ";");
-            resultSet = preparedStatement.executeQuery();
+            int code = lastId + 100;
+//            preparedStatement = connection.prepareStatement("SELECT code FROM accounts WHERE id = " + lastId + ";"); // Isso era para usar o trigger
+            preparedStatement = connection.prepareStatement("UPDATE accounts SET code = ? WHERE id = " + lastId +";");
+            preparedStatement.setInt(1, code);
+            preparedStatement.executeUpdate();
 
-            resultSet.next();
-
-            return findByCode(resultSet.getString(1));
+            return findByCode(String.valueOf(code));
         } catch (ClassNotFoundException classNotFoundException) {
             System.err.println("Error opening database connection" + classNotFoundException.getMessage());
         } catch (SQLException sqlException) {
@@ -86,12 +84,30 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
 
     @Override
     public Account update(Account account) {
-        return null;
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("UPDATE accounts SET balance = ? WHERE code = " + account.getCode() +";");
+            preparedStatement.setDouble(1, account.getBalance());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException sqlException) {
+            System.err.println("Error on CustomerJDBCRepositoryImplementation.create() " + sqlException.getMessage());
+            return null;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection" + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return findByCode(account.getCode());
     }
 
     @Override
     public void delete(Account account) {
-
     }
 
     @Override
