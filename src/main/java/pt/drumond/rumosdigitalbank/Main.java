@@ -14,7 +14,7 @@ import pt.drumond.rumosdigitalbank.repository.implementations.list.CardListRepos
 import pt.drumond.rumosdigitalbank.repository.interfaces.AccountRepository;
 import pt.drumond.rumosdigitalbank.repository.interfaces.CardRepository;
 import pt.drumond.rumosdigitalbank.repository.interfaces.CustomerRepository;
-import pt.drumond.rumosdigitalbank.repository.interfaces.MovementListRepository;
+import pt.drumond.rumosdigitalbank.repository.interfaces.MovementRepository;
 import pt.drumond.rumosdigitalbank.service.implementations.jdbc.AccountJDBCServiceImplementation;
 import pt.drumond.rumosdigitalbank.service.implementations.jdbc.CustomerJDBCServiceImplementation;
 import pt.drumond.rumosdigitalbank.service.implementations.jdbc.MovementJDBCServiceImplementation;
@@ -41,7 +41,7 @@ public class Main extends Application {
         CustomerService customerServiceImplementation = new CustomerJDBCServiceImplementation(customerRepositoryImplementation);
         CardRepository cardRepositoryImplementation = new CardListRepositoryImplementation();
         CardService cardServiceImplementation = new CardListServiceImplementation(cardRepositoryImplementation);
-        MovementListRepository movementRepositoryImplementation = new MovementJDBCRepositoryImplementation(); // utilizando JDBC
+        MovementRepository movementRepositoryImplementation = new MovementJDBCRepositoryImplementation(); // utilizando JDBC
         MovementService movementServiceImplementation = new MovementJDBCServiceImplementation(movementRepositoryImplementation); // utilizando JDBC
         AccountRepository accountRepositoryImplementation = new AccountJDBCRepositoryImplemention(); // utilizando JDBC
         AccountService accountServiceImplementation = new AccountJDBCServiceImplementation(customerServiceImplementation, movementServiceImplementation, cardServiceImplementation, accountRepositoryImplementation);

@@ -7,8 +7,9 @@ import pt.drumond.rumosdigitalbank.model.Movement;
 import java.util.List;
 
 public interface MovementService {
+    Movement create(double value, MovementType movementType, Account account);
     Movement create(double value, MovementType movementType);
-    void create(double value, MovementType movementType, Account account);
+    double getSumAllTodayWithdrawMovements(int accountIdThatOwnsThisMovement);
     Movement deleteAll(Account account);
     List<Movement> getAll();
     List<Movement> loadDatabase();

@@ -2,13 +2,13 @@ package pt.drumond.rumosdigitalbank.repository.implementations.list;
 
 import pt.drumond.rumosdigitalbank.enums.MovementType;
 import pt.drumond.rumosdigitalbank.model.Movement;
-import pt.drumond.rumosdigitalbank.repository.interfaces.MovementListRepository;
+import pt.drumond.rumosdigitalbank.repository.interfaces.MovementRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovimentListRepositoryImplementation implements MovementListRepository {
+public class MovementListRepositoryImplementation implements MovementRepository {
 
     private List<Movement> tableMovements = new ArrayList<>();
     private static int id = 1;
@@ -55,5 +55,10 @@ public class MovimentListRepositoryImplementation implements MovementListReposit
         create(movement9);
 
         return tableMovements;
+    }
+
+    @Override
+    public double sumAllTodayWithdrawMovements(int accountIdThatOwnsThisMovement) {
+        return 0;
     }
 }

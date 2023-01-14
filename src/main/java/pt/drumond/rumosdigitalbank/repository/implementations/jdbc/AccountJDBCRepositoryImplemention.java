@@ -35,7 +35,7 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
 
             int code = lastId + 100;
 //            preparedStatement = connection.prepareStatement("SELECT code FROM accounts WHERE id = " + lastId + ";"); // Isso era para usar o trigger
-            preparedStatement = connection.prepareStatement("UPDATE accounts SET code = ? WHERE id = " + lastId +";");
+            preparedStatement = connection.prepareStatement("UPDATE accounts SET code = ? WHERE id = " + lastId + ";");
             preparedStatement.setInt(1, code);
             preparedStatement.executeUpdate();
 
@@ -65,13 +65,12 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
                         resultSet.getDouble("balance"));
                 idCustomer = resultSet.getInt("customers_id");
             }
-
-//            Main.getBank().getCustomerServiceImplementation();
         } catch (SQLException sqlException) {
-            System.err.println("Error on CustomerJDBCRepositoryImplementation.create() " + sqlException.getMessage());
+            System.err.println("Error on AccountJDBCRepositoryImplementation.findByCode() " + sqlException.getMessage());
             return null;
         } catch (ClassNotFoundException classNotFoundException) {
             System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+            return null;
         } finally {
             try {
                 closeConnection();
@@ -87,7 +86,7 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
         try {
             openConnection();
 
-            preparedStatement = connection.prepareStatement("UPDATE accounts SET balance = ? WHERE code = " + account.getCode() +";");
+            preparedStatement = connection.prepareStatement("UPDATE accounts SET balance = ? WHERE code = " + account.getCode() + ";");
             preparedStatement.setDouble(1, account.getBalance());
 
             preparedStatement.executeUpdate();

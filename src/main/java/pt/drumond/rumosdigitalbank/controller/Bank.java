@@ -135,6 +135,7 @@ public class Bank {
         System.out.println(CYAN_TEXT_NORMAL.getValue() + "6. " + RESET.getValue() + "Delete account");
         System.out.println(CYAN_TEXT_NORMAL.getValue() + "7. " + RESET.getValue() + "List all movements");
 
+        /* TODO uncomment when these methods work
         if (accountServiceImplementation.getAmountOfDebitCards(loggedAccount) < 5) {
             System.out.println(CYAN_TEXT_NORMAL.getValue() + "8. " + RESET.getValue() + "Add new debit card");
         } else {
@@ -155,6 +156,7 @@ public class Bank {
         } else {
             System.out.println(RED_TEXT_NORMAL.getValue() + "X. " + RESET.getValue() + "This account has no secondary holders to delete");
         }
+        */
         System.out.print("\nOption:\040");
 
         return Integer.parseInt(scanner.nextLine());

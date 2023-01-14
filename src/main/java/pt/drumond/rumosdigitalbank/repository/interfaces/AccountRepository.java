@@ -17,7 +17,6 @@ public interface AccountRepository {
     List<Account> findAll();
     List<Card> findAllDebitCardsByAccount(Account account); // used only on ArrayLists?
     List<Card> findAllCreditCardsByAccount(Account account); // used only on ArrayLists?
-
     List<Movement> findAllSpecificMovements(MovementType movementType, Account accountToBeDebited);
     Account findByCardSerialNumber(String cardSerialNumber);
     void loadDatabase(ArrayList<Customer> customers, ArrayList<Card> cards, ArrayList<Movement> movements);
