@@ -80,6 +80,11 @@ public class AccountListRepositoryImplementation implements AccountRepository {
     }
 
     @Override
+    public void addSecondaryHolder(int secondaryHolderId, int loggedAccountId) {
+        // Used only on JDBC
+    }
+
+    @Override
     public void delete(Account account) {
         tableAccounts.removeIf(accountElement -> accountElement.getCode().equals(account.getCode()));
     }
@@ -108,6 +113,18 @@ public class AccountListRepositoryImplementation implements AccountRepository {
         return null; // Caso não ache nenhum cartão com o número de série fornecido*/
 
         return tableAccounts.stream().filter(accountElement -> accountElement.getCards().stream().anyMatch(cardElement -> cardElement.getSerialNumber().equals(cardSerialNumber))).findFirst().orElse(null);
+    }
+
+    @Override
+    public int findAmountOfSecondaryHolders(int loggedAccountId) {
+        // Used only on JDBC
+        return 0;
+    }
+
+    @Override
+    public Boolean verifyIfCustomerExistsInLoggedAccount(int customerId, int loggedAccountId) {
+        // Used only on JDBC
+        return false;
     }
 
     /**

@@ -76,12 +76,12 @@ public class AccountJDBCServiceImplementation implements AccountService {
 
     @Override
     public boolean addSecondaryHolder(Account loggedAccount, Customer secondaryHolder) {
-        List<Customer> secondaryHolders = loggedAccount.getSecondaryHolders();
-        if (secondaryHolders.stream().anyMatch(customerElement -> customerElement.getNif().equals(secondaryHolder.getNif())) || loggedAccount.getMainHolder().getNif().equals(secondaryHolder.getNif())) {
+
+        if (accountRepositoryImplementation.verifyIfCustomerExistsInLoggedAccount(secondaryHolder.getId(), loggedAccount.getId())) {
             return false;
         }
-        secondaryHolders.add(secondaryHolder);
-        accountRepositoryImplementation.update(loggedAccount);
+
+        accountRepositoryImplementation.addSecondaryHolder(secondaryHolder.getId(), loggedAccount.getId());
         return true;
     }
 
@@ -217,7 +217,7 @@ public class AccountJDBCServiceImplementation implements AccountService {
     }
 
     @Override
-    public Customer findCustomerByNif(String nif, Account loggedAccount) {
+    public Customer getCustomerByNif(String nif, Account loggedAccount) {
         Customer customer;
         if (loggedAccount.getMainHolder().getNif().equals(nif)) {
             customer = loggedAccount.getMainHolder();
@@ -243,6 +243,11 @@ public class AccountJDBCServiceImplementation implements AccountService {
         return accountRepositoryImplementation.findByCardSerialNumber(cardSerialNumber);
     }
 
+    @Override
+    public Boolean verifyIfCustomerExistsInLoggedAccount(int customerId, int loggedAccountId) {
+        return accountRepositoryImplementation.verifyIfCustomerExistsInLoggedAccount(customerId, loggedAccountId);
+    }
+
     private boolean existsThisTypeCardForThisHolder(Customer cardHolder, ArrayList<Card> cards) {
         boolean exists = false;
         if (cards.size() > 0) { // Se a conta já tiver o tipo de cartão.
@@ -264,7 +269,7 @@ public class AccountJDBCServiceImplementation implements AccountService {
 
     @Override
     public int getAmountOfSecondaryHolders(Account loggedAccount) {
-        return loggedAccount.getSecondaryHolders().size();
+        return accountRepositoryImplementation.findAmountOfSecondaryHolders(loggedAccount.getId());
     }
 
     @Override

@@ -29,9 +29,10 @@ public interface AccountService {
     int getAmountOfDebitCards(Account loggedAccount);
     List<Card> getDebitCards(Account loggedAccount);
     List<Card> getCreditCards(Account loggedAccount);
-    Customer findCustomerByNif(String nif, Account loggedAccount);
+    Customer getCustomerByNif(String nif, Account loggedAccount);
     Boolean isMainHolder(Customer customerToBeDeleted, Account loggedAccount);
     Card getCardBySerialNumberOnCurrentAccount(Account loggedAccount, String cardSerialNumber);
     Account getAccountByCardSerialNumber(String cardSerialNumber);
+    Boolean verifyIfCustomerExistsInLoggedAccount(int customerId, int loggedAccountId);
     void loadDatabase(List<Customer> customers, List<Card> cards, List<Movement> movements);
 }

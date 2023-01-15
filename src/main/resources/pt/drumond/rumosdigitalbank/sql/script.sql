@@ -86,6 +86,7 @@ DELETE FROM accounts;
 DELETE FROM movements;
 
 SELECT * FROM customers;
+SELECT * FROM customers_accounts;
 SELECT * FROM accounts;
 SELECT * FROM movements;
 
@@ -93,6 +94,8 @@ INSERT INTO customers (id, nif, name, password, phone, mobile, email, profession
 INSERT INTO accounts(id, code, balance, customers_id) VALUES(1, 100, 51.24, 1);
 INSERT INTO accounts(id, code, balance, customers_id) VALUES(2, 101, 51.24, 1);
 INSERT INTO accounts(id, code, balance, customers_id) VALUES(3, 102, 51.24, 1);
+INSERT INTO customers_accounts (customers_id, accounts_id) VALUES (5, 6);
+INSERT INTO customers_accounts (customers_id, accounts_id) VALUES (6, 5);
 
 
 SHOW TRIGGERS;

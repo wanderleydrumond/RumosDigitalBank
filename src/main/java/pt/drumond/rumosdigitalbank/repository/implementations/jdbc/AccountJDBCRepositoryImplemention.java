@@ -106,6 +106,30 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
     }
 
     @Override
+    public void addSecondaryHolder(int secondaryHolderId, int loggedAccountId) {
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("INSERT INTO customers_accounts (customers_id, accounts_id) VALUES (?, ?)");
+
+            preparedStatement.setInt(1, secondaryHolderId);
+            preparedStatement.setInt(2, loggedAccountId);
+
+            preparedStatement.execute();
+        } catch (SQLException sqlException) {
+            System.err.println("Error on AccountJDBCRepositoryImplementation.addSecondaryHolder() " + sqlException.getMessage());
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection" + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+    }
+
+    @Override
     public void delete(Account account) {
     }
 
@@ -132,6 +156,75 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
     @Override
     public Account findByCardSerialNumber(String cardSerialNumber) {
         return null;
+    }
+
+    @Override
+    public int findAmountOfSecondaryHolders(int loggedAccountId) {
+        int amountOfSecondaryHolders = 0;
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("SELECT COUNT(customers_id) FROM customers_accounts WHERE accounts_id = " + loggedAccountId + ";");
+            resultSet = preparedStatement.executeQuery();
+            preparedStatement.clearParameters();
+
+            while (resultSet.next()) {
+                amountOfSecondaryHolders = resultSet.getInt(1);
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Error on AccountJDBCRepositoryImplementation.findAmountOfSecondaryHolders() " + sqlException.getMessage());
+            return 0;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+            return 0;
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return amountOfSecondaryHolders;
+    }
+
+    @Override
+    public Boolean verifyIfCustomerExistsInLoggedAccount(int customerId, int loggedAccountId) {
+        Boolean existsCustomerInAccount = null;
+        try {
+            openConnection();
+
+            // Verifica se o cliente é um main holder
+            preparedStatement = connection.prepareStatement("SELECT EXISTS(SELECT * FROM accounts WHERE customers_id = " + customerId + " AND id = " + loggedAccountId + ");");
+            resultSet = preparedStatement.executeQuery();
+            preparedStatement.clearParameters();
+
+            while (resultSet.next()) {
+                existsCustomerInAccount = resultSet.getBoolean(1);
+            }
+
+            if (Boolean.FALSE.equals(existsCustomerInAccount)) {
+                // Verificar se o cliente existe como secondary holder
+                preparedStatement = connection.prepareStatement("SELECT EXISTS(SELECT * FROM customers_accounts WHERE customers_id = " + customerId + " AND accounts_id = " + loggedAccountId + ");");
+                resultSet = preparedStatement.executeQuery();
+            }
+
+            while (resultSet.next()) {
+                existsCustomerInAccount = resultSet.getBoolean(1);
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Error on AccountJDBCRepositoryImplementation.findAmountOfSecondaryHolders() " + sqlException.getMessage());
+            return null;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+            return null;
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return existsCustomerInAccount;
     }
 
     @Override

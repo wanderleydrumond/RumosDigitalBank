@@ -220,7 +220,7 @@ public class AccountListServiceImplementation implements AccountService {
     }
 
     @Override
-    public Customer findCustomerByNif(String nif, Account loggedAccount) {
+    public Customer getCustomerByNif(String nif, Account loggedAccount) {
         Customer customer;
         if (loggedAccount.getMainHolder().getNif().equals(nif)) {
             customer = loggedAccount.getMainHolder();
@@ -244,6 +244,12 @@ public class AccountListServiceImplementation implements AccountService {
     @Override
     public Account getAccountByCardSerialNumber(String cardSerialNumber) {
         return accountRepositoryImplementation.findByCardSerialNumber(cardSerialNumber);
+    }
+
+    @Override
+    public Boolean verifyIfCustomerExistsInLoggedAccount(int customerId, int loggedAccountId) {
+        // Used only on JDBC
+        return false;
     }
 
     private boolean existsThisTypeCardForThisHolder(Customer cardHolder, ArrayList<Card> cards) {

@@ -135,17 +135,17 @@ public class Bank {
         System.out.println(CYAN_TEXT_NORMAL.getValue() + "6. " + RESET.getValue() + "Delete account");
         System.out.println(CYAN_TEXT_NORMAL.getValue() + "7. " + RESET.getValue() + "List all movements");
 
-        /* TODO uncomment when these methods work
-        if (accountServiceImplementation.getAmountOfDebitCards(loggedAccount) < 5) {
+//         TODO uncomment when these methods work
+        /*if (accountServiceImplementation.getAmountOfDebitCards(loggedAccount) < 5) {
             System.out.println(CYAN_TEXT_NORMAL.getValue() + "8. " + RESET.getValue() + "Add new debit card");
         } else {
             System.out.println(RED_TEXT_NORMAL.getValue() + "X. " + RESET.getValue() + "This account already reached the maximum amount of debit cards");
-        }
-        if (accountServiceImplementation.getAmountOfCreditCards(loggedAccount) < 2) {
+        }*/
+        /*if (accountServiceImplementation.getAmountOfCreditCards(loggedAccount) < 2) {
             System.out.println(CYAN_TEXT_NORMAL.getValue() + "9. " + RESET.getValue() + "Add new credit card");
         } else {
             System.out.println(RED_TEXT_NORMAL.getValue() + "X. " + RESET.getValue() + "This account already reached the maximum amount of credit cards");
-        }
+        }*/
         if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) < 4) {
             System.out.println(CYAN_TEXT_NORMAL.getValue() + "10. " + RESET.getValue() + "Insert new secondary holder");
         } else {
@@ -156,7 +156,6 @@ public class Bank {
         } else {
             System.out.println(RED_TEXT_NORMAL.getValue() + "X. " + RESET.getValue() + "This account has no secondary holders to delete");
         }
-        */
         System.out.print("\nOption:\040");
 
         return Integer.parseInt(scanner.nextLine());
@@ -462,7 +461,8 @@ public class Bank {
         ResponseType answer = accountServiceImplementation.transfer(loggedAccount, transferValue, destinationAccount);
 
         switch (answer) {
-            case SUCCESS -> System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Transfer successfully done" + RESET.getValue());
+            case SUCCESS ->
+                    System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Transfer successfully done" + RESET.getValue());
             case INSUFFICIENT_BALANCE -> {
                 System.out.print(RED_TEXT_BRIGHT.getValue() + "Insuficient balance: " + RESET.getValue());
                 System.out.printf("%.2f€%n", loggedAccount.getBalance());
@@ -522,13 +522,13 @@ public class Bank {
      * <p>They can be a new customer or an existent one.</p>
      */
     private void addSecondaryHolder() throws SQLException {
-        if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 3) {
+        if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 3) { // OK
             return;
         }
         Customer secondaryHolder = null;
 
         switch (menuAddSecondaryHolder()) {
-            case 1 -> secondaryHolder = createCustomer(false);
+            case 1 -> secondaryHolder = createCustomer(false); // OK
             case 2 -> secondaryHolder = getCustomerByNif(false);
             default -> updateAccountMenu();
         }
@@ -550,15 +550,14 @@ public class Bank {
      */
     private Customer getCustomerByNif(boolean verifyIfExistsInLoggedAccount) {
         Customer customer;
-        boolean customerExists;
+        Boolean customerExists;
         do {
-            System.out.print("Enter client NIF number: ");
+            String nif = getString("Enter client NIF number: ");
             customerExists = false;
-            String nif = scanner.nextLine();
+            customer = customerServiceImplementation.getByNif(nif);
+
             if (verifyIfExistsInLoggedAccount) {
-                customer = accountServiceImplementation.findCustomerByNif(nif, loggedAccount);
-            } else {
-                customer = customerServiceImplementation.getByNif(nif);
+                customerExists = accountServiceImplementation.verifyIfCustomerExistsInLoggedAccount(customer.getId(), loggedAccount.getId()); //TODO testar este método
             }
             if (customer != null) {
                 customerExists = true;
@@ -624,11 +623,16 @@ public class Bank {
             do {
                 switch (updateCustomerMenu()) { // Exibe um menu de opções para as informações que podem ser atualizadas
                     case 1 -> customer.setName(getString("Insert new name: ")); // atualiza o nome do cliente no objeto
-                    case 2 -> customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
-                    case 3 -> customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
-                    case 4 -> customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
-                    case 5 -> customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
-                    case 6 -> customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
+                    case 2 ->
+                            customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
+                    case 3 ->
+                            customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
+                    case 4 ->
+                            customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
+                    case 5 ->
+                            customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
+                    case 6 ->
+                            customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
                     default -> {/*retorna ao menu principal*/}
                 }
                 customerServiceImplementation.update(customer); // atualiza as informações do cliente na base de dados
