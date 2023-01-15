@@ -230,7 +230,7 @@ public class AccountJDBCServiceImplementation implements AccountService {
 
     @Override
     public Boolean isMainHolder(Customer customerToBeDeleted, Account loggedAccount) {
-        return loggedAccount.getMainHolder().getNif().equals(customerToBeDeleted.getNif());
+        return accountRepositoryImplementation.verifyIfCustomerIsMainHolder(customerToBeDeleted.getId(), loggedAccount.getId());
     }
 
     @Override

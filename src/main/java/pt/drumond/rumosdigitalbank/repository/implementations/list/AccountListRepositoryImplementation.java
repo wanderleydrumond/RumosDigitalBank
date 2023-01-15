@@ -127,6 +127,12 @@ public class AccountListRepositoryImplementation implements AccountRepository {
         return false;
     }
 
+    @Override
+    public Boolean verifyIfCustomerIsMainHolder(int customerToBeDeletedId, int loggedAccountId) {
+        //Used only on JDBC
+        return null;
+    }
+
     /**
      * Generates initial data to fill the account HashSet that's serves as database.
      */

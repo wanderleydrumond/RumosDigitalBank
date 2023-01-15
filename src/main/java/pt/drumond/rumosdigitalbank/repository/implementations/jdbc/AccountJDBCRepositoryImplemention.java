@@ -212,7 +212,37 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
                 existsCustomerInAccount = resultSet.getBoolean(1);
             }
         } catch (SQLException sqlException) {
-            System.err.println("Error on AccountJDBCRepositoryImplementation.findAmountOfSecondaryHolders() " + sqlException.getMessage());
+            System.err.println("Error on AccountJDBCRepositoryImplementation.verifyIfCustomerExistsInLoggedAccount() " + sqlException.getMessage());
+            return null;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+            return null;
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return existsCustomerInAccount;
+    }
+
+    @Override
+    public Boolean verifyIfCustomerIsMainHolder(int customerToBeDeletedId, int loggedAccountId) {
+        Boolean existsCustomerInAccount = null;
+        try {
+            openConnection();
+
+            // Verifica se o cliente é um main holder
+            preparedStatement = connection.prepareStatement("SELECT EXISTS(SELECT * FROM accounts WHERE customers_id = " + customerToBeDeletedId + " AND id = " + loggedAccountId + ");");
+            resultSet = preparedStatement.executeQuery();
+            preparedStatement.clearParameters();
+
+            while (resultSet.next()) {
+                existsCustomerInAccount = resultSet.getBoolean(1);
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Error on AccountJDBCRepositoryImplementation.verifyIfCustomerIsMainHolder() " + sqlException.getMessage());
             return null;
         } catch (ClassNotFoundException classNotFoundException) {
             System.err.println("Error opening database connection " + classNotFoundException.getMessage());
