@@ -133,6 +133,18 @@ public class AccountListRepositoryImplementation implements AccountRepository {
         return null;
     }
 
+    @Override
+    public Customer getMainHolder(int loggedAccountId) {
+        //Used only on JDBC
+        return null;
+    }
+
+    @Override
+    public List<Customer> getSecondaryHolders(int loggedAccountId) {
+        //Used only on JDBC
+        return null;
+    }
+
     /**
      * Generates initial data to fill the account HashSet that's serves as database.
      */

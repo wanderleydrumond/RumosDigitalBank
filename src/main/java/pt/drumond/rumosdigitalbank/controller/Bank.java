@@ -14,10 +14,7 @@ import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Scanner;
+import java.util.*;
 
 import static pt.drumond.rumosdigitalbank.enums.OutputColours.*;
 
@@ -477,17 +474,20 @@ public class Bank {
      */
     private void displayAllHolders() {
         System.out.println("Main holder:"); // exibe o nome do titular principal
-        displayMargin(loggedAccount.getMainHolder());
-        System.out.println(loggedAccount.getMainHolder());
-        displayMargin(loggedAccount.getMainHolder());
-        if (loggedAccount.getSecondaryHolders().size() > 0) { // Se houverem titulares secundarios
+        Customer mainHolder = accountServiceImplementation.getMainHolder(loggedAccount.getId());
+        displayMargin(mainHolder);
+        System.out.println(mainHolder);
+        displayMargin(mainHolder);
+
+        List<Customer> secondaryHolders = accountServiceImplementation.getSecondaryHolders(loggedAccount.getId());
+        if (secondaryHolders.size() > 0) { // Se houverem titulares secundarios
             System.out.println("Secondary holders: ");
-            long count = loggedAccount.getSecondaryHolders().size();
-            Customer firstCustomerFound = loggedAccount.getSecondaryHolders().stream().findFirst().get(); // pega o primeiro elemento da lista de clientes da conta
-            Customer lastCustomerFound = loggedAccount.getSecondaryHolders().stream().skip(count - 1).findFirst().get(); // pega o último elemento da lista de clientes da conta
+
+            Customer firstCustomerFound = secondaryHolders.stream().findFirst().get(); // pega o primeiro elemento da lista de clientes da conta
+            Customer lastCustomerFound = secondaryHolders.stream().skip(secondaryHolders.size() - 1).findFirst().get(); // pega o último elemento da lista de clientes da conta
 
             displayMargin(firstCustomerFound);
-            loggedAccount.getSecondaryHolders().forEach(System.out::println); // exibe os nomes dos titulares secundários
+            secondaryHolders.forEach(System.out::println); // exibe os nomes dos titulares secundários
             displayMargin(lastCustomerFound);
         }
     }

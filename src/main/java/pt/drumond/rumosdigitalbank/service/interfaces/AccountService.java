@@ -34,5 +34,7 @@ public interface AccountService {
     Card getCardBySerialNumberOnCurrentAccount(Account loggedAccount, String cardSerialNumber);
     Account getAccountByCardSerialNumber(String cardSerialNumber);
     Boolean verifyIfCustomerExistsInLoggedAccount(int customerId, int loggedAccountId);
+    Customer getMainHolder(int loggedAccountId);
+    List<Customer> getSecondaryHolders(int loggedAccountId);
     void loadDatabase(List<Customer> customers, List<Card> cards, List<Movement> movements);
 }

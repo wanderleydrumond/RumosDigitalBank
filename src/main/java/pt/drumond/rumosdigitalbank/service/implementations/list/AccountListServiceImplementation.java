@@ -252,6 +252,18 @@ public class AccountListServiceImplementation implements AccountService {
         return false;
     }
 
+    @Override
+    public Customer getMainHolder(int loggedAccountId) {
+        // Used only on JDBC
+        return null;
+    }
+
+    @Override
+    public List<Customer> getSecondaryHolders(int loggedAccountId) {
+        // Used only on JDBC
+        return null;
+    }
+
     private boolean existsThisTypeCardForThisHolder(Customer cardHolder, ArrayList<Card> cards) {
         boolean exists = false;
         if (cards.size() > 0) { // Se a conta já tiver o tipo de cartão.

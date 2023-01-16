@@ -258,6 +258,82 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
     }
 
     @Override
+    public Customer getMainHolder(int loggedAccountId) {
+        Customer customerToBeFound = null;
+
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM customers WHERE id = (SELECT customers_id FROM accounts WHERE id = " + loggedAccountId + ");");
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                customerToBeFound = new Customer(
+                        resultSet.getInt("id"),
+                        resultSet.getString("nif"),
+                        resultSet.getString("name"),
+                        resultSet.getString("password"),
+                        resultSet.getString("phone"),
+                        resultSet.getString("mobile"),
+                        resultSet.getString("mobile"),
+                        resultSet.getString("email"),
+                        resultSet.getDate("birthdate").toLocalDate());
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Error on AccountJDBCRepositoryImplementation.getMainHolder() " + sqlException.getMessage());
+            return null;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return customerToBeFound;
+    }
+
+    @Override
+    public List<Customer> getSecondaryHolders(int loggedAccountId) {
+        List<Customer> customersToBeFound = new ArrayList<>();
+
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM customers WHERE id IN (SELECT customers_id FROM customers_accounts WHERE accounts_id = " + loggedAccountId + ");");
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Customer customer = new Customer(
+                        resultSet.getInt("id"),
+                        resultSet.getString("nif"),
+                        resultSet.getString("name"),
+                        resultSet.getString("password"),
+                        resultSet.getString("phone"),
+                        resultSet.getString("mobile"),
+                        resultSet.getString("mobile"),
+                        resultSet.getString("email"),
+                        resultSet.getDate("birthdate").toLocalDate());
+
+                customersToBeFound.add(customer);
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Error on AccountJDBCRepositoryImplementation.getSecondaryHolders() " + sqlException.getMessage());
+            return null;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return customersToBeFound;
+    }
+
+    @Override
     public void loadDatabase(ArrayList<Customer> customers, ArrayList<Card> cards, ArrayList<Movement> movements) {
     }
 }

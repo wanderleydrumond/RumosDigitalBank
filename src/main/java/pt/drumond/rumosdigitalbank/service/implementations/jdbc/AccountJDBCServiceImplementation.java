@@ -248,6 +248,16 @@ public class AccountJDBCServiceImplementation implements AccountService {
         return accountRepositoryImplementation.verifyIfCustomerExistsInLoggedAccount(customerId, loggedAccountId);
     }
 
+    @Override
+    public Customer getMainHolder(int loggedAccountId) {
+        return accountRepositoryImplementation.getMainHolder(loggedAccountId);
+    }
+
+    @Override
+    public List<Customer> getSecondaryHolders(int loggedAccountId) {
+        return accountRepositoryImplementation.getSecondaryHolders(loggedAccountId);
+    }
+
     private boolean existsThisTypeCardForThisHolder(Customer cardHolder, ArrayList<Card> cards) {
         boolean exists = false;
         if (cards.size() > 0) { // Se a conta já tiver o tipo de cartão.
