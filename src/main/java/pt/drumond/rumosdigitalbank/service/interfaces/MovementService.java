@@ -12,5 +12,6 @@ public interface MovementService {
     double getSumAllTodayWithdrawMovements(int accountIdThatOwnsThisMovement);
     Movement deleteAll(Account account);
     List<Movement> getAll();
+    List<Movement> getAll(int accountId);
     List<Movement> loadDatabase();
 }

@@ -7,6 +7,7 @@ import pt.drumond.rumosdigitalbank.repository.interfaces.MovementRepository;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovementJDBCRepositoryImplementation extends JDBCRepository implements MovementRepository {
@@ -40,7 +41,42 @@ public class MovementJDBCRepositoryImplementation extends JDBCRepository impleme
 
     @Override
     public List<Movement> findAll() {
+//        Used only on Lists
         return null;
+    }
+
+    @Override
+    public List<Movement> findAll(int accountId) {
+        List<Movement> accountMovements = new ArrayList<>();
+
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM movements WHERE accounts_id = " + accountId + ";");
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Movement movement = new Movement();
+                movement.setId(resultSet.getInt("id"));
+                movement.setType(MovementType.valueOf(resultSet.getString("type")));
+                movement.setDate(resultSet.getDate("date").toLocalDate());
+                movement.setValue(resultSet.getDouble("value"));
+
+                accountMovements.add(movement);
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Error on AccountJDBCRepositoryImplementation.getAllMovements() " + sqlException.getMessage());
+            return null;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return accountMovements;
     }
 
     @Override

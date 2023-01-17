@@ -27,7 +27,13 @@ public class MovementJDBCServiceImplementation implements MovementService {
 
     @Override
     public List<Movement> getAll() {
-        return movementJDBCRepositoryImplementation.findAll();
+//        Used Only on Lists
+        return null;
+    }
+
+    @Override
+    public List<Movement> getAll(int accountId) {
+        return movementJDBCRepositoryImplementation.findAll(accountId);
     }
 
     @Override

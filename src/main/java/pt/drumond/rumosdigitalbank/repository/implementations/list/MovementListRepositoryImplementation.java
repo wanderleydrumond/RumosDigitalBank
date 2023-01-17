@@ -27,6 +27,12 @@ public class MovementListRepositoryImplementation implements MovementRepository 
     }
 
     @Override
+    public List<Movement> findAll(int accountId) {
+        // Used only on JDBC
+        return null;
+    }
+
+    @Override
     public List<Movement> loadDatabase() {
         // Conta 102
         Movement movement0 = new Movement(MovementType.WITHDRAW, LocalDate.of(2022, 12, 1), 50.);

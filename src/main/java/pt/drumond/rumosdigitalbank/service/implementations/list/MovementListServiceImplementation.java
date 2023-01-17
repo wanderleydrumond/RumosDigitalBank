@@ -48,6 +48,12 @@ public class MovementListServiceImplementation implements MovementService {
     }
 
     @Override
+    public List<Movement> getAll(int accountId) {
+        // Used only on JDBC
+        return null;
+    }
+
+    @Override
     public List<Movement> loadDatabase() {
         return movementRepositoryImplementation.loadDatabase();
     }

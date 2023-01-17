@@ -6,6 +6,7 @@ import pt.drumond.rumosdigitalbank.enums.ResponseType;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
+import pt.drumond.rumosdigitalbank.model.Movement;
 import pt.drumond.rumosdigitalbank.service.interfaces.AccountService;
 import pt.drumond.rumosdigitalbank.service.interfaces.CardService;
 import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
@@ -328,9 +329,11 @@ public class Bank {
      * Displays all movements for the current account.
      */
     private void displayAllMovements() {
-        displayMargin(loggedAccount.getMovements().stream().findFirst().get()); // imprime a quantidade de hífens do primeiro elemento da lista de movimentos
-        loggedAccount.getMovements().forEach(System.out::println); // imprime a lista
-        displayMargin(loggedAccount.getMovements().stream().skip(loggedAccount.getMovements().size() - 1).findFirst().get()); // imprime a quantidade de hífens do último elemento da lista de movimentos
+        List<Movement> movements = movementServiceImplementation.getAll(loggedAccount.getId());
+
+        displayMargin(movements.stream().findFirst().get()); // imprime a quantidade de hífens do primeiro elemento da lista de movimentos
+        movements.forEach(System.out::println); // imprime a lista
+        displayMargin(movements.stream().skip(movements.size() - 1).findFirst().get()); // imprime a quantidade de hífens do último elemento da lista de movimentos
     }
 
     /**
@@ -623,16 +626,11 @@ public class Bank {
             do {
                 switch (updateCustomerMenu()) { // Exibe um menu de opções para as informações que podem ser atualizadas
                     case 1 -> customer.setName(getString("Insert new name: ")); // atualiza o nome do cliente no objeto
-                    case 2 ->
-                            customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
-                    case 3 ->
-                            customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
-                    case 4 ->
-                            customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
-                    case 5 ->
-                            customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
-                    case 6 ->
-                            customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
+                    case 2 -> customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
+                    case 3 -> customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
+                    case 4 -> customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
+                    case 5 -> customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
+                    case 6 -> customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
                     default -> {/*retorna ao menu principal*/}
                 }
                 customerServiceImplementation.update(customer); // atualiza as informações do cliente na base de dados
