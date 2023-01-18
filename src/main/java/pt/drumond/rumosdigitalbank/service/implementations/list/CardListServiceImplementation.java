@@ -33,6 +33,12 @@ public class CardListServiceImplementation implements CardService {
     }
 
     @Override
+    public Card create(Customer cardHolder, boolean isCreditCard, Account loggedAccount) {
+        // Used only on JDBC
+        return null;
+    }
+
+    @Override
     public Card update(String pin, Card card) {
         card.setPin(pin);
         card.setVirgin(false);
@@ -74,6 +80,12 @@ public class CardListServiceImplementation implements CardService {
         card.setPlafondBalance(card.getPlafondBalance() - value); // atualiza o saldo plafond do cartão com o valor sacado
         cardRepositoryImplementation.update(card);
         return true;
+    }
+
+    @Override
+    public int getAmountOfDebitCards(int loggedAccountId) {
+        // Used only on Lists
+        return 0;
     }
 
     @Override

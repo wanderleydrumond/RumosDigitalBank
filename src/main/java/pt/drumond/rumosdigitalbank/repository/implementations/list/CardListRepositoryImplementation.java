@@ -24,6 +24,12 @@ public class CardListRepositoryImplementation implements CardRepository {
     }
 
     @Override
+    public Card create(Card card, boolean isCreditCard) {
+        // Used only on JDBC
+        return null;
+    }
+
+    @Override
     public Card update(Card card) {
         tableCards.set(tableCards.indexOf(card), card);
         return card;
@@ -42,6 +48,12 @@ public class CardListRepositoryImplementation implements CardRepository {
     @Override
     public void delete(Card cardOwnedByCustomerToBeDeleted) {
         tableCards.removeIf(cardElement -> cardElement.getSerialNumber().equals(cardOwnedByCustomerToBeDeleted.getSerialNumber()));
+    }
+
+    @Override
+    public int countDebitCards(int loggedAccountId) {
+        // Used only on JDBC
+        return 0;
     }
 
     @Override

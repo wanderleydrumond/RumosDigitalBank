@@ -19,17 +19,22 @@ public class CardJDBCServiceImplementation implements CardService {
 
     @Override
     public Card create(Customer cardHolder, boolean isCreditCard) {
+        // Used only on Lists
+        return null;
+    }
+
+    @Override
+    public Card create(Customer cardHolder, boolean isCreditCard, Account loggedAccount) {
         Card card = new Card();
         card.setCardHolder(cardHolder);
         card.setVirgin(true);
+        card.setPin("1234");
+        card.setAccount(loggedAccount);
         if (isCreditCard) {
             card.setMonthyPlafond(100.);
             card.setPlafondBalance(100.);
-        } else {
-            card.setMonthyPlafond(0.);
-            card.setPlafondBalance(0.);
         }
-        return cardRepositoryImplementation.create(card);
+        return cardRepositoryImplementation.create(card, false);
     }
 
     @Override
@@ -74,6 +79,11 @@ public class CardJDBCServiceImplementation implements CardService {
         card.setPlafondBalance(card.getPlafondBalance() - value); // atualiza o saldo plafond do cartão com o valor sacado
         cardRepositoryImplementation.update(card);
         return true;
+    }
+
+    @Override
+    public int getAmountOfDebitCards(int loggedAccountId) {
+        return cardRepositoryImplementation.countDebitCards(loggedAccountId);
     }
 
     @Override

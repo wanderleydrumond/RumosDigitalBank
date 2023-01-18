@@ -40,6 +40,7 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
             preparedStatement.executeUpdate();
 
             return findByCode(String.valueOf(code));
+
         } catch (ClassNotFoundException classNotFoundException) {
             System.err.println("Error opening database connection" + classNotFoundException.getMessage());
         } catch (SQLException sqlException) {
@@ -140,6 +141,7 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
 
     @Override
     public List<Card> findAllDebitCardsByAccount(Account account) {
+
         return null;
     }
 
@@ -335,5 +337,6 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
 
     @Override
     public void loadDatabase(ArrayList<Customer> customers, ArrayList<Card> cards, ArrayList<Movement> movements) {
+        // Used only on Lists
     }
 }

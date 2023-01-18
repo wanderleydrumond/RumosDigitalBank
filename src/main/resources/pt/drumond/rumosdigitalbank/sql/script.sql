@@ -56,7 +56,7 @@ CREATE TABLE rumos_digital_bank.movements
 CREATE TABLE rumos_digital_bank.cards
 (
     id              INT SERIAL DEFAULT VALUE AUTO_INCREMENT NOT NULL,
-    serial_number   VARCHAR(5)                              NOT NULL,
+    serial_number   VARCHAR(5)                                  NULL,
     pin             INT                                     NOT NULL,
     is_virgin       BOOLEAN                                 NOT NULL,
     monthly_plafond DOUBLE PRECISION(5,2)                   NOT NULL,
@@ -84,11 +84,13 @@ DESCRIBE accounts;
 DELETE FROM customers;
 DELETE FROM accounts;
 DELETE FROM movements;
+DELETE FROM cards WHERE (SELECT nif FROM customers WHERE nif = 987258741);
 
 SELECT * FROM customers;
 SELECT * FROM customers_accounts;
 SELECT * FROM accounts;
 SELECT * FROM movements;
+SELECT * FROM cards;
 
 INSERT INTO customers (id, nif, name, password, phone, mobile, email, profession, birthdate) VALUES(3, 333333333, 'kljnbg', 'luihbgd', '214785963', '987456321', 'ljhnbd@linjsb', 'linbd', '1911-11-11');
 INSERT INTO accounts(id, code, balance, customers_id) VALUES(1, 100, 51.24, 1);
@@ -127,9 +129,12 @@ ON accounts FOR EACH ROW BEGIN
 
 DROP TRIGGER IF EXISTS account_number_generator;
 
+
+
 INSERT INTO accounts (balance, customers_id) VALUES (50, 1);
 SELECT code FROM accounts WHERE id = last_insert_id();
 ALTER TABLE accounts MODIFY code int null;
+ALTER TABLE cards MODIFY serial_number int null;
 
 DELETE FROM accounts WHERE id > 1;
 DELETE FROM customers WHERE id > 1;
@@ -159,3 +164,6 @@ END$$
 DELIMITER ;
 
 DROP FUNCTION IF EXISTS generateAccountCode;
+
+SELECT EXISTS(SELECT * FROM cards WHERE accounts_id = 5 AND customers_id = 5 AND monthly_plafond = 0.);
+SELECT EXISTS(SELECT * FROM cards WHERE accounts_id = 5 AND customers_id = 5 AND monthly_plafond = 100.);

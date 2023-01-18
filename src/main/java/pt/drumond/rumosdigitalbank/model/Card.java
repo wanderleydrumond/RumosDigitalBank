@@ -21,6 +21,15 @@ public class Card {
         this.plafondBalance = plafondBalance;
     }
 
+    public Card(int id, String serialNumber, String pin, boolean isVirgin, double monthyPlafond, double plafondBalance) {
+        this.id = id;
+        this.serialNumber = serialNumber;
+        this.pin = pin;
+        this.isVirgin = isVirgin;
+        this.monthyPlafond = monthyPlafond;
+        this.plafondBalance = plafondBalance;
+    }
+
     public int getId() {
         return id;
     }
@@ -75,6 +84,14 @@ public class Card {
 
     public void setPlafondBalance(double plafondBalance) {
         this.plafondBalance = plafondBalance;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     @Override

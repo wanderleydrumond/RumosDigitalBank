@@ -181,12 +181,12 @@ public class AccountJDBCServiceImplementation implements AccountService {
 
     @Override
     public Card addDebitCard(Account loggedAccount, Customer cardHolder) {
-        ArrayList<Card> debitCards = getDebitCards(loggedAccount);
+        List<Card> debitCards = getDebitCards(loggedAccount);
 
         return getCard(cardHolder, debitCards, false, loggedAccount);
     }
 
-    private Card getCard(Customer cardHolder, ArrayList<Card> cards, boolean isCreditCard, Account loggedAccount) {
+    private Card getCard(Customer cardHolder, List<Card> cards, boolean isCreditCard, Account loggedAccount) {
         if (existsThisTypeCardForThisHolder(cardHolder, cards)) {
 
             return null;
@@ -207,8 +207,8 @@ public class AccountJDBCServiceImplementation implements AccountService {
     }
 
     @Override
-    public ArrayList<Card> getDebitCards(Account loggedAccount) {
-        return (ArrayList<Card>) accountRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount);
+    public List<Card> getDebitCards(Account loggedAccount) {
+        return accountRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount);
     }
 
     @Override
@@ -258,7 +258,7 @@ public class AccountJDBCServiceImplementation implements AccountService {
         return accountRepositoryImplementation.getSecondaryHolders(loggedAccountId);
     }
 
-    private boolean existsThisTypeCardForThisHolder(Customer cardHolder, ArrayList<Card> cards) {
+    private boolean existsThisTypeCardForThisHolder(Customer cardHolder, List<Card> cards) {
         boolean exists = false;
         if (cards.size() > 0) { // Se a conta já tiver o tipo de cartão.
             for (Card cardElement : cards) { // Ver se quem pediu este tipo de cartão já tem um
@@ -289,7 +289,7 @@ public class AccountJDBCServiceImplementation implements AccountService {
 
     @Override
     public int getAmountOfDebitCards(Account loggedAccount) {
-        return accountRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount).size();
+        return cardServiceImplementation.getAmountOfDebitCards(loggedAccount.getId());
     }
 
     @Override

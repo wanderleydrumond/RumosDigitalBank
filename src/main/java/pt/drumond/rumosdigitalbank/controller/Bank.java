@@ -133,12 +133,11 @@ public class Bank {
         System.out.println(CYAN_TEXT_NORMAL.getValue() + "6. " + RESET.getValue() + "Delete account");
         System.out.println(CYAN_TEXT_NORMAL.getValue() + "7. " + RESET.getValue() + "List all movements");
 
-//         TODO uncomment when these methods work
-        /*if (accountServiceImplementation.getAmountOfDebitCards(loggedAccount) < 5) {
+        if (accountServiceImplementation.getAmountOfDebitCards(loggedAccount) < 5) {
             System.out.println(CYAN_TEXT_NORMAL.getValue() + "8. " + RESET.getValue() + "Add new debit card");
         } else {
             System.out.println(RED_TEXT_NORMAL.getValue() + "X. " + RESET.getValue() + "This account already reached the maximum amount of debit cards");
-        }*/
+        }
         /*if (accountServiceImplementation.getAmountOfCreditCards(loggedAccount) < 2) {
             System.out.println(CYAN_TEXT_NORMAL.getValue() + "9. " + RESET.getValue() + "Add new credit card");
         } else {
@@ -318,7 +317,7 @@ public class Bank {
             System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Credit card successfully added to account" + RESET.getValue());
 
             displayMargin(creditCard);
-            printCard(creditCard, true);
+            printCard(creditCard, true, holderCardOwner.getName());
             displayMargin(creditCard);
         } else {
             System.out.println(RED_TEXT_BRIGHT.getValue() + "Client already has credit card." + RESET.getValue());
@@ -368,7 +367,7 @@ public class Bank {
                 System.out.println("DEBIT CARDS:");
 
                 displayMargin(firstCardFound);
-                accountServiceImplementation.getDebitCards(loggedAccount).forEach(cardElement -> printCard(cardElement, false));
+//                accountServiceImplementation.getDebitCards(loggedAccount).forEach(cardElement -> printCard(cardElement, false, ));
                 displayMargin(lastCardFound);
             }
             if (accountServiceImplementation.getAmountOfCreditCards(loggedAccount) > 0) {
@@ -383,21 +382,21 @@ public class Bank {
      */
     private void addDebitCard() {
         Customer holderCardOwner = getCustomerByNif(true);
-        Card debitCard = accountServiceImplementation.addDebitCard(loggedAccount, holderCardOwner);
+        Card debitCard = cardServiceImplementation.create(holderCardOwner, false, loggedAccount);
         if (debitCard != null) {
             System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Debit card successfully added to account" + RESET.getValue());
 
             displayMargin(debitCard);
-            printCard(debitCard, false);
+            printCard(debitCard, false, holderCardOwner.getName());
             displayMargin(debitCard);
         } else {
             System.out.println(RED_TEXT_BRIGHT.getValue() + "Client already has debit card." + RESET.getValue());
         }
     }
 
-    private void printCard(Card cardToBePrinted, boolean isCreditCard) {
+    private void printCard(Card cardToBePrinted, boolean isCreditCard, String holderCardOwnerName) {
         System.out.println("Number card: " + cardToBePrinted.getSerialNumber());
-        System.out.println("Main holder: " + cardToBePrinted.getCardHolder().getName());
+        System.out.println("Main holder: " + holderCardOwnerName);
         if (isCreditCard) {
             System.out.println("Monthly plafond: " + cardToBePrinted.getMonthyPlafond());
             System.out.println("Plafond balance: " + cardToBePrinted.getPlafondBalance());
