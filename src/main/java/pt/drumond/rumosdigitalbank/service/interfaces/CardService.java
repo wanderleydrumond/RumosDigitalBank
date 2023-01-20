@@ -16,6 +16,6 @@ public interface CardService {
     void delete(Card cardOwnedByCustomerToBeDeleted);
     boolean payLoan(Card card, double value);
     boolean makeLoan(Card card, double value);
-    int getAmountOfDebitCards(int loggedAccountId);
+    int getAmountOfCards(int loggedAccountId);
     List<Card> loadDatabase(ArrayList<Customer> customers);
 }

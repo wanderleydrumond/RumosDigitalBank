@@ -167,3 +167,5 @@ DROP FUNCTION IF EXISTS generateAccountCode;
 
 SELECT EXISTS(SELECT * FROM cards WHERE accounts_id = 5 AND customers_id = 5 AND monthly_plafond = 0.);
 SELECT EXISTS(SELECT * FROM cards WHERE accounts_id = 5 AND customers_id = 5 AND monthly_plafond = 100.);
+
+SELECT COUNT(id) FROM cards WHERE accounts_id = 5 AND monthly_plafond = 0.;

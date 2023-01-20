@@ -34,7 +34,7 @@ public class CardJDBCServiceImplementation implements CardService {
             card.setMonthyPlafond(100.);
             card.setPlafondBalance(100.);
         }
-        return cardRepositoryImplementation.create(card, false);
+        return cardRepositoryImplementation.create(card, isCreditCard);
     }
 
     @Override
@@ -82,8 +82,8 @@ public class CardJDBCServiceImplementation implements CardService {
     }
 
     @Override
-    public int getAmountOfDebitCards(int loggedAccountId) {
-        return cardRepositoryImplementation.countDebitCards(loggedAccountId);
+    public int getAmountOfCards(int loggedAccountId) {
+        return cardRepositoryImplementation.countCards(loggedAccountId, false);
     }
 
     @Override

@@ -201,7 +201,7 @@ public class AccountJDBCServiceImplementation implements AccountService {
 
     @Override
     public Card addCreditCard(Account loggedAccount, Customer cardHolder) {
-        ArrayList<Card> creditCards = getCreditCards(loggedAccount);
+        List<Card> creditCards = getCreditCards(loggedAccount);
 
         return getCard(cardHolder, creditCards, true, loggedAccount);
     }
@@ -283,13 +283,14 @@ public class AccountJDBCServiceImplementation implements AccountService {
     }
 
     @Override
-    public int getAmountOfCreditCards(Account loggedAccount) {
-        return accountRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount).size();
+    public int getAmountOfDebitCards(Account loggedAccount) {
+        // used only on Lists
+        return 0;
     }
 
     @Override
-    public int getAmountOfDebitCards(Account loggedAccount) {
-        return cardServiceImplementation.getAmountOfDebitCards(loggedAccount.getId());
+    public int getAmountOfCreditCards(Account loggedAccount) {
+        return accountRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount).size();
     }
 
     @Override

@@ -133,16 +133,16 @@ public class Bank {
         System.out.println(CYAN_TEXT_NORMAL.getValue() + "6. " + RESET.getValue() + "Delete account");
         System.out.println(CYAN_TEXT_NORMAL.getValue() + "7. " + RESET.getValue() + "List all movements");
 
-        if (accountServiceImplementation.getAmountOfDebitCards(loggedAccount) < 5) {
+        if (cardServiceImplementation.getAmountOfCards(loggedAccount.getId()) < 5) {
             System.out.println(CYAN_TEXT_NORMAL.getValue() + "8. " + RESET.getValue() + "Add new debit card");
         } else {
             System.out.println(RED_TEXT_NORMAL.getValue() + "X. " + RESET.getValue() + "This account already reached the maximum amount of debit cards");
         }
-        /*if (accountServiceImplementation.getAmountOfCreditCards(loggedAccount) < 2) {
+        if (cardServiceImplementation.getAmountOfCards(loggedAccount.getId()) < 2) {
             System.out.println(CYAN_TEXT_NORMAL.getValue() + "9. " + RESET.getValue() + "Add new credit card");
         } else {
             System.out.println(RED_TEXT_NORMAL.getValue() + "X. " + RESET.getValue() + "This account already reached the maximum amount of credit cards");
-        }*/
+        }
         if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) < 4) {
             System.out.println(CYAN_TEXT_NORMAL.getValue() + "10. " + RESET.getValue() + "Insert new secondary holder");
         } else {
@@ -268,74 +268,6 @@ public class Bank {
     }
 
     /**
-     * Provides an interface to treat all necessary data to pay loan in credit card in logged account.
-     */
-    private void payLoan() {
-        // Pegando informações do cartão
-        String cardSerialNumber = getString("Enter card serial number: "); // recebe o número de série do cartão
-        Card card = accountServiceImplementation.getCardBySerialNumberOnCurrentAccount(loggedAccount, cardSerialNumber); // busca o cartão, na conta logada, através do número de série
-
-        if (card != null) {
-            displayMargin(card);
-            System.out.println(card);
-            displayMargin(card);
-        }
-
-        if (validateCardSituation(card).equals(ResponseType.SUCCESS)) {
-            double value = Double.parseDouble(getString("Enter value to pay: ")); // recebe o valor a ser pago no cartão de crédito
-            if (cardServiceImplementation.payLoan(card, value)) { // Tenta pagar o cartão de crédito
-                System.out.println("Operation concluded succesfully");
-            } else {
-                System.out.println("Value to pay exceeds value to pay");
-            }
-            displayMargin(card);
-            System.out.println(card);
-            displayMargin(card);
-        }
-    }
-
-    private ResponseType validateCardSituation(Card card) {
-        if (card == null) { // Se não encontrar nenhum cartão com o número de série fornecido
-            System.out.println("There are no cards with the given serial number in this account");
-            return ResponseType.INEXISTENT;
-        }
-        if (card.getMonthyPlafond() == 0.) { // Se o cartão encontrado for de débito
-            System.out.println("This is a debit card. Operation available only for credit cards.");
-            return ResponseType.WRONG_CARD_TYPE;
-        }
-        if (card.getPlafondBalance() == card.getMonthyPlafond()) { // Se o cartão de crédito encontrado não tiver dívidas
-            System.out.println("This card has no debts.");
-            return ResponseType.NO_DEBTS;
-        }
-        return ResponseType.SUCCESS; //Se o cartão de crédito tiver dívidas
-    }
-
-    private void addCreditCard() {
-        Customer holderCardOwner = getCustomerByNif(true);
-        Card creditCard = accountServiceImplementation.addCreditCard(loggedAccount, holderCardOwner);
-        if (creditCard != null) {
-            System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Credit card successfully added to account" + RESET.getValue());
-
-            displayMargin(creditCard);
-            printCard(creditCard, true, holderCardOwner.getName());
-            displayMargin(creditCard);
-        } else {
-            System.out.println(RED_TEXT_BRIGHT.getValue() + "Client already has credit card." + RESET.getValue());
-        }
-    }
-
-    /**
-     * Displays all movements for the current account.
-     */
-    private void displayAllMovements() {
-        List<Movement> movements = movementServiceImplementation.getAll(loggedAccount.getId());
-
-        displayMargin(movements.stream().findFirst().get()); // imprime a quantidade de hífens do primeiro elemento da lista de movimentos
-        movements.forEach(System.out::println); // imprime a lista
-        displayMargin(movements.stream().skip(movements.size() - 1).findFirst().get()); // imprime a quantidade de hífens do último elemento da lista de movimentos
-    }
-
-    /**
      * Displays the following account data:
      * <ol>
      *     <li>code</li>
@@ -378,28 +310,90 @@ public class Bank {
     }
 
     /**
-     * Adds a new debit card into logged account and into database.
+     * <ol>
+     *     <li>Asks the deposit value</li>
+     *     <li>Perfom the deposit</li>
+     * </ol>
      */
-    private void addDebitCard() {
-        Customer holderCardOwner = getCustomerByNif(true);
-        Card debitCard = cardServiceImplementation.create(holderCardOwner, false, loggedAccount);
-        if (debitCard != null) {
-            System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Debit card successfully added to account" + RESET.getValue());
+    private void deposit() {
+        System.out.print("Insert the deposit value: ");
+        double depositValue = Double.parseDouble(scanner.nextLine());
+        accountServiceImplementation.deposit(loggedAccount, depositValue, MovementType.DEPOSIT);
+    }
 
-            displayMargin(debitCard);
-            printCard(debitCard, false, holderCardOwner.getName());
-            displayMargin(debitCard);
-        } else {
-            System.out.println(RED_TEXT_BRIGHT.getValue() + "Client already has debit card." + RESET.getValue());
+    /**
+     * <ol>
+     *     <li>Asks the value to be transfered</li>
+     *     <li>Aks the destination account code</li>
+     *     <li>Performs the tranfer</li>
+     *     <li>Displays the feedback message</li>
+     *     <li>Redirect to current menu</li>
+     * </ol>
+     */
+    private void transfer() throws SQLException {
+        System.out.print("Insert the transfer value: ");
+        double transferValue = Double.parseDouble(scanner.nextLine());
+        String destinationAccount = getString("Insert the destination account code: ");
+        ResponseType answer = accountServiceImplementation.transfer(loggedAccount, transferValue, destinationAccount);
+
+        switch (answer) {
+            case SUCCESS -> System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Transfer successfully done" + RESET.getValue());
+            case INSUFFICIENT_BALANCE -> {
+                System.out.print(RED_TEXT_BRIGHT.getValue() + "Insuficient balance: " + RESET.getValue());
+                System.out.printf("%.2f€%n", loggedAccount.getBalance());
+            }
+            case INEXISTENT -> System.out.println(RED_TEXT_BRIGHT.getValue() + "Account not found" + RESET.getValue());
+        }
+        updateAccount(true);
+    }
+
+    /**
+     * Provides an interface to treat all necessary data to pay loan in credit card in logged account.
+     */
+    private void payLoan() {
+        // Pegando informações do cartão
+        String cardSerialNumber = getString("Enter card serial number: "); // recebe o número de série do cartão
+        Card card = accountServiceImplementation.getCardBySerialNumberOnCurrentAccount(loggedAccount, cardSerialNumber); // busca o cartão, na conta logada, através do número de série
+
+        if (card != null) {
+            displayMargin(card);
+            System.out.println(card);
+            displayMargin(card);
+        }
+
+        if (validateCardSituation(card).equals(ResponseType.SUCCESS)) {
+            double value = Double.parseDouble(getString("Enter value to pay: ")); // recebe o valor a ser pago no cartão de crédito
+            if (cardServiceImplementation.payLoan(card, value)) { // Tenta pagar o cartão de crédito
+                System.out.println("Operation concluded succesfully");
+            } else {
+                System.out.println("Value to pay exceeds value to pay");
+            }
+            displayMargin(card);
+            System.out.println(card);
+            displayMargin(card);
         }
     }
 
-    private void printCard(Card cardToBePrinted, boolean isCreditCard, String holderCardOwnerName) {
-        System.out.println("Number card: " + cardToBePrinted.getSerialNumber());
-        System.out.println("Main holder: " + holderCardOwnerName);
-        if (isCreditCard) {
-            System.out.println("Monthly plafond: " + cardToBePrinted.getMonthyPlafond());
-            System.out.println("Plafond balance: " + cardToBePrinted.getPlafondBalance());
+    /**
+     * Displays all account holders.
+     */
+    private void displayAllHolders() {
+        System.out.println("Main holder:"); // exibe o nome do titular principal
+        Customer mainHolder = accountServiceImplementation.getMainHolder(loggedAccount.getId());
+        displayMargin(mainHolder);
+        System.out.println(mainHolder);
+        displayMargin(mainHolder);
+
+        List<Customer> secondaryHolders = accountServiceImplementation.getSecondaryHolders(loggedAccount.getId());
+        if (secondaryHolders.size() > 0) { // Se houverem titulares secundarios
+            System.out.println("Secondary holders: ");
+
+            Customer firstCustomerFound = secondaryHolders.stream().findFirst().get(); // pega o primeiro elemento da lista de clientes da conta
+            Customer lastCustomerFound = secondaryHolders.stream().skip(secondaryHolders.size() - 1).findFirst().get(); // pega o último elemento da lista de clientes da conta
+
+            displayMargin(firstCustomerFound);
+            secondaryHolders.forEach(System.out::println); // exibe os nomes dos titulares secundários
+            displayMargin(lastCustomerFound);
         }
     }
 
@@ -433,64 +427,69 @@ public class Bank {
     }
 
     /**
-     * <ol>
-     *     <li>Asks the deposit value</li>
-     *     <li>Perfom the deposit</li>
-     * </ol>
+     * Displays all movements for the current account.
      */
-    private void deposit() {
-        System.out.print("Insert the deposit value: ");
-        double depositValue = Double.parseDouble(scanner.nextLine());
-        accountServiceImplementation.deposit(loggedAccount, depositValue, MovementType.DEPOSIT);
+    private void displayAllMovements() {
+        List<Movement> movements = movementServiceImplementation.getAll(loggedAccount.getId());
+
+        displayMargin(movements.stream().findFirst().get()); // imprime a quantidade de hífens do primeiro elemento da lista de movimentos
+        movements.forEach(System.out::println); // imprime a lista
+        displayMargin(movements.stream().skip(movements.size() - 1).findFirst().get()); // imprime a quantidade de hífens do último elemento da lista de movimentos
     }
 
     /**
-     * <ol>
-     *     <li>Asks the value to be transfered</li>
-     *     <li>Aks the destination account code</li>
-     *     <li>Performs the tranfer</li>
-     *     <li>Displays the feedback message</li>
-     *     <li>Redirect to current menu</li>
-     * </ol>
+     * Adds a new debit card into logged account and into database.
      */
-    private void transfer() throws SQLException {
-        System.out.print("Insert the transfer value: ");
-        double transferValue = Double.parseDouble(scanner.nextLine());
-        String destinationAccount = getString("Insert the destination account code: ");
-        ResponseType answer = accountServiceImplementation.transfer(loggedAccount, transferValue, destinationAccount);
+    private void addDebitCard() {
+        Customer holderCardOwner = getCustomerByNif(true);
+        Card debitCard = cardServiceImplementation.create(holderCardOwner, false, loggedAccount);
+        if (debitCard != null) {
+            System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Debit card successfully added to account" + RESET.getValue());
 
-        switch (answer) {
-            case SUCCESS ->
-                    System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Transfer successfully done" + RESET.getValue());
-            case INSUFFICIENT_BALANCE -> {
-                System.out.print(RED_TEXT_BRIGHT.getValue() + "Insuficient balance: " + RESET.getValue());
-                System.out.printf("%.2f€%n", loggedAccount.getBalance());
-            }
-            case INEXISTENT -> System.out.println(RED_TEXT_BRIGHT.getValue() + "Account not found" + RESET.getValue());
+            displayMargin(debitCard);
+            printCard(debitCard, false, holderCardOwner.getName());
+            displayMargin(debitCard);
+        } else {
+            System.out.println(RED_TEXT_BRIGHT.getValue() + "Client already has debit card." + RESET.getValue());
         }
-        updateAccount(true);
+    }
+
+    private void addCreditCard() {
+        Customer holderCardOwner = getCustomerByNif(true);
+        Card creditCard = cardServiceImplementation.create(holderCardOwner, true, loggedAccount);
+        if (creditCard != null) {
+            System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Credit card successfully added to account" + RESET.getValue());
+
+            displayMargin(creditCard);
+            printCard(creditCard, true, holderCardOwner.getName());
+            displayMargin(creditCard);
+        } else {
+            System.out.println(RED_TEXT_BRIGHT.getValue() + "Client already has credit card." + RESET.getValue());
+        }
     }
 
     /**
-     * Displays all account holders.
+     * <p>Adds a new secondary holder into the logged account.</p>
+     * <p>They can be a new customer or an existent one.</p>
      */
-    private void displayAllHolders() {
-        System.out.println("Main holder:"); // exibe o nome do titular principal
-        Customer mainHolder = accountServiceImplementation.getMainHolder(loggedAccount.getId());
-        displayMargin(mainHolder);
-        System.out.println(mainHolder);
-        displayMargin(mainHolder);
+    private void addSecondaryHolder() throws SQLException {
+        if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 3) { // OK
+            return;
+        }
+        Customer secondaryHolder = null;
 
-        List<Customer> secondaryHolders = accountServiceImplementation.getSecondaryHolders(loggedAccount.getId());
-        if (secondaryHolders.size() > 0) { // Se houverem titulares secundarios
-            System.out.println("Secondary holders: ");
+        switch (menuAddSecondaryHolder()) {
+            case 1 -> secondaryHolder = createCustomer(false); // OK
+            case 2 -> secondaryHolder = getCustomerByNif(false);
+            default -> updateAccountMenu();
+        }
 
-            Customer firstCustomerFound = secondaryHolders.stream().findFirst().get(); // pega o primeiro elemento da lista de clientes da conta
-            Customer lastCustomerFound = secondaryHolders.stream().skip(secondaryHolders.size() - 1).findFirst().get(); // pega o último elemento da lista de clientes da conta
-
-            displayMargin(firstCustomerFound);
-            secondaryHolders.forEach(System.out::println); // exibe os nomes dos titulares secundários
-            displayMargin(lastCustomerFound);
+        if (secondaryHolder != null) {
+            if (accountServiceImplementation.addSecondaryHolder(loggedAccount, secondaryHolder)) {
+                System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Client successfully added to account" + RESET.getValue());
+            } else {
+                System.out.println(RED_TEXT_BRIGHT.getValue() + "Client already existent in this account" + RESET.getValue());
+            }
         }
     }
 
@@ -519,28 +518,28 @@ public class Bank {
         updateAccount(true);
     }
 
-    /**
-     * <p>Adds a new secondary holder into the logged account.</p>
-     * <p>They can be a new customer or an existent one.</p>
-     */
-    private void addSecondaryHolder() throws SQLException {
-        if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 3) { // OK
-            return;
+    private ResponseType validateCardSituation(Card card) {
+        if (card == null) { // Se não encontrar nenhum cartão com o número de série fornecido
+            System.out.println("There are no cards with the given serial number in this account");
+            return ResponseType.INEXISTENT;
         }
-        Customer secondaryHolder = null;
-
-        switch (menuAddSecondaryHolder()) {
-            case 1 -> secondaryHolder = createCustomer(false); // OK
-            case 2 -> secondaryHolder = getCustomerByNif(false);
-            default -> updateAccountMenu();
+        if (card.getMonthyPlafond() == 0.) { // Se o cartão encontrado for de débito
+            System.out.println("This is a debit card. Operation available only for credit cards.");
+            return ResponseType.WRONG_CARD_TYPE;
         }
+        if (card.getPlafondBalance() == card.getMonthyPlafond()) { // Se o cartão de crédito encontrado não tiver dívidas
+            System.out.println("This card has no debts.");
+            return ResponseType.NO_DEBTS;
+        }
+        return ResponseType.SUCCESS; //Se o cartão de crédito tiver dívidas
+    }
 
-        if (secondaryHolder != null) {
-            if (accountServiceImplementation.addSecondaryHolder(loggedAccount, secondaryHolder)) {
-                System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Client successfully added to account" + RESET.getValue());
-            } else {
-                System.out.println(RED_TEXT_BRIGHT.getValue() + "Client already existent in this account" + RESET.getValue());
-            }
+    private void printCard(Card cardToBePrinted, boolean isCreditCard, String holderCardOwnerName) {
+        System.out.println("Number card: " + cardToBePrinted.getSerialNumber());
+        System.out.println("Main holder: " + holderCardOwnerName);
+        if (isCreditCard) {
+            System.out.println("Monthly plafond: " + cardToBePrinted.getMonthyPlafond());
+            System.out.println("Plafond balance: " + cardToBePrinted.getPlafondBalance());
         }
     }
 
@@ -771,6 +770,10 @@ public class Bank {
         return birthDate;
     }
 
+                                                         /*
+- - - - - - - - - - - - - - - - - - - - - - - - - DISPLAY METHODS - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                                         */
+
     /**
      * Displays a sequence of hyphens in the <code>Object.toString()</code> length.
      * Implies calling in the begining and in the end.
@@ -783,10 +786,6 @@ public class Bank {
         }
         System.out.println();
     }
-
-                                                         /*
-- - - - - - - - - - - - - - - - - - - - - - - - - DISPLAY METHODS - - - - - - - - - - - - - - - - - - - - - - - - - - -
-                                                         */
 
     public void printCustomer(Customer customer) {
         ArrayList<String> names = new ArrayList<>();

@@ -17,8 +17,8 @@ public class CardJDBCRepositoryImplementation extends JDBCRepository implements 
         try {
             openConnection();
 
-            double valueToSearch = isCreditCard ? 100. : 0.;
-            preparedStatement = connection.prepareStatement("SELECT EXISTS(SELECT * FROM cards WHERE accounts_id = " + card.getAccount().getId() + " AND customers_id = " + card.getCardHolder().getId() + " AND monthly_plafond = " + valueToSearch + ");"); // verfica se este usuário já tem um cartão de crédito
+            double monthlyPlafond = isCreditCard ? 100. : 0.;
+            preparedStatement = connection.prepareStatement("SELECT EXISTS(SELECT * FROM cards WHERE accounts_id = " + card.getAccount().getId() + " AND customers_id = " + card.getCardHolder().getId() + " AND monthly_plafond = " + monthlyPlafond + ");"); // verfica se este usuário já tem um cartão de crédito
             resultSet = preparedStatement.executeQuery();
             preparedStatement.clearParameters();
 
@@ -128,12 +128,13 @@ public class CardJDBCRepositoryImplementation extends JDBCRepository implements 
     }
 
     @Override
-    public int countDebitCards(int loggedAccountId) {
+    public int countCards(int loggedAccountId, boolean isCreditCard) {
         int amountOfDebitCards = 0;
+
         try {
             openConnection();
 
-            preparedStatement = connection.prepareStatement("SELECT COUNT(id) FROM cards WHERE accounts_id = " + loggedAccountId + ";");
+            preparedStatement = isCreditCard ? connection.prepareStatement("SELECT COUNT(id) FROM cards WHERE accounts_id = " + loggedAccountId + " AND monthly_plafond = 100.;") : connection.prepareStatement("SELECT COUNT(id) FROM cards WHERE accounts_id = " + loggedAccountId + " AND monthly_plafond = 0.;");
             resultSet = preparedStatement.executeQuery();
             preparedStatement.clearParameters();
 
@@ -141,7 +142,7 @@ public class CardJDBCRepositoryImplementation extends JDBCRepository implements 
                 amountOfDebitCards = resultSet.getInt(1);
             }
         } catch (SQLException sqlException) {
-            System.err.println("Error on AccountJDBCRepositoryImplementation.findAmountOfSecondaryHolders() " + sqlException.getMessage());
+            System.err.println("Error on CardJDBCRepositoryImplementation.countCards() " + sqlException.getMessage());
             return 0;
         } catch (ClassNotFoundException classNotFoundException) {
             System.err.println("Error opening database connection " + classNotFoundException.getMessage());

@@ -83,7 +83,7 @@ public class CardListServiceImplementation implements CardService {
     }
 
     @Override
-    public int getAmountOfDebitCards(int loggedAccountId) {
+    public int getAmountOfCards(int loggedAccountId) {
         // Used only on Lists
         return 0;
     }
