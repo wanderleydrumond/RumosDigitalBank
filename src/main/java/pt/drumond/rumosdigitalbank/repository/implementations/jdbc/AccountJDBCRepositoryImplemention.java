@@ -92,7 +92,7 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
 
             preparedStatement.executeUpdate();
         } catch (SQLException sqlException) {
-            System.err.println("Error on CustomerJDBCRepositoryImplementation.create() " + sqlException.getMessage());
+            System.err.println("Error on AccountJDBCRepositoryImplementation.update() " + sqlException.getMessage());
             return null;
         } catch (ClassNotFoundException classNotFoundException) {
             System.err.println("Error opening database connection" + classNotFoundException.getMessage());

@@ -80,7 +80,26 @@ public class CardJDBCRepositoryImplementation extends JDBCRepository implements 
 
     @Override
     public Card update(Card card) {
-        return null;
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("UPDATE cards SET plafond_balance = ? WHERE id = " + card.getId() + ";");
+            preparedStatement.setDouble(1, card.getPlafondBalance());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException sqlException) {
+            System.err.println("Error on CardJDBCRepositoryImplementation.update() " + sqlException.getMessage());
+            return null;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection" + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return findBySerialNumber(card.getSerialNumber());
     }
 
     @Override

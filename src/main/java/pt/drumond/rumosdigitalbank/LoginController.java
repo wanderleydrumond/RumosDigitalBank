@@ -42,7 +42,7 @@ public class LoginController {
 
     @FXML
     protected void login(ActionEvent actionEvent) throws IOException {
-        Card card = cardServiceImplementation.findBySerialNumber(textFieldCardSerialnumber.getText());
+        Card card = cardServiceImplementation.getBySerialNumber(textFieldCardSerialnumber.getText());
         if (card == null) {
             textFieldCardSerialnumber.setText(""); // limpa o campo do serial number
             passwordFieldCardPin.setText(""); // limpa o campo do PIN

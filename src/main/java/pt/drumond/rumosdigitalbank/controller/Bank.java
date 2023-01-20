@@ -353,7 +353,7 @@ public class Bank {
     private void payLoan() {
         // Pegando informações do cartão
         String cardSerialNumber = getString("Enter card serial number: "); // recebe o número de série do cartão
-        Card card = accountServiceImplementation.getCardBySerialNumberOnCurrentAccount(loggedAccount, cardSerialNumber); // busca o cartão, na conta logada, através do número de série
+        Card card = cardServiceImplementation.getBySerialNumber(cardSerialNumber); // busca o cartão, na conta logada, através do número de série
 
         if (card != null) {
             displayMargin(card);
@@ -364,13 +364,15 @@ public class Bank {
         if (validateCardSituation(card).equals(ResponseType.SUCCESS)) {
             double value = Double.parseDouble(getString("Enter value to pay: ")); // recebe o valor a ser pago no cartão de crédito
             if (cardServiceImplementation.payLoan(card, value)) { // Tenta pagar o cartão de crédito
-                System.out.println("Operation concluded succesfully");
+                System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Operation concluded succesfully" + RESET.getValue());
             } else {
-                System.out.println("Value to pay exceeds value to pay");
+                System.out.println(RED_TEXT_BRIGHT.getValue() + "Value to pay exceeds value to pay" + RESET.getValue());
             }
-            displayMargin(card);
-            System.out.println(card);
-            displayMargin(card);
+            if (card != null) {
+                displayMargin(card);
+                System.out.println(card);
+                displayMargin(card);
+            }
         }
     }
 

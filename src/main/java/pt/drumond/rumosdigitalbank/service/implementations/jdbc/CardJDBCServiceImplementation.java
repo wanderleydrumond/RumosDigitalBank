@@ -45,7 +45,7 @@ public class CardJDBCServiceImplementation implements CardService {
     }
 
     @Override
-    public Card findBySerialNumber(String serialNumber) {
+    public Card getBySerialNumber(String serialNumber) {
         return cardRepositoryImplementation.findBySerialNumber(serialNumber);
     }
 
