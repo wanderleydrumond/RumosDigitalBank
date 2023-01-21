@@ -1,5 +1,6 @@
 package pt.drumond.rumosdigitalbank.repository.implementations.jdbc;
 
+import pt.drumond.rumosdigitalbank.Main;
 import pt.drumond.rumosdigitalbank.model.Account;
 import pt.drumond.rumosdigitalbank.model.Card;
 import pt.drumond.rumosdigitalbank.model.Customer;
@@ -139,7 +140,40 @@ public class CardJDBCRepositoryImplementation extends JDBCRepository implements 
 
     @Override
     public List<Card> findAllByAccount(Account account) {
-        return null;
+        List<Card> accountCards = new ArrayList<>();
+
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM cards WHERE accounts_id = " + account.getId() + ";");
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Card card = new Card();
+                card.setId(resultSet.getInt("id"));
+                card.setSerialNumber(String.valueOf(resultSet.getInt("serial_number")));
+                card.setVirgin(resultSet.getBoolean("is_virgin"));
+                card.setMonthyPlafond(resultSet.getDouble("monthly_plafond"));
+                card.setPlafondBalance(resultSet.getDouble("plafond_balance"));
+
+                Customer cardOwner =  Main.getBank().getCustomerServiceImplementation().getById(resultSet.getInt("customers_id"));
+                card.setCardHolder(cardOwner);
+
+                accountCards.add(card);
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Error on CardJDBCRepositoryImplementation.findAllByAccount() " + sqlException.getMessage());
+            return null;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return accountCards;
     }
 
     @Override

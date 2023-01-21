@@ -51,7 +51,7 @@ public class CardListServiceImplementation implements CardService {
     }
 
     @Override
-    public List<Card> findAllByAccount(Account account) {
+    public List<Card> getAllByAccount(Account account) {
         return null;
     }
 
@@ -83,8 +83,8 @@ public class CardListServiceImplementation implements CardService {
     }
 
     @Override
-    public int getAmountOfCards(int loggedAccountId) {
-        // Used only on Lists
+    public int getAmountOfCards(int loggedAccountId, boolean isCreditCard) {
+        // Used only on JDBC
         return 0;
     }
 

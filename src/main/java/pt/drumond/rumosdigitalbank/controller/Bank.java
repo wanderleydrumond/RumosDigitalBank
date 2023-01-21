@@ -133,12 +133,12 @@ public class Bank {
         System.out.println(CYAN_TEXT_NORMAL.getValue() + "6. " + RESET.getValue() + "Delete account");
         System.out.println(CYAN_TEXT_NORMAL.getValue() + "7. " + RESET.getValue() + "List all movements");
 
-        if (cardServiceImplementation.getAmountOfCards(loggedAccount.getId()) < 5) {
+        if (cardServiceImplementation.getAmountOfCards(loggedAccount.getId(), false) < 5) {
             System.out.println(CYAN_TEXT_NORMAL.getValue() + "8. " + RESET.getValue() + "Add new debit card");
         } else {
             System.out.println(RED_TEXT_NORMAL.getValue() + "X. " + RESET.getValue() + "This account already reached the maximum amount of debit cards");
         }
-        if (cardServiceImplementation.getAmountOfCards(loggedAccount.getId()) < 2) {
+        if (cardServiceImplementation.getAmountOfCards(loggedAccount.getId(), true) < 2) {
             System.out.println(CYAN_TEXT_NORMAL.getValue() + "9. " + RESET.getValue() + "Add new credit card");
         } else {
             System.out.println(RED_TEXT_NORMAL.getValue() + "X. " + RESET.getValue() + "This account already reached the maximum amount of credit cards");
@@ -195,11 +195,11 @@ public class Bank {
                 case 1 -> { // CREATE ACCOUNT
                     Customer mainHolder = createCustomer(true);
                     firstDepositAndCreateAccount(mainHolder);
-                    quit = updateAccount(quit);
+                    quit = updateAccount(quit, loggedAccount);
                 }
                 case 2 -> { // UPDATE ACCOUNT
                     loggedAccount = getAccountByCode();
-                    quit = updateAccount(quit);
+                    quit = updateAccount(quit, loggedAccount);
                 }
                 case 3 -> findAndDisplayCustomer();
                 case 4 -> updateCustomer();
@@ -238,13 +238,13 @@ public class Bank {
         return customer;
     }
 
-    private boolean updateAccount(boolean quit) throws SQLException {
+    private boolean updateAccount(boolean quit, Account loggedAccount) throws SQLException {
         boolean doAnotherOperation;
         do {
             doAnotherOperation = false;
 
             switch (updateAccountMenu()) {
-                case 1 -> displayDetails();
+                case 1 -> displayDetails(loggedAccount);
                 case 2 -> deposit();
                 case 3 -> transfer();
                 case 4 -> payLoan();
@@ -276,36 +276,42 @@ public class Bank {
      *     <li>secondary holders data list (if exists)</li>
      * </ol>
      */
-    private void displayDetails() {
+    private void displayDetails(Account loggedAccount) {
         System.out.println("ACCOUNT DETAILS: \n\nCODE: " + loggedAccount.getCode());
-        System.out.printf("BALANCE: %.2f€%n", loggedAccount.getBalance());
-        System.out.println("MAIN HOLDER:");
-        displayMargin(loggedAccount.getMainHolder());
-        System.out.println(loggedAccount.getMainHolder());
-        displayMargin(loggedAccount.getMainHolder());
 
-        if (loggedAccount.getSecondaryHolders().size() > 0) { // Se a houver secondary holders
+        System.out.printf("BALANCE: %.2f€%n", loggedAccount.getBalance());
+
+        System.out.println("MAIN HOLDER:");
+        Customer mainHolder = accountServiceImplementation.getMainHolder(loggedAccount.getId());
+        displayMargin(mainHolder);
+        System.out.println(mainHolder);
+        displayMargin(mainHolder);
+
+        List<Customer> secondaryHolders = accountServiceImplementation.getSecondaryHolders(loggedAccount.getId());
+        if (secondaryHolders.size() > 0) { // Se a houver secondary holders
             System.out.println("SECONDARY HOLDERS:");
-            displayMargin(loggedAccount.getSecondaryHolders().stream().findFirst().get()); // imprime a quantidade de hífens do primeiro elemento da lista de secondary holders
-            loggedAccount.getSecondaryHolders().forEach(System.out::println);// imprime a lista
-            displayMargin(loggedAccount.getSecondaryHolders().stream().skip(loggedAccount.getSecondaryHolders().size() - 1).findFirst().get()); // imprime a quantidade de hífens do último elemento da lista de secondaary holders
+            displayMargin(secondaryHolders.stream().findFirst().get()); // imprime a quantidade de hífens do primeiro elemento da lista de secondary holders
+            secondaryHolders.forEach(System.out::println);// imprime a lista
+            displayMargin(secondaryHolders.stream().skip(secondaryHolders.size() - 1).findFirst().get()); // imprime a quantidade de hífens do último elemento da lista de secondaary holders
         }
 
-        if (loggedAccount.getCards().size() > 0) {
-            if (accountServiceImplementation.getAmountOfDebitCards(loggedAccount) > 0) {
-                Card firstCardFound = loggedAccount.getCards().stream().findFirst().get(); // pega o primeiro elemento da lista de clientes da conta
-                Card lastCardFound = loggedAccount.getCards().stream().skip(loggedAccount.getCards().size() - 1).findFirst().get(); // pega o último elemento da lista de clientes da conta
+        List<Card> cards = cardServiceImplementation.getAllByAccount(loggedAccount);
+        if (cards.stream().anyMatch(card -> card.getMonthyPlafond() == 0.)) {
+            Card firstCardFound = cards.stream().findFirst().get(); // pega o primeiro elemento da lista de clientes da conta
+            Card lastCardFound = cards.stream().skip(cards.size() - 1).findFirst().get(); // pega o último elemento da lista de clientes da conta
 
-                System.out.println("DEBIT CARDS:");
+            System.out.println("DEBIT CARDS:");
 
-                displayMargin(firstCardFound);
-//                accountServiceImplementation.getDebitCards(loggedAccount).forEach(cardElement -> printCard(cardElement, false, ));
-                displayMargin(lastCardFound);
-            }
-            if (accountServiceImplementation.getAmountOfCreditCards(loggedAccount) > 0) {
-                System.out.println("CREDIT CARDS:");
-                accountServiceImplementation.getCreditCards(loggedAccount).forEach(System.out::println);
-            }
+            List<Card> debitCards = cards.stream().filter(card -> card.getMonthyPlafond() == 0.).toList();
+
+            displayMargin(firstCardFound);
+            debitCards.forEach(cardElement -> printCard(cardElement, false, cardElement.getCardHolder().getName()));
+            displayMargin(lastCardFound);
+        }
+        if (cards.stream().anyMatch(card -> card.getMonthyPlafond() == 100.)) {
+            List<Card> creditCards = cards.stream().filter(card -> card.getMonthyPlafond() == 100.).toList();
+            System.out.println("CREDIT CARDS:");
+            creditCards.forEach(cardElement -> printCard(cardElement, true, cardElement.getCardHolder().getName()));
         }
     }
 
@@ -337,14 +343,15 @@ public class Bank {
         ResponseType answer = accountServiceImplementation.transfer(loggedAccount, transferValue, destinationAccount);
 
         switch (answer) {
-            case SUCCESS -> System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Transfer successfully done" + RESET.getValue());
+            case SUCCESS ->
+                    System.out.println(GREEN_TEXT_BRIGHT.getValue() + "Transfer successfully done" + RESET.getValue());
             case INSUFFICIENT_BALANCE -> {
                 System.out.print(RED_TEXT_BRIGHT.getValue() + "Insuficient balance: " + RESET.getValue());
                 System.out.printf("%.2f€%n", loggedAccount.getBalance());
             }
             case INEXISTENT -> System.out.println(RED_TEXT_BRIGHT.getValue() + "Account not found" + RESET.getValue());
         }
-        updateAccount(true);
+        updateAccount(true, loggedAccount);
     }
 
     /**
@@ -517,7 +524,7 @@ public class Bank {
         } else {
             System.out.println(RED_TEXT_BRIGHT.getValue() + "This client is a main holder and cannot be deleted" + RESET.getValue());
         }
-        updateAccount(true);
+        updateAccount(true, loggedAccount);
     }
 
     private ResponseType validateCardSituation(Card card) {
@@ -626,11 +633,16 @@ public class Bank {
             do {
                 switch (updateCustomerMenu()) { // Exibe um menu de opções para as informações que podem ser atualizadas
                     case 1 -> customer.setName(getString("Insert new name: ")); // atualiza o nome do cliente no objeto
-                    case 2 -> customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
-                    case 3 -> customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
-                    case 4 -> customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
-                    case 5 -> customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
-                    case 6 -> customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
+                    case 2 ->
+                            customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
+                    case 3 ->
+                            customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
+                    case 4 ->
+                            customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
+                    case 5 ->
+                            customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
+                    case 6 ->
+                            customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
                     default -> {/*retorna ao menu principal*/}
                 }
                 customerServiceImplementation.update(customer); // atualiza as informações do cliente na base de dados

@@ -57,6 +57,11 @@ public class CustomerJDBCServiceImplementation implements CustomerService {
         return customerRepositoryImplementation.findAll();
     }
 
+    @Override
+    public Customer getById(int cardMainHolderId) {
+        return customerRepositoryImplementation.findById(cardMainHolderId);
+    }
+
     public boolean validateNif(String nif) {
         return Boolean.FALSE.equals(customerRepositoryImplementation.verifyIfNifAlreadyExists(nif)) && nif.matches("^[1-9][0-9]{8}$");
     }
