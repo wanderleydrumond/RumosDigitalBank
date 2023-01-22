@@ -128,6 +128,12 @@ public class AccountListRepositoryImplementation implements AccountRepository {
     }
 
     @Override
+    public Boolean verifyIfCustomerExistsInAnotherAccount(int secondaryHolderId) {
+        // Used only on JDBC
+        return null;
+    }
+
+    @Override
     public Boolean verifyIfCustomerIsMainHolder(int customerToBeDeletedId, int loggedAccountId) {
         //Used only on JDBC
         return null;
@@ -143,6 +149,11 @@ public class AccountListRepositoryImplementation implements AccountRepository {
     public List<Customer> getSecondaryHolders(int loggedAccountId) {
         //Used only on JDBC
         return null;
+    }
+
+    @Override
+    public void deleteSecondaryHolder(int loggedAccountId, int secondaryHolderId) {
+        // Used only on JDBC
     }
 
     /**

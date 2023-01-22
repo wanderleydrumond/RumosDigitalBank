@@ -61,6 +61,12 @@ public class CardListServiceImplementation implements CardService {
     }
 
     @Override
+    public Boolean deleteAllByAccountIdAndCustomerId(int accountId, int customerId) {
+        //Used only on JDBC
+        return null;
+    }
+
+    @Override
     public boolean payLoan(Card card, double value) {
         if (card.getPlafondBalance() + value > card.getMonthyPlafond()) { // Se o valor a ser pago é maior que o valor em dívida
             return false;

@@ -51,6 +51,12 @@ public class CardListRepositoryImplementation implements CardRepository {
     }
 
     @Override
+    public Boolean deleteAllByAccountIdAndCustomerId(int accountId, int customerId) {
+//        Used only on JDBC
+        return null;
+    }
+
+    @Override
     public int countCards(int loggedAccountId, boolean isCreditCard) {
         // Used only on JDBC
         return 0;

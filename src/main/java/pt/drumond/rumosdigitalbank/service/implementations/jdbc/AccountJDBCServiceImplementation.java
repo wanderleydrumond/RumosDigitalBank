@@ -127,55 +127,18 @@ public class AccountJDBCServiceImplementation implements AccountService {
 
     @Override
     public boolean deleteSecondaryHolder(Account loggedAccount, Customer secondaryHolder) {
-        Card creditCardOwnedByCustomerToBeDeleted = null, debitCardOwnedByCustomerToBeDeleted = null;
-
-        for (Card cardElement : accountRepositoryImplementation.findAllCreditCardsByAccount(loggedAccount)) { // busca todos os cartões de crédito da conta logada
-            if (cardElement.getCardHolder().getNif().equals(secondaryHolder.getNif())) { // Se o nif do dono do cartão for igual no NIF do titular que dever ser removido
-                creditCardOwnedByCustomerToBeDeleted = cardElement;
-            }
-        }
-
-        if (creditCardOwnedByCustomerToBeDeleted != null && creditCardOwnedByCustomerToBeDeleted.getPlafondBalance() < creditCardOwnedByCustomerToBeDeleted.getMonthyPlafond()) { //Se esse titular secundário tiver cartão de crédito e não tiver dívida no mesmo
+        // Passo 1: verificar se o cliente tem cartões de crédito, se tiver, se ao menos um deles tiver dívida. Caso não não tenha, o método retorna true e os cartões são deletados.
+        if (Boolean.FALSE.equals(cardServiceImplementation.deleteAllByAccountIdAndCustomerId(loggedAccount.getId(), secondaryHolder.getId()))) {
             return false;
         }
+        // Passo 2: remove o registro de customer id e account id da tabela customers_accounts
+        accountRepositoryImplementation.deleteSecondaryHolder(loggedAccount.getId(), secondaryHolder.getId());
 
-        for (Card cardElement : accountRepositoryImplementation.findAllDebitCardsByAccount(loggedAccount)) { // busca todos os cartões de débito da conta logada
-            if (cardElement.getCardHolder().getNif().equals(secondaryHolder.getNif())) { // Se o nif do dono do cartão for igual no NIF do titular que dever ser removido
-                debitCardOwnedByCustomerToBeDeleted = cardElement;
-            }
-        }
-
-        loggedAccount.getSecondaryHolders().removeIf(customerElement -> customerElement.getNif().equals(secondaryHolder.getNif())); // Excluir o cliente secundário antes de verificar se ele existe em alguma outra conta
-        loggedAccount.getCards().removeIf(cardElement -> cardElement.getCardHolder().getNif().equals(secondaryHolder.getNif())); // Excluir todos os cartões daquele cliente na conta logada
-
-        accountRepositoryImplementation.update(loggedAccount); // atualiza a situação dessa conta na base de dados
-
-        if (debitCardOwnedByCustomerToBeDeleted != null) {
-            cardServiceImplementation.delete(debitCardOwnedByCustomerToBeDeleted); // deleta o cartão de débito da base de dados
-        }
-
-        if (creditCardOwnedByCustomerToBeDeleted != null) {
-            cardServiceImplementation.delete(creditCardOwnedByCustomerToBeDeleted); // deleta o cartão de crédito da base de dados
-        }
-
-        int timesOfCustomerFound = 0;
-        // Verificar se o cliente possui alguma outra conta no banco
-        List<Account> allAccounts = accountRepositoryImplementation.findAll();
-        for (Account accountElement : allAccounts) { // Percorrer a lista de contas
-            if (accountElement.getMainHolder().getNif().equals(secondaryHolder.getNif())) { // Se encontrar o referido cliente como cliente principal de outra conta
-                timesOfCustomerFound++; // acrescenta 1 ao contador
-            }
-            for (Customer customerElement : accountElement.getSecondaryHolders()) { // dentro do objeto conta, percorre a lista de clientes secundários
-                if (customerElement.getNif().equals(secondaryHolder.getNif())) { // Se encontrar o referido cliente como cliente secundário de outra conta
-                    timesOfCustomerFound++; // acrescenta 1 ao contador
-                }
-            }
-        }
-        // Só remove da lista principal se não achar em alguma outra conta
-        if (timesOfCustomerFound == 0) {
+        // Passo 3: Verifica se este cliente é titular em outra conta
+        if (Boolean.FALSE.equals(accountRepositoryImplementation.verifyIfCustomerExistsInAnotherAccount(secondaryHolder.getId()))) {
+            // Se não for, deleta-o da tabela de customers
             customerServiceImplementation.delete(secondaryHolder);
         }
-
         return true;
     }
 

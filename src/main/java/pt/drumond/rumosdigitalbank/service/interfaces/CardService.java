@@ -14,6 +14,7 @@ public interface CardService {
     Card getBySerialNumber(String serialNumber);
     List<Card> getAllByAccount(Account account);
     void delete(Card cardOwnedByCustomerToBeDeleted);
+    Boolean deleteAllByAccountIdAndCustomerId(int accountId, int customerId);
     boolean payLoan(Card card, double value);
     boolean makeLoan(Card card, double value);
     int getAmountOfCards(int loggedAccountId, boolean isCreditCard);

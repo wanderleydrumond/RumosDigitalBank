@@ -509,10 +509,10 @@ public class Bank {
     private void removeSecondaryHolder() throws SQLException {
         Customer customerToBeDeleted = getCustomerByNif(true);
         if (Boolean.FALSE.equals(accountServiceImplementation.isMainHolder(customerToBeDeleted, loggedAccount))) { // Se não for um titular principal
-            /*displayMargin(customerToBeDeleted);
+            displayMargin(customerToBeDeleted);
             System.out.println(customerToBeDeleted);
-            displayMargin(customerToBeDeleted);*/
-            printCustomer(customerToBeDeleted);
+            displayMargin(customerToBeDeleted);
+//            printCustomer(customerToBeDeleted);
             System.out.print("Do you confirm this action? (" + GREEN_TEXT_BRIGHT.getValue() + "Y" + RESET.getValue() + ")es/(" + RED_TEXT_NORMAL.getValue() + "N" + RESET.getValue() + ")o: ");
             if (scanner.nextLine().equalsIgnoreCase("Y")) {
                 if (accountServiceImplementation.deleteSecondaryHolder(loggedAccount, customerToBeDeleted)) {

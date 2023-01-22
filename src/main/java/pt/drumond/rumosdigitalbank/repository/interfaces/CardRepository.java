@@ -14,6 +14,7 @@ public interface CardRepository {
     Card findBySerialNumber(String serialNumber);
     List<Card> findAllByAccount(Account account);
     void delete(Card cardOwnedByCustomerToBeDeleted);
+    Boolean deleteAllByAccountIdAndCustomerId(int accountId, int customerId);
     int countCards(int loggedAccountId, boolean isCreditCard);
     List<Card> loadDatabase(ArrayList<Customer> customers);
 }

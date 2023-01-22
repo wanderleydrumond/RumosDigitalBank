@@ -230,6 +230,46 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
     }
 
     @Override
+    public Boolean verifyIfCustomerExistsInAnotherAccount(int secondaryHolderId) {
+        Boolean existsCustomerInAccount = null;
+        try {
+            openConnection();
+
+            // Verifica se o cliente é um main holder
+            preparedStatement = connection.prepareStatement("SELECT EXISTS(SELECT * FROM accounts WHERE customers_id = " + secondaryHolderId + ");");
+            resultSet = preparedStatement.executeQuery();
+            preparedStatement.clearParameters();
+
+            while (resultSet.next()) {
+                existsCustomerInAccount = resultSet.getBoolean(1);
+            }
+
+            if (Boolean.FALSE.equals(existsCustomerInAccount)) {
+                // Verificar se o cliente existe como secondary holder
+                preparedStatement = connection.prepareStatement("SELECT EXISTS(SELECT * FROM customers_accounts WHERE customers_id = " + secondaryHolderId + ");");
+                resultSet = preparedStatement.executeQuery();
+            }
+
+            while (resultSet.next()) {
+                existsCustomerInAccount = resultSet.getBoolean(1);
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Error on AccountJDBCRepositoryImplementation.verifyIfCustomerExistsInAnotherAccount() " + sqlException.getMessage());
+            return null;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+            return null;
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return existsCustomerInAccount;
+    }
+
+    @Override
     public Boolean verifyIfCustomerIsMainHolder(int customerToBeDeletedId, int loggedAccountId) {
         Boolean existsCustomerInAccount = null;
         try {
@@ -333,6 +373,28 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
             }
         }
         return customersToBeFound;
+    }
+
+    @Override
+    public void deleteSecondaryHolder(int loggedAccountId, int secondaryHolderId) {
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("DELETE FROM customers_accounts WHERE accounts_id = " + loggedAccountId + " AND customers_id = " + secondaryHolderId + ";");
+            preparedStatement.executeUpdate();
+            preparedStatement.clearParameters();
+
+        } catch (SQLException sqlException) {
+            System.err.println("Error on AccountJDBCRepositoryImplementation.deleteSecondaryHolder() " + sqlException.getMessage());
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
     }
 
     @Override

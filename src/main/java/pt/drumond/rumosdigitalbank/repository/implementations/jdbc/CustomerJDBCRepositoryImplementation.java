@@ -34,7 +34,7 @@ public class CustomerJDBCRepositoryImplementation extends JDBCRepository impleme
             try {
                 closeConnection();
             } catch (SQLException sqlException) {
-            System.err.println("Error closing database connection " + sqlException.getMessage());
+                System.err.println("Error closing database connection " + sqlException.getMessage());
             }
         }
         return findByNif(customer.getNif());
@@ -155,7 +155,24 @@ public class CustomerJDBCRepositoryImplementation extends JDBCRepository impleme
 
     @Override
     public void delete(Customer customer) {
+        try {
+            openConnection();
 
+            preparedStatement = connection.prepareStatement("DELETE FROM customers_accounts WHERE customers_id = " + customer.getId() + ";");
+            preparedStatement.executeUpdate();
+            preparedStatement.clearParameters();
+
+        } catch (SQLException sqlException) {
+            System.err.println("Error on CustomerJDBCRepositoryImplementation.delete() " + sqlException.getMessage());
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
     }
 
     @Override

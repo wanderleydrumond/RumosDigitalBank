@@ -56,7 +56,12 @@ public class CardJDBCServiceImplementation implements CardService {
 
     @Override
     public void delete(Card cardOwnedByCustomerToBeDeleted) {
-        cardRepositoryImplementation.delete(cardOwnedByCustomerToBeDeleted);
+//        Used only on Lists
+    }
+
+    @Override
+    public Boolean deleteAllByAccountIdAndCustomerId(int accountId, int customerId) {
+        return cardRepositoryImplementation.deleteAllByAccountIdAndCustomerId(accountId, customerId);
     }
 
     @Override

@@ -123,7 +123,7 @@ public class CardJDBCRepositoryImplementation extends JDBCRepository implements 
                 );
             }
         } catch (SQLException sqlException) {
-            System.err.println("Error on AccountJDBCRepositoryImplementation.findByCode() " + sqlException.getMessage());
+            System.err.println("Error on CardJDBCRepositoryImplementation.findBySerialNumber() " + sqlException.getMessage());
             return null;
         } catch (ClassNotFoundException classNotFoundException) {
             System.err.println("Error opening database connection " + classNotFoundException.getMessage());
@@ -156,7 +156,7 @@ public class CardJDBCRepositoryImplementation extends JDBCRepository implements 
                 card.setMonthyPlafond(resultSet.getDouble("monthly_plafond"));
                 card.setPlafondBalance(resultSet.getDouble("plafond_balance"));
 
-                Customer cardOwner =  Main.getBank().getCustomerServiceImplementation().getById(resultSet.getInt("customers_id"));
+                Customer cardOwner = Main.getBank().getCustomerServiceImplementation().getById(resultSet.getInt("customers_id"));
                 card.setCardHolder(cardOwner);
 
                 accountCards.add(card);
@@ -178,6 +178,58 @@ public class CardJDBCRepositoryImplementation extends JDBCRepository implements 
 
     @Override
     public void delete(Card cardOwnedByCustomerToBeDeleted) {
+//        Used only on Lists
+    }
+
+    @Override
+    public Boolean deleteAllByAccountIdAndCustomerId(int accountId, int customerId) {
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM cards WHERE accounts_id = " + accountId + " AND customers_id = " + customerId + ";");
+            resultSet = preparedStatement.executeQuery();
+            preparedStatement.clearParameters();
+
+            List<Card> cards = new ArrayList<>();
+            Card card;
+            if (resultSet != null) {
+                card = new Card();
+                while (resultSet.next()) {
+                    card.setId(resultSet.getInt("id"));
+                    card.setSerialNumber(String.valueOf(resultSet.getInt("serial_number")));
+                    card.setVirgin(resultSet.getBoolean("is_virgin"));
+                    card.setMonthyPlafond(resultSet.getDouble("monthly_plafond"));
+                    card.setPlafondBalance(resultSet.getDouble("plafond_balance"));
+
+                    cards.add(card);
+                }
+
+                if (cards.stream().anyMatch(cardElement -> cardElement.getMonthyPlafond() > cardElement.getPlafondBalance())) {
+                    return false;
+                }
+
+                for (Card cardElement : cards) {
+                    preparedStatement = connection.prepareStatement("DELETE FROM cards WHERE id = " + cardElement.getId() + ";");
+                    preparedStatement.executeUpdate();
+                    preparedStatement.clearParameters();
+                }
+
+                return true;
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Error on CardJDBCRepositoryImplementation.delete() " + sqlException.getMessage());
+            return null;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+            return null;
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return false;
     }
 
     @Override

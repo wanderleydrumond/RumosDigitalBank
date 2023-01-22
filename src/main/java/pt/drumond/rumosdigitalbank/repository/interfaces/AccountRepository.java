@@ -22,8 +22,10 @@ public interface AccountRepository {
     Account findByCardSerialNumber(String cardSerialNumber);
     int findAmountOfSecondaryHolders(int loggedAccountId);
     Boolean verifyIfCustomerExistsInLoggedAccount(int customerId, int loggedAccountId);
+    Boolean verifyIfCustomerExistsInAnotherAccount(int secondaryHolderId);
     Boolean verifyIfCustomerIsMainHolder(int customerToBeDeletedId, int loggedAccountId);
     Customer getMainHolder(int loggedAccountId);
     List<Customer> getSecondaryHolders(int loggedAccountId);
+    void deleteSecondaryHolder(int loggedAccountId, int secondaryHolderId);
     void loadDatabase(ArrayList<Customer> customers, ArrayList<Card> cards, ArrayList<Movement> movements);
 }
