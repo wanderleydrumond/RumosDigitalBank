@@ -85,6 +85,28 @@ public class MovementJDBCRepositoryImplementation extends JDBCRepository impleme
     }
 
     @Override
+    public void deleteAll(int accountToBeDeletedId) {
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("DELETE FROM movements WHERE accounts_id = " + accountToBeDeletedId + ";");
+            preparedStatement.executeUpdate();
+            preparedStatement.clearParameters();
+
+        } catch (SQLException sqlException) {
+            System.err.println("Error on MovementJDBCRepositoryImplementation.deleteAll() " + sqlException.getMessage());
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+    }
+
+    @Override
     public double sumAllTodayWithdrawMovements(int accountIdThatOwnsThisMovement) {
         double sumWithdrawToday = 0.;
         try {

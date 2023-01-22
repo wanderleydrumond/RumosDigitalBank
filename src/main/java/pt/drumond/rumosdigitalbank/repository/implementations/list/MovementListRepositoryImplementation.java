@@ -64,6 +64,11 @@ public class MovementListRepositoryImplementation implements MovementRepository 
     }
 
     @Override
+    public void deleteAll(int accountToBeDeletedId) {
+//        Used only on JDBC
+    }
+
+    @Override
     public double sumAllTodayWithdrawMovements(int accountIdThatOwnsThisMovement) {
         return 0;
     }

@@ -43,6 +43,11 @@ public class MovementListServiceImplementation implements MovementService {
     }
 
     @Override
+    public void deleteAll(int accountToBeDeletedId) {
+//        Used only on JDBC
+    }
+
+    @Override
     public List<Movement> getAll() {
         return movementRepositoryImplementation.findAll();
     }

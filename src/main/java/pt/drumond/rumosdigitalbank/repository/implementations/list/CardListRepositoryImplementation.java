@@ -63,6 +63,17 @@ public class CardListRepositoryImplementation implements CardRepository {
     }
 
     @Override
+    public Boolean verifyIfExistsCardsInDebtByAccount(int accountToBeDeletedId) {
+        // Used only on JDBC
+        return null;
+    }
+
+    @Override
+    public void deleteAllByAccount(int accountToBeDeletedId) {
+//        Used only on JDBC
+    }
+
+    @Override
     public ArrayList<Card> loadDatabase(ArrayList<Customer> tableCustomers) {
         // Conta 102
         Card debitCard1 = new Card(true, tableCustomers.get(0),0., 0.);

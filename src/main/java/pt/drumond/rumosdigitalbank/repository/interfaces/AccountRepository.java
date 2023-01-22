@@ -27,5 +27,7 @@ public interface AccountRepository {
     Customer getMainHolder(int loggedAccountId);
     List<Customer> getSecondaryHolders(int loggedAccountId);
     void deleteSecondaryHolder(int loggedAccountId, int secondaryHolderId);
+    void deleteSecondaryHolders(int accountToBeDeletedId);
+    void delete(int accountToBeDeletedId);
     void loadDatabase(ArrayList<Customer> customers, ArrayList<Card> cards, ArrayList<Movement> movements);
 }

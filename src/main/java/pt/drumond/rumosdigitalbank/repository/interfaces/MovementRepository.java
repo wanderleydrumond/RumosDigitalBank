@@ -9,5 +9,6 @@ public interface MovementRepository {
     List<Movement> findAll();
     List<Movement> findAll(int accountId);
     List<Movement> loadDatabase();
+    void deleteAll(int accountToBeDeletedId);
     double sumAllTodayWithdrawMovements(int accountIdThatOwnsThisMovement);
 }

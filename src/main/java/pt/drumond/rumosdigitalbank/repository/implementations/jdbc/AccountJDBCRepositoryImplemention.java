@@ -132,6 +132,7 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
 
     @Override
     public void delete(Account account) {
+//        Used only on Lists
     }
 
     @Override
@@ -386,6 +387,50 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
 
         } catch (SQLException sqlException) {
             System.err.println("Error on AccountJDBCRepositoryImplementation.deleteSecondaryHolder() " + sqlException.getMessage());
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void deleteSecondaryHolders(int accountToBeDeletedId) {
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("DELETE FROM customers_accounts WHERE accounts_id = " + accountToBeDeletedId + ";");
+            preparedStatement.executeUpdate();
+            preparedStatement.clearParameters();
+
+        } catch (SQLException sqlException) {
+            System.err.println("Error on AccountJDBCRepositoryImplementation.deleteSecondaryHolders() " + sqlException.getMessage());
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void delete(int accountToBeDeletedId) {
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("DELETE FROM accounts WHERE id = " + accountToBeDeletedId + ";");
+            preparedStatement.executeUpdate();
+            preparedStatement.clearParameters();
+
+        } catch (SQLException sqlException) {
+            System.err.println("Error on AccountJDBCRepositoryImplementation.delete() " + sqlException.getMessage());
         } catch (ClassNotFoundException classNotFoundException) {
             System.err.println("Error opening database connection " + classNotFoundException.getMessage());
         } finally {

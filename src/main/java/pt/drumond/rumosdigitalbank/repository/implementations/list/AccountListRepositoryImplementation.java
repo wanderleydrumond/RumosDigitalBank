@@ -156,6 +156,16 @@ public class AccountListRepositoryImplementation implements AccountRepository {
         // Used only on JDBC
     }
 
+    @Override
+    public void deleteSecondaryHolders(int accountToBeDeletedId) {
+//        Used only on JDBC
+    }
+
+    @Override
+    public void delete(int accountToBeDeletedId) {
+//        Used only on JDBC
+    }
+
     /**
      * Generates initial data to fill the account HashSet that's serves as database.
      */

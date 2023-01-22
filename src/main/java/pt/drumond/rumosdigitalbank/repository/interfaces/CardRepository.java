@@ -16,5 +16,7 @@ public interface CardRepository {
     void delete(Card cardOwnedByCustomerToBeDeleted);
     Boolean deleteAllByAccountIdAndCustomerId(int accountId, int customerId);
     int countCards(int loggedAccountId, boolean isCreditCard);
+    Boolean verifyIfExistsCardsInDebtByAccount(int accountToBeDeletedId);
+    void deleteAllByAccount(int accountToBeDeletedId);
     List<Card> loadDatabase(ArrayList<Customer> customers);
 }

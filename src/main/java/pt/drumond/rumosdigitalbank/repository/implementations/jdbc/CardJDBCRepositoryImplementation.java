@@ -263,6 +263,56 @@ public class CardJDBCRepositoryImplementation extends JDBCRepository implements 
     }
 
     @Override
+    public Boolean verifyIfExistsCardsInDebtByAccount(int accountToBeDeletedId) {
+        boolean cardExists = false;
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("SELECT EXISTS(SELECT * FROM cards WHERE accounts_id = " + accountToBeDeletedId + " AND monthly_plafond > plafond_balance);");
+            resultSet = preparedStatement.executeQuery();
+            preparedStatement.clearParameters();
+
+            while (resultSet.next()) {
+                cardExists = resultSet.getBoolean(1);
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Error on CardJDBCRepositoryImplementation.verifyIfExistsCardsInDebtByAccount() " + sqlException.getMessage());
+            return null;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return cardExists;
+    }
+
+    @Override
+    public void deleteAllByAccount(int accountToBeDeletedId) {
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("DELETE FROM cards WHERE accounts_id = " + accountToBeDeletedId + ";");
+            preparedStatement.executeUpdate();
+            preparedStatement.clearParameters();
+
+        } catch (SQLException sqlException) {
+            System.err.println("Error on MovementJDBCRepositoryImplementation.deleteAll() " + sqlException.getMessage());
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+    }
+
+    @Override
     public List<Card> loadDatabase(ArrayList<Customer> tableCustomers) {
         // used only on Lists
         return null;

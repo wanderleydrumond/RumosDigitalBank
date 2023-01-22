@@ -13,9 +13,7 @@ import pt.drumond.rumosdigitalbank.service.interfaces.CustomerService;
 import pt.drumond.rumosdigitalbank.service.interfaces.MovementService;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Contains all methods responsible for the businees rules related to accounts.
@@ -258,47 +256,28 @@ public class AccountJDBCServiceImplementation implements AccountService {
 
     @Override
     public ResponseType delete(Account accountToBeDeleted) {
-        if (accountToBeDeleted.getCards().stream().filter(cardElement -> cardElement.getMonthyPlafond() > 0. && cardElement.getPlafondBalance() < cardElement.getMonthyPlafond()).collect(Collectors.toCollection(ArrayList::new)).size() > 0) { // na conta, percorre a lista de cartões e busca todos os cartões de crédito que tenham dívida, caso exista algum
-            return ResponseType.THERE_ARE_DEBTS; // Há cartões de crédito em débito
-        }
         if (accountToBeDeleted.getBalance() > 0.) { // Caso o saldo da conta não esteja zerado
             return ResponseType.BALANCE_BIGGER_THAN_ZERO;
         }
 
-        List<Customer> allCustomersInAccountToBeDeleted = new ArrayList<>(accountToBeDeleted.getSecondaryHolders());
-        allCustomersInAccountToBeDeleted.add(accountToBeDeleted.getMainHolder());
-
-        accountRepositoryImplementation.delete(accountToBeDeleted);
-
-        HashSet<Customer> customersThatAreInAnotherAccount = new HashSet<>();
-        List<Account> allAccounts = accountRepositoryImplementation.findAll();
-
-        for (Account anotherAccount : allAccounts) {
-            for (Customer customerElement : allCustomersInAccountToBeDeleted) {
-                if (anotherAccount.getMainHolder().getNif().equals(customerElement.getNif())) {
-                    customersThatAreInAnotherAccount.add(customerElement);
-                    break;
-                }
-                for (Customer secondaryHolderInAnotherAccount : anotherAccount.getSecondaryHolders()) {
-                    if (secondaryHolderInAnotherAccount.getNif().equals(customerElement.getNif())) {
-                        customersThatAreInAnotherAccount.add(customerElement);
-                        break;
-                    }
-                }
-            }
+        if (Boolean.TRUE.equals(cardServiceImplementation.verifyIfExistsCardsInDebtByAccount(accountToBeDeleted.getId()))) { // na conta, percorre a lista de cartões e busca todos os cartões de crédito que tenham dívida, caso exista algum
+            return ResponseType.THERE_ARE_DEBTS; // Há cartões de crédito em débito
         }
-        boolean hasAnotherAccount = false;
-        for (Customer customerElement : allCustomersInAccountToBeDeleted) {
-            for (Customer customerThatAreInAnotherAccount : customersThatAreInAnotherAccount) {
-                if (customerElement.getNif().equals(customerThatAreInAnotherAccount.getNif())) {
-                    hasAnotherAccount = true;
-                }
-            }
-            if (!hasAnotherAccount) {
+
+        List<Customer> allCustomersInAccountToBeDeleted = new ArrayList<>(accountRepositoryImplementation.getSecondaryHolders(accountToBeDeleted.getId()));
+        allCustomersInAccountToBeDeleted.add(accountRepositoryImplementation.getMainHolder(accountToBeDeleted.getId()));
+
+        accountRepositoryImplementation.deleteSecondaryHolders(accountToBeDeleted.getId()); // apaga todos os titulares secundários da conta
+        movementServiceImplementation.deleteAll(accountToBeDeleted.getId()); // apaga todos os movimentos da conta
+        cardServiceImplementation.deleteAllByAccount(accountToBeDeleted.getId()); // apaga todos os cartões vinculados àquela conta
+
+        accountRepositoryImplementation.delete(accountToBeDeleted.getId()); // apaga a conta
+
+        allCustomersInAccountToBeDeleted.forEach(customerElement -> {
+            if (Boolean.FALSE.equals(accountRepositoryImplementation.verifyIfCustomerExistsInAnotherAccount(customerElement.getId()))) {
                 customerServiceImplementation.delete(customerElement);
             }
-            hasAnotherAccount = false;
-        }
+        });
 
         return ResponseType.SUCCESS;
     }

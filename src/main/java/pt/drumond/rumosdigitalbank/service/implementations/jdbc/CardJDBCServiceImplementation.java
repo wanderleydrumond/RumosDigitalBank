@@ -92,6 +92,16 @@ public class CardJDBCServiceImplementation implements CardService {
     }
 
     @Override
+    public Boolean verifyIfExistsCardsInDebtByAccount(int accountToBeDeletedId) {
+        return cardRepositoryImplementation.verifyIfExistsCardsInDebtByAccount(accountToBeDeletedId);
+    }
+
+    @Override
+    public void deleteAllByAccount(int accountToBeDeletedId) {
+        cardRepositoryImplementation.deleteAllByAccount(accountToBeDeletedId);
+    }
+
+    @Override
     public List<Card> loadDatabase(ArrayList<Customer> customers) {
         return cardRepositoryImplementation.loadDatabase(customers);
     }
