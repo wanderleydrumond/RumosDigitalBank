@@ -229,7 +229,7 @@ public class Bank {
         if (customer == null) {
             System.out.println(YELLOW_TEXT_NORMAL.getValue() + "Client not found" + RESET.getValue());
         } else {
-//        printCustomer(customer); // TODO Aqui dá problema porque o cliente não está em uma conta
+//        printCustomer(customer, loggedAccount); // TODO Aqui dá problema porque o cliente não está em uma conta
             displayMargin(customer);
             System.out.println(customer);
             displayMargin(customer);
@@ -408,7 +408,7 @@ public class Bank {
 
     /**
      * <ol>
-     *     <li>Displays a warning and confoirmation message</li>
+     *     <li>Displays a warning and confirmation message</li>
      *     <li>Deletes the logged account from the bank database</li>
      *     <li>Displays a success message</li>
      *     <li>Redirects to main menu</li>
@@ -512,7 +512,7 @@ public class Bank {
             displayMargin(customerToBeDeleted);
             System.out.println(customerToBeDeleted);
             displayMargin(customerToBeDeleted);
-//            printCustomer(customerToBeDeleted);
+//            printCustomer(customerToBeDeleted, loggedAccount);
             System.out.print("Do you confirm this action? (" + GREEN_TEXT_BRIGHT.getValue() + "Y" + RESET.getValue() + ")es/(" + RED_TEXT_NORMAL.getValue() + "N" + RESET.getValue() + ")o: ");
             if (scanner.nextLine().equalsIgnoreCase("Y")) {
                 if (accountServiceImplementation.deleteSecondaryHolder(loggedAccount, customerToBeDeleted)) {
@@ -801,12 +801,12 @@ public class Bank {
         System.out.println();
     }
 
-    public void printCustomer(Customer customer) {
+    public void printCustomer(Customer customer, Account loggedAccount) {
         ArrayList<String> names = new ArrayList<>();
         String biggestName = "", biggestEmail = "", biggestProfession = "", name = "NAME", email = "E-MAIL", profession = "PROFESSION";
         final String SPACE = "\040";
 
-        if (loggedAccount.getSecondaryHolders() != null) {
+        if (accountServiceImplementation.getSecondaryHolders(loggedAccount.getId()) != null) {
             for (Customer customerElement : loggedAccount.getSecondaryHolders()) {
                 names.add(customerElement.getName());
             }

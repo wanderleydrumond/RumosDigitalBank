@@ -158,7 +158,7 @@ public class CustomerJDBCRepositoryImplementation extends JDBCRepository impleme
         try {
             openConnection();
 
-            preparedStatement = connection.prepareStatement("DELETE FROM customers_accounts WHERE customers_id = " + customer.getId() + ";");
+            preparedStatement = connection.prepareStatement("DELETE FROM customers WHERE id = " + customer.getId() + ";");
             preparedStatement.executeUpdate();
             preparedStatement.clearParameters();
 
