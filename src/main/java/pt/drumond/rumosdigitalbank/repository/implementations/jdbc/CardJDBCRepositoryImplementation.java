@@ -121,6 +121,10 @@ public class CardJDBCRepositoryImplementation extends JDBCRepository implements 
                         resultSet.getDouble("monthly_plafond"),
                         resultSet.getDouble("plafond_balance")
                 );
+
+                // Used in Java FX
+                Customer cardOwner = Main.getBank().getCustomerServiceImplementation().getById(resultSet.getInt("customers_id"));
+                cardToBeFound.setCardHolder(cardOwner);
             }
         } catch (SQLException sqlException) {
             System.err.println("Error on CardJDBCRepositoryImplementation.findBySerialNumber() " + sqlException.getMessage());

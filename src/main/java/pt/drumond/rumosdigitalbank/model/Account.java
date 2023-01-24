@@ -15,6 +15,9 @@ public class Account {
     private List<Movement> movements = new ArrayList<>();
     private List<Card> cards = new ArrayList<>();
 
+    public Account() {
+    }
+
     public Account(double balance, Customer mainHolder) {
         this.balance = balance;
         this.mainHolder = mainHolder;

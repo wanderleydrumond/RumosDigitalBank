@@ -158,7 +158,33 @@ public class AccountJDBCRepositoryImplemention extends JDBCRepository implements
 
     @Override
     public Account findByCardSerialNumber(String cardSerialNumber) {
-        return null;
+        Account accountToBeFound = null;
+
+        try {
+            openConnection();
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM accounts WHERE id = (SELECT accounts_id FROM cards WHERE serial_number = " + cardSerialNumber + ");");
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                accountToBeFound = new Account();
+                accountToBeFound.setId(resultSet.getInt("id"));
+                accountToBeFound.setCode(resultSet.getString("code"));
+                accountToBeFound.setBalance(resultSet.getDouble("balance"));
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Error on AccountJDBCRepositoryImplementation.findByCardSerialNumber() " + sqlException.getMessage());
+            return null;
+        } catch (ClassNotFoundException classNotFoundException) {
+            System.err.println("Error opening database connection " + classNotFoundException.getMessage());
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException sqlException) {
+                System.err.println("Error closing database connection " + sqlException.getMessage());
+            }
+        }
+        return accountToBeFound;
     }
 
     @Override

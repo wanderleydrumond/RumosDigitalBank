@@ -229,7 +229,7 @@ public class Bank {
         if (customer == null) {
             System.out.println(YELLOW_TEXT_NORMAL.getValue() + "Client not found" + RESET.getValue());
         } else {
-//        printCustomer(customer, loggedAccount); // TODO Aqui dá problema porque o cliente não está em uma conta
+//            printCustomer(customer); // TODO Aqui falta imprimir a quantidade de espaços de cada coluna
             displayMargin(customer);
             System.out.println(customer);
             displayMargin(customer);
@@ -482,13 +482,13 @@ public class Bank {
      * <p>They can be a new customer or an existent one.</p>
      */
     private void addSecondaryHolder() throws SQLException {
-        if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 3) { // OK
+        if (accountServiceImplementation.getAmountOfSecondaryHolders(loggedAccount) > 3) {
             return;
         }
         Customer secondaryHolder = null;
 
         switch (menuAddSecondaryHolder()) {
-            case 1 -> secondaryHolder = createCustomer(false); // OK
+            case 1 -> secondaryHolder = createCustomer(false);
             case 2 -> secondaryHolder = getCustomerByNif(false);
             default -> updateAccountMenu();
         }
@@ -509,10 +509,10 @@ public class Bank {
     private void removeSecondaryHolder() throws SQLException {
         Customer customerToBeDeleted = getCustomerByNif(true);
         if (Boolean.FALSE.equals(accountServiceImplementation.isMainHolder(customerToBeDeleted, loggedAccount))) { // Se não for um titular principal
-            displayMargin(customerToBeDeleted);
+            /*displayMargin(customerToBeDeleted);
             System.out.println(customerToBeDeleted);
-            displayMargin(customerToBeDeleted);
-//            printCustomer(customerToBeDeleted, loggedAccount);
+            displayMargin(customerToBeDeleted);*/
+            printCustomer(customerToBeDeleted, loggedAccount);
             System.out.print("Do you confirm this action? (" + GREEN_TEXT_BRIGHT.getValue() + "Y" + RESET.getValue() + ")es/(" + RED_TEXT_NORMAL.getValue() + "N" + RESET.getValue() + ")o: ");
             if (scanner.nextLine().equalsIgnoreCase("Y")) {
                 if (accountServiceImplementation.deleteSecondaryHolder(loggedAccount, customerToBeDeleted)) {
@@ -647,9 +647,9 @@ public class Bank {
                 }
                 customerServiceImplementation.update(customer); // atualiza as informações do cliente na base de dados
                 System.out.println(YELLOW_TEXT_NORMAL.getValue() + "Client current informations:" + RESET.getValue());
-                displayMargin(customer);
+                /*displayMargin(customer);
                 System.out.println(customer);
-                displayMargin(customer);
+                displayMargin(customer);*/
 
 //                printCustomer(customer);
 
@@ -806,20 +806,21 @@ public class Bank {
         String biggestName = "", biggestEmail = "", biggestProfession = "", name = "NAME", email = "E-MAIL", profession = "PROFESSION";
         final String SPACE = "\040";
 
-        if (accountServiceImplementation.getSecondaryHolders(loggedAccount.getId()) != null) {
-            for (Customer customerElement : loggedAccount.getSecondaryHolders()) {
+        List<Customer> secondaryHolders = accountServiceImplementation.getSecondaryHolders(loggedAccount.getId());
+        if (secondaryHolders != null) {
+            for (Customer customerElement : secondaryHolders) {
                 names.add(customerElement.getName());
             }
             biggestName = Collections.max(names, Comparator.comparing(String::length));
 
             ArrayList<String> emails = new ArrayList<>();
-            for (Customer customerElement : loggedAccount.getSecondaryHolders()) {
+            for (Customer customerElement : secondaryHolders) {
                 emails.add(customerElement.getEmail());
             }
             biggestEmail = Collections.max(emails, Comparator.comparing(String::length));
 
             ArrayList<String> professions = new ArrayList<>();
-            for (Customer customerElement : loggedAccount.getSecondaryHolders()) {
+            for (Customer customerElement : secondaryHolders) {
                 professions.add(customerElement.getProfession());
             }
             biggestProfession = Collections.max(professions, Comparator.comparing(String::length));
@@ -859,6 +860,88 @@ public class Bank {
             }
             System.out.print("|" + SPACE);
         }
+        System.out.print(customer.getPhone() + SPACE);
+        System.out.print("|" + SPACE);
+        System.out.print(customer.getMobile() + SPACE);
+        System.out.print("|" + SPACE);
+        System.out.print(customer.getEmail() + SPACE);
+        if (customer.getEmail().length() <= biggestEmail.length()) {
+            for (int index = 0; index < biggestEmail.length() - customer.getEmail().length(); index++) {
+                System.out.print(SPACE);
+            }
+        }
+        System.out.print("|" + SPACE);
+        System.out.print(customer.getProfession() + SPACE);
+        if (customer.getProfession().length() <= biggestProfession.length()) {
+            for (int index = 0; index < biggestProfession.length() - customer.getProfession().length(); index++) {
+                System.out.print(SPACE);
+            }
+        }
+        System.out.println("|");
+
+        printCustomerMargin(customer, biggestName, biggestEmail, biggestProfession, true); // Impressão da linha inferior
+
+    }
+
+    public void printCustomer(Customer customer) {
+        ArrayList<String> names = new ArrayList<>();
+        String biggestName = "", biggestEmail = "", biggestProfession = "", name = "NAME", email = "E-MAIL", profession = "PROFESSION";
+        final String SPACE = "\040";
+
+        /*List<Customer> secondaryHolders = accountServiceImplementation.getSecondaryHolders(loggedAccount.getId());
+        if (secondaryHolders != null) {
+            for (Customer customerElement : secondaryHolders) {
+                names.add(customerElement.getName());
+            }
+            biggestName = Collections.max(names, Comparator.comparing(String::length));
+
+            ArrayList<String> emails = new ArrayList<>();
+            for (Customer customerElement : secondaryHolders) {
+                emails.add(customerElement.getEmail());
+            }
+            biggestEmail = Collections.max(emails, Comparator.comparing(String::length));
+
+            ArrayList<String> professions = new ArrayList<>();
+            for (Customer customerElement : secondaryHolders) {
+                professions.add(customerElement.getProfession());
+            }
+            biggestProfession = Collections.max(professions, Comparator.comparing(String::length));
+        }*/
+
+        printCustomerMargin(customer, biggestName, biggestEmail, biggestProfession, true); // Impressão da linha superior do cabeçalho
+
+        //Impressão do conteúdo do cabeçalho
+        System.out.print("|" + SPACE + PURPLE_TEXT_NORMAL.getValue() + "NIF\040\040\040\040\040\040" + SPACE + RESET.getValue());
+        System.out.print("|" + SPACE + PURPLE_TEXT_NORMAL.getValue() + name + SPACE + RESET.getValue());
+        for (int index = 0; index < biggestName.length() - name.length(); index++) {
+            System.out.print(SPACE);
+        }
+        System.out.print("|" + SPACE + PURPLE_TEXT_NORMAL.getValue() + "PHONE\040\040\040\040" + SPACE + RESET.getValue());
+        System.out.print("|" + SPACE + PURPLE_TEXT_NORMAL.getValue() + "MOBILE\040\040" + SPACE + RESET.getValue());
+        System.out.print("|" + SPACE + PURPLE_TEXT_NORMAL.getValue() + email + SPACE + RESET.getValue());
+        for (int index = 0; index < biggestEmail.length() - email.length(); index++) {
+            System.out.print(SPACE);
+        }
+        System.out.print("|" + SPACE + PURPLE_TEXT_NORMAL.getValue() + profession + SPACE + RESET.getValue());
+        for (int index = 0; index < biggestProfession.length() - profession.length(); index++) {
+            System.out.print(SPACE);
+        }
+        System.out.println("|");
+        // Fim da impressão do conteúdo do cabeçalho
+
+        printCustomerMargin(customer, biggestName, biggestEmail, biggestProfession, false); // Impressão da linha inferior do cabeçalho
+
+        //Impressão dos dados
+        System.out.print("|" + SPACE);
+        System.out.print(customer.getNif() + SPACE);
+        System.out.print("|" + SPACE);
+        System.out.print(customer.getName() + SPACE);
+        if (customer.getName().length() <= biggestName.length()) {
+            for (int index = 0; index < biggestName.length() - customer.getName().length(); index++) {
+                System.out.print(SPACE);
+            }
+        }
+        System.out.print("|" + SPACE);
         System.out.print(customer.getPhone() + SPACE);
         System.out.print("|" + SPACE);
         System.out.print(customer.getMobile() + SPACE);
