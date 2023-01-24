@@ -57,6 +57,7 @@ public class CardJDBCRepositoryImplementation extends JDBCRepository implements 
             preparedStatement = connection.prepareStatement("UPDATE cards SET serial_number = ? WHERE id = " + lastId + ";");
             preparedStatement.setInt(1, serialNumber);
             preparedStatement.executeUpdate();
+            preparedStatement.clearParameters();
 
             return findBySerialNumber(String.valueOf(serialNumber));
         } catch (SQLException sqlException) {
@@ -84,10 +85,12 @@ public class CardJDBCRepositoryImplementation extends JDBCRepository implements 
         try {
             openConnection();
 
-            preparedStatement = connection.prepareStatement("UPDATE cards SET plafond_balance = ? WHERE id = " + card.getId() + ";");
+            preparedStatement = connection.prepareStatement("UPDATE cards SET plafond_balance = ?, pin = ?, is_virgin = false WHERE id = " + card.getId() + ";");
             preparedStatement.setDouble(1, card.getPlafondBalance());
+            preparedStatement.setString(2, card.getPin());
 
             preparedStatement.executeUpdate();
+            preparedStatement.clearParameters();
         } catch (SQLException sqlException) {
             System.err.println("Error on CardJDBCRepositoryImplementation.update() " + sqlException.getMessage());
             return null;

@@ -40,7 +40,6 @@ public class CardJDBCServiceImplementation implements CardService {
     @Override
     public Card update(String pin, Card card) {
         card.setPin(pin);
-        card.setVirgin(false);
         return cardRepositoryImplementation.update(card);
     }
 
@@ -71,7 +70,7 @@ public class CardJDBCServiceImplementation implements CardService {
         }
 
         card.setPlafondBalance(card.getPlafondBalance() + value); // atualiza o saldo do plafond do cartão com o valor pago
-        cardRepositoryImplementation.update(card); // atualiza o cartão na base de dados
+        cardRepositoryImplementation.update(card); // atualiza o plafond balance do cartão na base de dados
         return true;
     }
 
@@ -82,7 +81,7 @@ public class CardJDBCServiceImplementation implements CardService {
         }
 
         card.setPlafondBalance(card.getPlafondBalance() - value); // atualiza o saldo plafond do cartão com o valor sacado
-        cardRepositoryImplementation.update(card);
+        cardRepositoryImplementation.update(card); // atualiza o plafond balance do cartão na base de dados
         return true;
     }
 
