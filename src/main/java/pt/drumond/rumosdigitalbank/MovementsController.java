@@ -90,7 +90,7 @@ public class MovementsController {
     }
 
     private ObservableList<Movement> getMovements() {
-        allMovements = loggedAccount.getMovements();
+        allMovements = movementServiceImplementation.getAll(loggedAccount.getId());
 
         if (allMovements != null) {
             movements = FXCollections.observableList(allMovements);

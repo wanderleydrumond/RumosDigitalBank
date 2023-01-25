@@ -112,8 +112,7 @@ public class MovementJDBCRepositoryImplementation extends JDBCRepository impleme
         try {
             openConnection();
 
-            preparedStatement = connection.prepareStatement("SELECT SUM(value) FROM movements WHERE accounts_id = "
-                    + accountIdThatOwnsThisMovement + " AND date = " + Date.valueOf(LocalDate.now()) + " AND type = " + MovementType.WITHDRAW + ";");
+            preparedStatement = connection.prepareStatement("SELECT SUM(value) FROM movements WHERE accounts_id = " + accountIdThatOwnsThisMovement + " AND date = CURDATE() AND type = '" + MovementType.WITHDRAW + "';");
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {

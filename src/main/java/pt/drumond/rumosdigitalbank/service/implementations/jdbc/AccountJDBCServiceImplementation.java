@@ -86,7 +86,8 @@ public class AccountJDBCServiceImplementation implements AccountService {
     @Override
     public boolean deposit(Account destinationAccount, double depositValue, MovementType movementType) {
         destinationAccount.setBalance(destinationAccount.getBalance() + depositValue);
-        destinationAccount.getMovements().add(movementServiceImplementation.create(depositValue, movementType, destinationAccount));
+        Movement movement = movementServiceImplementation.create(depositValue, movementType, destinationAccount);
+        destinationAccount.getMovements().add(movement);
 
         return accountRepositoryImplementation.update(destinationAccount) != null;
     }
