@@ -46,11 +46,6 @@ public class Bank {
         this.movementServiceImplementation = movementServiceImplementation;
         this.accountServiceImplementation = accountServiceImplementation;
 
-        /*List<Customer> customers = this.customerServiceImplementation.loadDatabase();
-        List<Card> cards = this.cardServiceImplementation.loadDatabase((ArrayList<Customer>) customers);
-        List<Movement> movements = this.movementServiceImplementation.loadDatabase();
-        this.accountServiceImplementation.loadDatabase(customers, cards, movements);*/
-
         scanner = new Scanner(System.in);
     }
 
@@ -633,16 +628,11 @@ public class Bank {
             do {
                 switch (updateCustomerMenu()) { // Exibe um menu de opções para as informações que podem ser atualizadas
                     case 1 -> customer.setName(getString("Insert new name: ")); // atualiza o nome do cliente no objeto
-                    case 2 ->
-                            customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
-                    case 3 ->
-                            customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
-                    case 4 ->
-                            customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
-                    case 5 ->
-                            customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
-                    case 6 ->
-                            customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
+                    case 2 -> customer.setPassword(getString("Insert new password: ")); // atualiza a senha do cliente no objeto
+                    case 3 -> customer.setPhone(getString("Insert new phone number: ")); // atualiza o número de telefone do cliente no objeto
+                    case 4 -> customer.setMobile(getString("Insert new mobile number: ")); // atualiza o número de telefone celular do cliente no objeto
+                    case 5 -> customer.setEmail(getString("Insert new e-mail: ")); // atualiza o e-mail do cliente no objeto
+                    case 6 -> customer.setProfession(getString("Insert new profession: ")); // atualiza a profissão do cliente no objeto
                     default -> {/*retorna ao menu principal*/}
                 }
                 customerServiceImplementation.update(customer); // atualiza as informações do cliente na base de dados
@@ -860,88 +850,6 @@ public class Bank {
             }
             System.out.print("|" + SPACE);
         }
-        System.out.print(customer.getPhone() + SPACE);
-        System.out.print("|" + SPACE);
-        System.out.print(customer.getMobile() + SPACE);
-        System.out.print("|" + SPACE);
-        System.out.print(customer.getEmail() + SPACE);
-        if (customer.getEmail().length() <= biggestEmail.length()) {
-            for (int index = 0; index < biggestEmail.length() - customer.getEmail().length(); index++) {
-                System.out.print(SPACE);
-            }
-        }
-        System.out.print("|" + SPACE);
-        System.out.print(customer.getProfession() + SPACE);
-        if (customer.getProfession().length() <= biggestProfession.length()) {
-            for (int index = 0; index < biggestProfession.length() - customer.getProfession().length(); index++) {
-                System.out.print(SPACE);
-            }
-        }
-        System.out.println("|");
-
-        printCustomerMargin(customer, biggestName, biggestEmail, biggestProfession, true); // Impressão da linha inferior
-
-    }
-
-    public void printCustomer(Customer customer) {
-        ArrayList<String> names = new ArrayList<>();
-        String biggestName = "", biggestEmail = "", biggestProfession = "", name = "NAME", email = "E-MAIL", profession = "PROFESSION";
-        final String SPACE = "\040";
-
-        /*List<Customer> secondaryHolders = accountServiceImplementation.getSecondaryHolders(loggedAccount.getId());
-        if (secondaryHolders != null) {
-            for (Customer customerElement : secondaryHolders) {
-                names.add(customerElement.getName());
-            }
-            biggestName = Collections.max(names, Comparator.comparing(String::length));
-
-            ArrayList<String> emails = new ArrayList<>();
-            for (Customer customerElement : secondaryHolders) {
-                emails.add(customerElement.getEmail());
-            }
-            biggestEmail = Collections.max(emails, Comparator.comparing(String::length));
-
-            ArrayList<String> professions = new ArrayList<>();
-            for (Customer customerElement : secondaryHolders) {
-                professions.add(customerElement.getProfession());
-            }
-            biggestProfession = Collections.max(professions, Comparator.comparing(String::length));
-        }*/
-
-        printCustomerMargin(customer, biggestName, biggestEmail, biggestProfession, true); // Impressão da linha superior do cabeçalho
-
-        //Impressão do conteúdo do cabeçalho
-        System.out.print("|" + SPACE + PURPLE_TEXT_NORMAL.getValue() + "NIF\040\040\040\040\040\040" + SPACE + RESET.getValue());
-        System.out.print("|" + SPACE + PURPLE_TEXT_NORMAL.getValue() + name + SPACE + RESET.getValue());
-        for (int index = 0; index < biggestName.length() - name.length(); index++) {
-            System.out.print(SPACE);
-        }
-        System.out.print("|" + SPACE + PURPLE_TEXT_NORMAL.getValue() + "PHONE\040\040\040\040" + SPACE + RESET.getValue());
-        System.out.print("|" + SPACE + PURPLE_TEXT_NORMAL.getValue() + "MOBILE\040\040" + SPACE + RESET.getValue());
-        System.out.print("|" + SPACE + PURPLE_TEXT_NORMAL.getValue() + email + SPACE + RESET.getValue());
-        for (int index = 0; index < biggestEmail.length() - email.length(); index++) {
-            System.out.print(SPACE);
-        }
-        System.out.print("|" + SPACE + PURPLE_TEXT_NORMAL.getValue() + profession + SPACE + RESET.getValue());
-        for (int index = 0; index < biggestProfession.length() - profession.length(); index++) {
-            System.out.print(SPACE);
-        }
-        System.out.println("|");
-        // Fim da impressão do conteúdo do cabeçalho
-
-        printCustomerMargin(customer, biggestName, biggestEmail, biggestProfession, false); // Impressão da linha inferior do cabeçalho
-
-        //Impressão dos dados
-        System.out.print("|" + SPACE);
-        System.out.print(customer.getNif() + SPACE);
-        System.out.print("|" + SPACE);
-        System.out.print(customer.getName() + SPACE);
-        if (customer.getName().length() <= biggestName.length()) {
-            for (int index = 0; index < biggestName.length() - customer.getName().length(); index++) {
-                System.out.print(SPACE);
-            }
-        }
-        System.out.print("|" + SPACE);
         System.out.print(customer.getPhone() + SPACE);
         System.out.print("|" + SPACE);
         System.out.print(customer.getMobile() + SPACE);
